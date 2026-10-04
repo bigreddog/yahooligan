@@ -64,16 +64,16 @@ body {
 
 .metric {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    align-items: baseline;
     justify-content: center;
+    gap: 5px;
 }
 
 .metric .label {
     font-size: 0.75rem;
     color: #aaa;
     text-transform: uppercase;
-    margin-bottom: 0px; /* Removed margin */
 }
 
 .metric .value {
