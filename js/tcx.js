@@ -81,52 +81,11 @@ window.TCX = {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-    },
 
-    async uploadToStrava(token) {
-        token = token || localStorage.getItem('strava_access_token');
-        if (!token) {
-            // Show modal if no token
-            document.getElementById('strava-modal').style.display = 'flex';
-            return;
-        }
-
-        const tcxString = this.generateTCX();
-        if (!tcxString) {
-            alert("No data recorded.");
-            return;
-        }
-
-        const file = new File([tcxString], 'activity.tcx', { type: 'application/vnd.garmin.tcx+xml' });
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('name', 'Yahooligan Virtual Ride');
-        formData.append('description', 'Recorded with Yahooligan Interactive Trainer');
-        formData.append('trainer', '1');
-        formData.append('commute', '0');
-        formData.append('data_type', 'tcx');
-
-        try {
-            const response = await fetch('https://www.strava.com/api/v3/uploads', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                alert("Successfully uploaded to Strava! Upload ID: " + data.id);
-            } else {
-                const errorData = await response.json();
-                console.error("Strava Upload Error:", errorData);
-                alert("Failed to upload to Strava: " + (errorData.message || response.statusText));
-            }
-        } catch (error) {
-            console.error("Error uploading to Strava", error);
-            alert("Error uploading to Strava. Check console.");
+        // Enable the Strava Upload link button
+        const btnStrava = document.getElementById('btn-upload-strava');
+        if (btnStrava) {
+            btnStrava.classList.remove('disabled');
         }
     }
 };
@@ -134,47 +93,10 @@ window.TCX = {
 // Bind UI buttons if they exist in the DOM (assuming this loads after DOM or in DOMContentLoaded)
 document.addEventListener('DOMContentLoaded', () => {
     const btnTcx = document.getElementById('btn-download-tcx');
-    const btnStrava = document.getElementById('btn-upload-strava');
 
     if (btnTcx) {
         btnTcx.addEventListener('click', () => {
             window.TCX.downloadTCX();
-        });
-    }
-
-    if (btnStrava) {
-        btnStrava.addEventListener('click', () => {
-            window.TCX.uploadToStrava();
-        });
-    }
-
-    // Modal Logic
-    const modal = document.getElementById('strava-modal');
-    const btnCloseModal = document.getElementById('close-modal');
-    const btnSaveToken = document.getElementById('btn-save-strava-token');
-    const inputToken = document.getElementById('strava-token-input');
-
-    if (modal && btnCloseModal && btnSaveToken && inputToken) {
-        btnCloseModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        btnSaveToken.addEventListener('click', () => {
-            const token = inputToken.value.trim();
-            if (token) {
-                localStorage.setItem('strava_access_token', token);
-                modal.style.display = 'none';
-                window.TCX.uploadToStrava(token); // Retry upload
-            } else {
-                alert("Please enter a valid token.");
-            }
-        });
-
-        // Close when clicking outside of the modal content
-        window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
         });
     }
 });

@@ -1,6 +1,7 @@
 // js/app.js
 
 let player; // YouTube Player instance
+let allRoutes = [];
 let routeData = null;
 let currentSegmentIndex = 0;
 
@@ -21,6 +22,12 @@ let state = {
 
 // DOM Elements
 const ui = {
+    hudOverlay: document.getElementById('hud'),
+    routeChooser: document.getElementById('route-chooser-overlay'),
+    routeSelect: document.getElementById('route-select'),
+    btnConfirmRoute: document.getElementById('btn-confirm-route'),
+    btnFullscreen: document.getElementById('btn-fullscreen'),
+
     power: document.getElementById('metric-power'),
     cadence: document.getElementById('metric-cadence'),
     hr: document.getElementById('metric-hr'),
@@ -44,19 +51,38 @@ const ui = {
 
 // YouTube IFrame API Ready Callback
 function onYouTubeIframeAPIReady() {
-    // Wait until route data is loaded to initialize player with correct ID
     fetchRouteData();
 }
 
 async function fetchRouteData() {
     try {
         const response = await fetch('data/routes.json');
-        const routes = await response.json();
-        routeData = routes[0]; // Load first route
+        allRoutes = await response.json();
 
-        state.baseSpeedKmh = routeData.baseSpeedKmh || 25;
+        // Populate route chooser
+        allRoutes.forEach((route, idx) => {
+            const option = document.createElement('option');
+            option.value = idx;
+            option.text = route.name || route.id;
+            ui.routeSelect.appendChild(option);
+        });
+    } catch (err) {
+        console.error("Failed to load route data", err);
+    }
+}
 
-        // Init player
+ui.btnConfirmRoute.addEventListener('click', () => {
+    const selectedIdx = ui.routeSelect.value;
+    if (selectedIdx === "") return;
+
+    routeData = allRoutes[selectedIdx];
+    state.baseSpeedKmh = routeData.baseSpeedKmh || 25;
+
+    ui.routeChooser.style.display = 'none';
+    ui.hudOverlay.style.display = 'flex';
+
+    // Init player
+    if (!player) {
         player = new YT.Player('youtube-player', {
             videoId: routeData.youtubeId,
             playerVars: {
@@ -72,11 +98,18 @@ async function fetchRouteData() {
                 'onStateChange': onPlayerStateChange
             }
         });
-
-    } catch (err) {
-        console.error("Failed to load route data", err);
     }
-}
+});
+
+ui.btnFullscreen.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.error(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+});
 
 function onPlayerReady(event) {
     console.log("YouTube Player Ready");

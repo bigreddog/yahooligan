@@ -7,13 +7,30 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Route Selection Overlay -->
+    <div id="route-chooser-overlay">
+        <div class="route-chooser-content">
+            <h1>Yahooligan Virtual Ride</h1>
+            <p>Select a route to begin:</p>
+            <select id="route-select">
+                <!-- Populated via JS -->
+            </select>
+            <button id="btn-confirm-route">Load Route</button>
+        </div>
+    </div>
+
     <!-- Background YouTube Video -->
     <div id="video-background">
         <div id="youtube-player"></div>
     </div>
 
     <!-- HUD Overlay -->
-    <div id="hud">
+    <div id="hud" style="display: none;">
+        <!-- Top Controls / Options -->
+        <div class="top-controls hud-panel" style="display:flex; justify-content: flex-end; padding: 5px; background: transparent; border: none;">
+            <button id="btn-fullscreen" title="Toggle Fullscreen">⛶</button>
+        </div>
+
         <!-- Top Bar: Metrics -->
         <div id="metrics-bar" class="hud-panel">
             <div class="metric">
@@ -68,18 +85,7 @@
             <button id="btn-start-route">Start Route</button>
 
             <button id="btn-download-tcx" disabled>Download TCX</button>
-            <button id="btn-upload-strava" disabled>Upload to Strava</button>
-        </div>
-    </div>
-
-    <!-- Strava Auth Modal -->
-    <div id="strava-modal" class="modal">
-        <div class="modal-content">
-            <span id="close-modal" class="close">&times;</span>
-            <h2>Connect to Strava</h2>
-            <p>Please enter your Strava Access Token.</p>
-            <input type="text" id="strava-token-input" placeholder="Access Token">
-            <button id="btn-save-strava-token">Save Token & Upload</button>
+            <a id="btn-upload-strava" href="https://www.strava.com/upload/select" target="_blank" class="button disabled">Upload to Strava</a>
         </div>
     </div>
 

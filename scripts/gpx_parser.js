@@ -1,7 +1,23 @@
 const fs = require('fs');
 const { DOMParser } = require('@xmldom/xmldom');
 
-const GPX_FILE_PATH = 'Sella_Ronda_2026_from_Hotel_Cristallo_.gpx';
+const ROUTES_CONFIG = [
+    {
+        id: 'sella-ronda-2026',
+        name: 'Sella Ronda 2026',
+        gpxPath: 'Sella_Ronda_2026_from_Hotel_Cristallo_.gpx',
+        youtubeId: '3wED7BS-BXM',
+        baseSpeedKmh: 25.0
+    },
+    {
+        id: 'zugspitz-plansee-2026',
+        name: 'Tyrolean Zugspitz Arena to Lake Plansee',
+        gpxPath: '2026-09-24_3302953493_From Tyrolean Zugspitz Arena to Lake Plansee.gpx',
+        youtubeId: 'fXaFHAGK6cA',
+        baseSpeedKmh: 25.0
+    }
+];
+
 const OUTPUT_FILE_PATH = 'data/routes.json';
 
 // Haversine formula to calculate distance between two points in km
@@ -21,8 +37,9 @@ function deg2rad(deg) {
     return deg * (Math.PI / 180);
 }
 
-function parseGPX() {
-    const gpxData = fs.readFileSync(GPX_FILE_PATH, 'utf8');
+function parseGPX(config) {
+    console.log(`Parsing ${config.gpxPath}...`);
+    const gpxData = fs.readFileSync(config.gpxPath, 'utf8');
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(gpxData, "text/xml");
 
@@ -63,7 +80,6 @@ function parseGPX() {
 
         if (distFromSegmentStart >= DECIMATION_DISTANCE_KM || i === trackPoints.length - 1) {
             // Calculate grade
-            // distFromSegmentStart is in km. We need it in meters for grade calculation.
             const distMeters = distFromSegmentStart * 1000;
             const eleDiffMeters = currentPoint.ele - currentSegmentStartPoint.ele;
 
@@ -72,7 +88,7 @@ function parseGPX() {
                 grade = (eleDiffMeters / distMeters) * 100;
             }
 
-            // Smooth the grade (limit unreasonable grades, e.g., max 30%, min -30%)
+            // Smooth the grade (limit unreasonable grades)
             grade = Math.max(-30, Math.min(30, grade));
 
             segments.push({
@@ -86,21 +102,29 @@ function parseGPX() {
         }
     }
 
-    const routeId = 'sella-ronda-2026';
-    const youtubeId = '3wED7BS-BXM';
-
-    const routeData = {
-        id: routeId,
-        youtubeId: youtubeId,
-        baseSpeedKmh: 25.0, // Assuming 25 km/h base speed
+    return {
+        id: config.id,
+        name: config.name,
+        youtubeId: config.youtubeId,
+        baseSpeedKmh: config.baseSpeedKmh,
         defaultMode: 'SIM',
         segments: segments
     };
+}
 
-    const routes = [routeData];
+function buildRoutes() {
+    const routes = [];
+    for (const config of ROUTES_CONFIG) {
+        if (fs.existsSync(config.gpxPath)) {
+            const routeData = parseGPX(config);
+            routes.push(routeData);
+        } else {
+            console.warn(`File not found: ${config.gpxPath}. Skipping...`);
+        }
+    }
 
     fs.writeFileSync(OUTPUT_FILE_PATH, JSON.stringify(routes, null, 2));
     console.log(`Successfully generated ${OUTPUT_FILE_PATH}`);
 }
 
-parseGPX();
+buildRoutes();
