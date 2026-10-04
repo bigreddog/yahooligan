@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/bigreddog/yahooligan#readme",
   "dependencies": {
-    "@xmldom/xmldom": "^0.9.12"
+    "@xmldom/xmldom": "^0.9.12",
+    "playwright": "^1.63.0"
   }
 }

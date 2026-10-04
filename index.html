@@ -26,11 +26,6 @@
 
     <!-- HUD Overlay -->
     <div id="hud" style="display: none;">
-        <!-- Top Controls / Options -->
-        <div class="top-controls hud-panel" style="display:flex; justify-content: flex-end; padding: 5px; background: transparent; border: none;">
-            <button id="btn-fullscreen" title="Toggle Fullscreen">⛶</button>
-        </div>
-
         <!-- Top Bar: Metrics -->
         <div id="metrics-bar" class="hud-panel">
             <div class="metric">
@@ -67,25 +62,30 @@
             </div>
         </div>
 
+        <!-- Top Controls / Options (Below Data Bar) -->
+        <div class="top-controls hud-panel" style="display:flex; justify-content: flex-end; padding: 5px; background: transparent; border: none;">
+            <button id="btn-fullscreen" title="Toggle Fullscreen">⛶</button>
+        </div>
+
         <!-- Controls: Bottom or Side -->
         <div id="controls-panel" class="hud-panel">
-            <button id="btn-connect-trainer">Connect Trainer (FTMS/Power/Cadence)</button>
-            <button id="btn-connect-hr">Connect Garmin HR</button>
+            <button id="btn-connect-trainer">Trainer</button>
+            <button id="btn-connect-hr">HR</button>
 
             <div class="mode-toggles">
-                <label><input type="radio" name="mode" value="SIM" checked> SIM Mode</label>
-                <label><input type="radio" name="mode" value="ERG"> ERG Mode</label>
+                <label><input type="radio" name="mode" value="SIM" checked> SIM</label>
+                <label><input type="radio" name="mode" value="ERG"> ERG</label>
             </div>
 
             <div id="erg-controls" style="display:none;">
-                <label>Target Watts: <input type="number" id="input-target-watts" value="150" step="5"></label>
-                <button id="btn-set-watts">Set Watts</button>
+                <label>Target W: <input type="number" id="input-target-watts" value="150" step="5" style="width: 50px;"></label>
+                <button id="btn-set-watts">Set</button>
             </div>
 
-            <button id="btn-start-route">Start Route</button>
+            <button id="btn-start-route">Start</button>
 
-            <button id="btn-download-tcx" disabled>Download TCX</button>
-            <a id="btn-upload-strava" href="https://www.strava.com/upload/select" target="_blank" class="button disabled">Upload to Strava</a>
+            <button id="btn-download-tcx" disabled>TCX</button>
+            <a id="btn-upload-strava" href="https://www.strava.com/upload/select" target="_blank" class="button disabled">Strava</a>
         </div>
     </div>
 
