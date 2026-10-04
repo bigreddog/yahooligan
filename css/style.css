@@ -105,9 +105,12 @@ button, a.button {
     padding: 10px 15px;
     border-radius: 5px;
     font-size: 1rem;
+    font-family: inherit;
+    line-height: normal;
     cursor: pointer;
     text-decoration: none;
     transition: background-color 0.2s;
+    box-sizing: border-box;
 }
 
 button:hover, a.button:hover {
@@ -223,7 +226,7 @@ button:disabled, a.button.disabled {
         font-size: 0.6rem;
     }
 
-    button {
+    button, a.button {
         padding: 6px 10px;
         font-size: 0.8rem;
     }
