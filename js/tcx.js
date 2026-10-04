@@ -83,10 +83,11 @@ window.TCX = {
         URL.revokeObjectURL(url);
     },
 
-    async uploadToStrava() {
-        const token = localStorage.getItem('strava_access_token');
+    async uploadToStrava(token) {
+        token = token || localStorage.getItem('strava_access_token');
         if (!token) {
-            alert("Strava access token not found in localStorage ('strava_access_token'). Please authenticate first.");
+            // Show modal if no token
+            document.getElementById('strava-modal').style.display = 'flex';
             return;
         }
 
@@ -144,6 +145,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnStrava) {
         btnStrava.addEventListener('click', () => {
             window.TCX.uploadToStrava();
+        });
+    }
+
+    // Modal Logic
+    const modal = document.getElementById('strava-modal');
+    const btnCloseModal = document.getElementById('close-modal');
+    const btnSaveToken = document.getElementById('btn-save-strava-token');
+    const inputToken = document.getElementById('strava-token-input');
+
+    if (modal && btnCloseModal && btnSaveToken && inputToken) {
+        btnCloseModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        btnSaveToken.addEventListener('click', () => {
+            const token = inputToken.value.trim();
+            if (token) {
+                localStorage.setItem('strava_access_token', token);
+                modal.style.display = 'none';
+                window.TCX.uploadToStrava(token); // Retry upload
+            } else {
+                alert("Please enter a valid token.");
+            }
+        });
+
+        // Close when clicking outside of the modal content
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
         });
     }
 });
