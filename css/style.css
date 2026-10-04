@@ -1,0 +1,144 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden; /* Prevent scrolling */
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Full-screen video background */
+#video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none; /* Let clicks pass through to video underneath if needed, or keep to block */
+}
+
+/* Ensure youtube iframe fills the container */
+#youtube-player {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* HUD Overlay */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none; /* Let clicks pass through the empty space */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hud-panel {
+    pointer-events: auto; /* Enable clicks on actual panels */
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+}
+
+/* Top Metrics Bar */
+#metrics-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.metric .label {
+    font-size: 0.75rem;
+    color: #aaa;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.metric .value {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.metric .unit {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Controls Panel (Bottom) */
+#controls-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 15px;
+}
+
+button {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.mode-toggles {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.mode-toggles label {
+    cursor: pointer;
+}
+
+#erg-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#input-target-watts {
+    width: 60px;
+    padding: 5px;
+    border-radius: 3px;
+    border: none;
+    text-align: center;
+}

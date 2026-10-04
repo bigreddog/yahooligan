@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yahooligan - Interactive Trainer</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Background YouTube Video -->
+    <div id="video-background">
+        <div id="youtube-player"></div>
+    </div>
+
+    <!-- HUD Overlay -->
+    <div id="hud">
+        <!-- Top Bar: Metrics -->
+        <div id="metrics-bar" class="hud-panel">
+            <div class="metric">
+                <span class="label">POWER</span>
+                <span id="metric-power" class="value">--</span> <span class="unit">W</span>
+            </div>
+            <div class="metric">
+                <span class="label">CADENCE</span>
+                <span id="metric-cadence" class="value">--</span> <span class="unit">rpm</span>
+            </div>
+            <div class="metric">
+                <span class="label">HR</span>
+                <span id="metric-hr" class="value">--</span> <span class="unit">bpm</span>
+            </div>
+            <div class="metric">
+                <span class="label">SPEED</span>
+                <span id="metric-speed" class="value">--</span> <span class="unit">km/h</span>
+            </div>
+            <div class="metric">
+                <span class="label">DIST</span>
+                <span id="metric-distance" class="value">0.00</span> <span class="unit">km</span>
+            </div>
+            <div class="metric">
+                <span class="label">TIME</span>
+                <span id="metric-time" class="value">00:00:00</span>
+            </div>
+            <div class="metric">
+                <span class="label">GRADE</span>
+                <span id="metric-grade" class="value">--</span> <span class="unit">%</span>
+            </div>
+            <div class="metric">
+                <span class="label">TARGET W</span>
+                <span id="metric-target-power" class="value">--</span> <span class="unit">W</span>
+            </div>
+        </div>
+
+        <!-- Controls: Bottom or Side -->
+        <div id="controls-panel" class="hud-panel">
+            <button id="btn-connect-trainer">Connect Trainer (FTMS/Power/Cadence)</button>
+            <button id="btn-connect-hr">Connect Garmin HR</button>
+
+            <div class="mode-toggles">
+                <label><input type="radio" name="mode" value="SIM" checked> SIM Mode</label>
+                <label><input type="radio" name="mode" value="ERG"> ERG Mode</label>
+            </div>
+
+            <div id="erg-controls" style="display:none;">
+                <label>Target Watts: <input type="number" id="input-target-watts" value="150" step="5"></label>
+                <button id="btn-set-watts">Set Watts</button>
+            </div>
+
+            <button id="btn-start-route">Start Route</button>
+
+            <button id="btn-download-tcx" disabled>Download TCX</button>
+            <button id="btn-upload-strava" disabled>Upload to Strava</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="js/ble.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/tcx.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

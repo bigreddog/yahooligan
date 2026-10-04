@@ -1,0 +1,4562 @@
+[
+  {
+    "id": "sella-ronda-2026",
+    "youtubeId": "3wED7BS-BXM",
+    "baseSpeedKmh": 25,
+    "defaultMode": "SIM",
+    "segments": [
+      {
+        "distance": 0.068,
+        "grade": 1.75
+      },
+      {
+        "distance": 0.137,
+        "grade": 2.35
+      },
+      {
+        "distance": 0.198,
+        "grade": 2.29
+      },
+      {
+        "distance": 0.263,
+        "grade": -0.61
+      },
+      {
+        "distance": 0.321,
+        "grade": -0.87
+      },
+      {
+        "distance": 0.39,
+        "grade": 5.07
+      },
+      {
+        "distance": 0.457,
+        "grade": 6.43
+      },
+      {
+        "distance": 0.524,
+        "grade": 6.41
+      },
+      {
+        "distance": 0.582,
+        "grade": 4.1
+      },
+      {
+        "distance": 0.64,
+        "grade": 5.15
+      },
+      {
+        "distance": 0.703,
+        "grade": 6.68
+      },
+      {
+        "distance": 0.762,
+        "grade": 6.15
+      },
+      {
+        "distance": 0.827,
+        "grade": 6.15
+      },
+      {
+        "distance": 0.887,
+        "grade": 6.1
+      },
+      {
+        "distance": 0.946,
+        "grade": 6.5
+      },
+      {
+        "distance": 1.007,
+        "grade": 3.78
+      },
+      {
+        "distance": 1.059,
+        "grade": 2.09
+      },
+      {
+        "distance": 1.127,
+        "grade": 3.37
+      },
+      {
+        "distance": 1.207,
+        "grade": 4.05
+      },
+      {
+        "distance": 1.271,
+        "grade": 6.02
+      },
+      {
+        "distance": 1.335,
+        "grade": 3.13
+      },
+      {
+        "distance": 1.389,
+        "grade": 3.94
+      },
+      {
+        "distance": 1.446,
+        "grade": 4.85
+      },
+      {
+        "distance": 1.501,
+        "grade": 5.82
+      },
+      {
+        "distance": 1.552,
+        "grade": 5.96
+      },
+      {
+        "distance": 1.61,
+        "grade": 6.17
+      },
+      {
+        "distance": 1.67,
+        "grade": 5.66
+      },
+      {
+        "distance": 1.728,
+        "grade": 6.5
+      },
+      {
+        "distance": 1.787,
+        "grade": 6.63
+      },
+      {
+        "distance": 1.847,
+        "grade": 5.99
+      },
+      {
+        "distance": 1.898,
+        "grade": 9.24
+      },
+      {
+        "distance": 1.956,
+        "grade": 6.01
+      },
+      {
+        "distance": 2.01,
+        "grade": 4.28
+      },
+      {
+        "distance": 2.098,
+        "grade": 2.97
+      },
+      {
+        "distance": 2.173,
+        "grade": 2.79
+      },
+      {
+        "distance": 2.277,
+        "grade": 1.92
+      },
+      {
+        "distance": 2.34,
+        "grade": 1.57
+      },
+      {
+        "distance": 2.397,
+        "grade": 1.41
+      },
+      {
+        "distance": 2.456,
+        "grade": 2.2
+      },
+      {
+        "distance": 2.529,
+        "grade": 2.89
+      },
+      {
+        "distance": 2.596,
+        "grade": 4.75
+      },
+      {
+        "distance": 2.659,
+        "grade": 5.22
+      },
+      {
+        "distance": 2.722,
+        "grade": 5.41
+      },
+      {
+        "distance": 2.778,
+        "grade": 4.83
+      },
+      {
+        "distance": 2.834,
+        "grade": 5.38
+      },
+      {
+        "distance": 2.889,
+        "grade": 7.01
+      },
+      {
+        "distance": 2.957,
+        "grade": 4.47
+      },
+      {
+        "distance": 3.01,
+        "grade": 1.88
+      },
+      {
+        "distance": 3.072,
+        "grade": 1.61
+      },
+      {
+        "distance": 3.126,
+        "grade": 0
+      },
+      {
+        "distance": 3.206,
+        "grade": -1.13
+      },
+      {
+        "distance": 3.268,
+        "grade": 2.42
+      },
+      {
+        "distance": 3.328,
+        "grade": 4.98
+      },
+      {
+        "distance": 3.388,
+        "grade": 3.36
+      },
+      {
+        "distance": 3.478,
+        "grade": 1.77
+      },
+      {
+        "distance": 3.533,
+        "grade": 2.55
+      },
+      {
+        "distance": 3.602,
+        "grade": 1.45
+      },
+      {
+        "distance": 3.686,
+        "grade": 2.03
+      },
+      {
+        "distance": 3.752,
+        "grade": 1.81
+      },
+      {
+        "distance": 3.807,
+        "grade": 2
+      },
+      {
+        "distance": 3.876,
+        "grade": 3.45
+      },
+      {
+        "distance": 3.928,
+        "grade": 4.6
+      },
+      {
+        "distance": 3.995,
+        "grade": 5.27
+      },
+      {
+        "distance": 4.058,
+        "grade": 4.76
+      },
+      {
+        "distance": 4.11,
+        "grade": 7.95
+      },
+      {
+        "distance": 4.168,
+        "grade": 9.33
+      },
+      {
+        "distance": 4.22,
+        "grade": 10.11
+      },
+      {
+        "distance": 4.279,
+        "grade": 2.37
+      },
+      {
+        "distance": 4.333,
+        "grade": 9.18
+      },
+      {
+        "distance": 4.386,
+        "grade": 5.72
+      },
+      {
+        "distance": 4.44,
+        "grade": 9.33
+      },
+      {
+        "distance": 4.495,
+        "grade": 7.54
+      },
+      {
+        "distance": 4.566,
+        "grade": 5.92
+      },
+      {
+        "distance": 4.621,
+        "grade": 7.55
+      },
+      {
+        "distance": 4.672,
+        "grade": 7.69
+      },
+      {
+        "distance": 4.738,
+        "grade": 8.02
+      },
+      {
+        "distance": 4.792,
+        "grade": 7.74
+      },
+      {
+        "distance": 4.845,
+        "grade": 7.68
+      },
+      {
+        "distance": 4.897,
+        "grade": 7.89
+      },
+      {
+        "distance": 4.949,
+        "grade": 7.68
+      },
+      {
+        "distance": 5.016,
+        "grade": 7.6
+      },
+      {
+        "distance": 5.074,
+        "grade": 9.45
+      },
+      {
+        "distance": 5.125,
+        "grade": 10.91
+      },
+      {
+        "distance": 5.176,
+        "grade": 8.46
+      },
+      {
+        "distance": 5.227,
+        "grade": 8.32
+      },
+      {
+        "distance": 5.283,
+        "grade": 8.2
+      },
+      {
+        "distance": 5.337,
+        "grade": 8.89
+      },
+      {
+        "distance": 5.392,
+        "grade": 7.22
+      },
+      {
+        "distance": 5.45,
+        "grade": 6.91
+      },
+      {
+        "distance": 5.507,
+        "grade": 7.55
+      },
+      {
+        "distance": 5.568,
+        "grade": 7.64
+      },
+      {
+        "distance": 5.62,
+        "grade": 7.38
+      },
+      {
+        "distance": 5.675,
+        "grade": 7.28
+      },
+      {
+        "distance": 5.728,
+        "grade": 8.15
+      },
+      {
+        "distance": 5.778,
+        "grade": 8.13
+      },
+      {
+        "distance": 5.836,
+        "grade": 8.41
+      },
+      {
+        "distance": 5.889,
+        "grade": 7.94
+      },
+      {
+        "distance": 5.941,
+        "grade": 7.38
+      },
+      {
+        "distance": 5.996,
+        "grade": 7.75
+      },
+      {
+        "distance": 6.057,
+        "grade": 7.11
+      },
+      {
+        "distance": 6.113,
+        "grade": 8.13
+      },
+      {
+        "distance": 6.164,
+        "grade": 7.9
+      },
+      {
+        "distance": 6.22,
+        "grade": 7.66
+      },
+      {
+        "distance": 6.286,
+        "grade": 8
+      },
+      {
+        "distance": 6.357,
+        "grade": 8.3
+      },
+      {
+        "distance": 6.423,
+        "grade": 7.74
+      },
+      {
+        "distance": 6.473,
+        "grade": 8.56
+      },
+      {
+        "distance": 6.535,
+        "grade": 8.28
+      },
+      {
+        "distance": 6.586,
+        "grade": 5.43
+      },
+      {
+        "distance": 6.638,
+        "grade": 8.08
+      },
+      {
+        "distance": 6.695,
+        "grade": 7.91
+      },
+      {
+        "distance": 6.747,
+        "grade": 7.94
+      },
+      {
+        "distance": 6.802,
+        "grade": 8.02
+      },
+      {
+        "distance": 6.864,
+        "grade": 8.78
+      },
+      {
+        "distance": 6.918,
+        "grade": 6.51
+      },
+      {
+        "distance": 6.975,
+        "grade": 6.9
+      },
+      {
+        "distance": 7.034,
+        "grade": 7.82
+      },
+      {
+        "distance": 7.084,
+        "grade": 8.36
+      },
+      {
+        "distance": 7.137,
+        "grade": 5.06
+      },
+      {
+        "distance": 7.191,
+        "grade": 7.75
+      },
+      {
+        "distance": 7.246,
+        "grade": 7.84
+      },
+      {
+        "distance": 7.32,
+        "grade": 7.31
+      },
+      {
+        "distance": 7.38,
+        "grade": 7.03
+      },
+      {
+        "distance": 7.434,
+        "grade": 6.25
+      },
+      {
+        "distance": 7.486,
+        "grade": 7.58
+      },
+      {
+        "distance": 7.536,
+        "grade": 7.88
+      },
+      {
+        "distance": 7.606,
+        "grade": 8.55
+      },
+      {
+        "distance": 7.663,
+        "grade": 5.02
+      },
+      {
+        "distance": 7.722,
+        "grade": 7.17
+      },
+      {
+        "distance": 7.777,
+        "grade": 8.01
+      },
+      {
+        "distance": 7.83,
+        "grade": 7.52
+      },
+      {
+        "distance": 7.883,
+        "grade": 9.68
+      },
+      {
+        "distance": 7.934,
+        "grade": 12.1
+      },
+      {
+        "distance": 7.993,
+        "grade": 8.82
+      },
+      {
+        "distance": 8.045,
+        "grade": 4.22
+      },
+      {
+        "distance": 8.095,
+        "grade": 7.33
+      },
+      {
+        "distance": 8.146,
+        "grade": 6.68
+      },
+      {
+        "distance": 8.2,
+        "grade": 8.53
+      },
+      {
+        "distance": 8.253,
+        "grade": 8
+      },
+      {
+        "distance": 8.316,
+        "grade": 7.86
+      },
+      {
+        "distance": 8.369,
+        "grade": 7.35
+      },
+      {
+        "distance": 8.425,
+        "grade": 3.26
+      },
+      {
+        "distance": 8.48,
+        "grade": 1.62
+      },
+      {
+        "distance": 8.53,
+        "grade": 1.79
+      },
+      {
+        "distance": 8.593,
+        "grade": 2.71
+      },
+      {
+        "distance": 8.655,
+        "grade": 2.42
+      },
+      {
+        "distance": 8.718,
+        "grade": 2.55
+      },
+      {
+        "distance": 8.806,
+        "grade": 2.72
+      },
+      {
+        "distance": 8.867,
+        "grade": 2.94
+      },
+      {
+        "distance": 8.927,
+        "grade": 3
+      },
+      {
+        "distance": 8.979,
+        "grade": 8.17
+      },
+      {
+        "distance": 9.034,
+        "grade": 5.09
+      },
+      {
+        "distance": 9.094,
+        "grade": 7.48
+      },
+      {
+        "distance": 9.166,
+        "grade": 8.08
+      },
+      {
+        "distance": 9.229,
+        "grade": 10.51
+      },
+      {
+        "distance": 9.282,
+        "grade": 11.05
+      },
+      {
+        "distance": 9.337,
+        "grade": 4.71
+      },
+      {
+        "distance": 9.399,
+        "grade": 7.1
+      },
+      {
+        "distance": 9.459,
+        "grade": 7.97
+      },
+      {
+        "distance": 9.512,
+        "grade": 8.53
+      },
+      {
+        "distance": 9.567,
+        "grade": 7.98
+      },
+      {
+        "distance": 9.619,
+        "grade": 9.03
+      },
+      {
+        "distance": 9.677,
+        "grade": 7.98
+      },
+      {
+        "distance": 9.73,
+        "grade": 7.96
+      },
+      {
+        "distance": 9.782,
+        "grade": 7.82
+      },
+      {
+        "distance": 9.833,
+        "grade": 9.39
+      },
+      {
+        "distance": 9.888,
+        "grade": 6.76
+      },
+      {
+        "distance": 9.943,
+        "grade": 6.84
+      },
+      {
+        "distance": 10.002,
+        "grade": 7.99
+      },
+      {
+        "distance": 10.061,
+        "grade": 7.77
+      },
+      {
+        "distance": 10.125,
+        "grade": 7.6
+      },
+      {
+        "distance": 10.181,
+        "grade": 7.33
+      },
+      {
+        "distance": 10.238,
+        "grade": 7.51
+      },
+      {
+        "distance": 10.295,
+        "grade": 7.72
+      },
+      {
+        "distance": 10.36,
+        "grade": 7.77
+      },
+      {
+        "distance": 10.42,
+        "grade": 8.09
+      },
+      {
+        "distance": 10.47,
+        "grade": 8.34
+      },
+      {
+        "distance": 10.529,
+        "grade": 7.58
+      },
+      {
+        "distance": 10.582,
+        "grade": 7.96
+      },
+      {
+        "distance": 10.643,
+        "grade": 7.73
+      },
+      {
+        "distance": 10.699,
+        "grade": 7.64
+      },
+      {
+        "distance": 10.752,
+        "grade": 7.8
+      },
+      {
+        "distance": 10.809,
+        "grade": 7.99
+      },
+      {
+        "distance": 10.874,
+        "grade": 7.87
+      },
+      {
+        "distance": 10.929,
+        "grade": 7.87
+      },
+      {
+        "distance": 10.983,
+        "grade": 8.72
+      },
+      {
+        "distance": 11.036,
+        "grade": 8.62
+      },
+      {
+        "distance": 11.097,
+        "grade": 7.18
+      },
+      {
+        "distance": 11.159,
+        "grade": 8.31
+      },
+      {
+        "distance": 11.218,
+        "grade": 8.67
+      },
+      {
+        "distance": 11.278,
+        "grade": 8.1
+      },
+      {
+        "distance": 11.33,
+        "grade": 9.17
+      },
+      {
+        "distance": 11.388,
+        "grade": 8.21
+      },
+      {
+        "distance": 11.445,
+        "grade": 7.36
+      },
+      {
+        "distance": 11.498,
+        "grade": 7.91
+      },
+      {
+        "distance": 11.552,
+        "grade": 8.17
+      },
+      {
+        "distance": 11.607,
+        "grade": 8.63
+      },
+      {
+        "distance": 11.671,
+        "grade": 9.41
+      },
+      {
+        "distance": 11.73,
+        "grade": 8.99
+      },
+      {
+        "distance": 11.782,
+        "grade": 5.04
+      },
+      {
+        "distance": 11.844,
+        "grade": 5.32
+      },
+      {
+        "distance": 11.904,
+        "grade": 5.28
+      },
+      {
+        "distance": 11.958,
+        "grade": 6.86
+      },
+      {
+        "distance": 12.011,
+        "grade": 6.44
+      },
+      {
+        "distance": 12.064,
+        "grade": 5.45
+      },
+      {
+        "distance": 12.116,
+        "grade": 5.07
+      },
+      {
+        "distance": 12.17,
+        "grade": 6.97
+      },
+      {
+        "distance": 12.22,
+        "grade": 7.2
+      },
+      {
+        "distance": 12.275,
+        "grade": 7.26
+      },
+      {
+        "distance": 12.326,
+        "grade": 6.07
+      },
+      {
+        "distance": 12.394,
+        "grade": 5.61
+      },
+      {
+        "distance": 12.451,
+        "grade": 6.48
+      },
+      {
+        "distance": 12.505,
+        "grade": 6.91
+      },
+      {
+        "distance": 12.57,
+        "grade": 7.63
+      },
+      {
+        "distance": 12.63,
+        "grade": 4.34
+      },
+      {
+        "distance": 12.705,
+        "grade": 6.54
+      },
+      {
+        "distance": 12.764,
+        "grade": 8.61
+      },
+      {
+        "distance": 12.816,
+        "grade": 6.73
+      },
+      {
+        "distance": 12.882,
+        "grade": 5.05
+      },
+      {
+        "distance": 12.938,
+        "grade": -1.94
+      },
+      {
+        "distance": 12.996,
+        "grade": -5.04
+      },
+      {
+        "distance": 13.061,
+        "grade": -6.93
+      },
+      {
+        "distance": 13.115,
+        "grade": -6.13
+      },
+      {
+        "distance": 13.196,
+        "grade": -8.25
+      },
+      {
+        "distance": 13.247,
+        "grade": -9.03
+      },
+      {
+        "distance": 13.298,
+        "grade": -8.17
+      },
+      {
+        "distance": 13.355,
+        "grade": -8.35
+      },
+      {
+        "distance": 13.407,
+        "grade": -8.96
+      },
+      {
+        "distance": 13.459,
+        "grade": -7.75
+      },
+      {
+        "distance": 13.51,
+        "grade": -9.43
+      },
+      {
+        "distance": 13.563,
+        "grade": -10
+      },
+      {
+        "distance": 13.624,
+        "grade": -8.6
+      },
+      {
+        "distance": 13.676,
+        "grade": -5.73
+      },
+      {
+        "distance": 13.731,
+        "grade": -3.85
+      },
+      {
+        "distance": 13.79,
+        "grade": -2.38
+      },
+      {
+        "distance": 13.843,
+        "grade": -5.84
+      },
+      {
+        "distance": 13.912,
+        "grade": -15.68
+      },
+      {
+        "distance": 13.972,
+        "grade": -6.19
+      },
+      {
+        "distance": 14.028,
+        "grade": -4.67
+      },
+      {
+        "distance": 14.088,
+        "grade": -5.01
+      },
+      {
+        "distance": 14.148,
+        "grade": -7.3
+      },
+      {
+        "distance": 14.216,
+        "grade": -9.86
+      },
+      {
+        "distance": 14.27,
+        "grade": -9.73
+      },
+      {
+        "distance": 14.322,
+        "grade": -7.1
+      },
+      {
+        "distance": 14.375,
+        "grade": -9.27
+      },
+      {
+        "distance": 14.447,
+        "grade": -8.67
+      },
+      {
+        "distance": 14.498,
+        "grade": -8.36
+      },
+      {
+        "distance": 14.551,
+        "grade": -7.06
+      },
+      {
+        "distance": 14.611,
+        "grade": -10
+      },
+      {
+        "distance": 14.664,
+        "grade": -9.94
+      },
+      {
+        "distance": 14.723,
+        "grade": -8.95
+      },
+      {
+        "distance": 14.785,
+        "grade": -8.23
+      },
+      {
+        "distance": 14.842,
+        "grade": -9.48
+      },
+      {
+        "distance": 14.896,
+        "grade": -8.73
+      },
+      {
+        "distance": 14.949,
+        "grade": -6.43
+      },
+      {
+        "distance": 15.002,
+        "grade": -3.39
+      },
+      {
+        "distance": 15.054,
+        "grade": -6.01
+      },
+      {
+        "distance": 15.108,
+        "grade": -6.02
+      },
+      {
+        "distance": 15.167,
+        "grade": -6.33
+      },
+      {
+        "distance": 15.22,
+        "grade": -5.96
+      },
+      {
+        "distance": 15.276,
+        "grade": -4.64
+      },
+      {
+        "distance": 15.331,
+        "grade": -3.5
+      },
+      {
+        "distance": 15.386,
+        "grade": -14.22
+      },
+      {
+        "distance": 15.443,
+        "grade": -11.42
+      },
+      {
+        "distance": 15.495,
+        "grade": -11.24
+      },
+      {
+        "distance": 15.561,
+        "grade": -10.83
+      },
+      {
+        "distance": 15.612,
+        "grade": -10.56
+      },
+      {
+        "distance": 15.662,
+        "grade": -8.58
+      },
+      {
+        "distance": 15.715,
+        "grade": -6.64
+      },
+      {
+        "distance": 15.771,
+        "grade": -6.03
+      },
+      {
+        "distance": 15.824,
+        "grade": -7.12
+      },
+      {
+        "distance": 15.879,
+        "grade": -8.24
+      },
+      {
+        "distance": 15.948,
+        "grade": -6.05
+      },
+      {
+        "distance": 16.002,
+        "grade": -2.79
+      },
+      {
+        "distance": 16.053,
+        "grade": -9.19
+      },
+      {
+        "distance": 16.105,
+        "grade": -10.4
+      },
+      {
+        "distance": 16.165,
+        "grade": -9.55
+      },
+      {
+        "distance": 16.232,
+        "grade": -8.37
+      },
+      {
+        "distance": 16.285,
+        "grade": -9.85
+      },
+      {
+        "distance": 16.338,
+        "grade": -9.51
+      },
+      {
+        "distance": 16.393,
+        "grade": -8.73
+      },
+      {
+        "distance": 16.446,
+        "grade": -9.09
+      },
+      {
+        "distance": 16.501,
+        "grade": -11.8
+      },
+      {
+        "distance": 16.558,
+        "grade": -6.66
+      },
+      {
+        "distance": 16.61,
+        "grade": -9.31
+      },
+      {
+        "distance": 16.665,
+        "grade": -9.35
+      },
+      {
+        "distance": 16.722,
+        "grade": -9.03
+      },
+      {
+        "distance": 16.773,
+        "grade": -8.97
+      },
+      {
+        "distance": 16.825,
+        "grade": -8.85
+      },
+      {
+        "distance": 16.887,
+        "grade": -9.23
+      },
+      {
+        "distance": 16.947,
+        "grade": -9.2
+      },
+      {
+        "distance": 16.999,
+        "grade": -8.07
+      },
+      {
+        "distance": 17.056,
+        "grade": -8.56
+      },
+      {
+        "distance": 17.114,
+        "grade": -8.43
+      },
+      {
+        "distance": 17.169,
+        "grade": -8.04
+      },
+      {
+        "distance": 17.22,
+        "grade": -7.94
+      },
+      {
+        "distance": 17.27,
+        "grade": -10.2
+      },
+      {
+        "distance": 17.321,
+        "grade": -10.11
+      },
+      {
+        "distance": 17.384,
+        "grade": -5.08
+      },
+      {
+        "distance": 17.445,
+        "grade": -6.57
+      },
+      {
+        "distance": 17.502,
+        "grade": -2.26
+      },
+      {
+        "distance": 17.557,
+        "grade": -3.3
+      },
+      {
+        "distance": 17.629,
+        "grade": -6.63
+      },
+      {
+        "distance": 17.682,
+        "grade": -6.89
+      },
+      {
+        "distance": 17.734,
+        "grade": -7.38
+      },
+      {
+        "distance": 17.79,
+        "grade": -6.28
+      },
+      {
+        "distance": 17.845,
+        "grade": -4.01
+      },
+      {
+        "distance": 17.907,
+        "grade": -1.14
+      },
+      {
+        "distance": 17.983,
+        "grade": -3.82
+      },
+      {
+        "distance": 18.063,
+        "grade": -7.19
+      },
+      {
+        "distance": 18.133,
+        "grade": -9.54
+      },
+      {
+        "distance": 18.186,
+        "grade": -9.65
+      },
+      {
+        "distance": 18.24,
+        "grade": -9.08
+      },
+      {
+        "distance": 18.292,
+        "grade": -7.87
+      },
+      {
+        "distance": 18.346,
+        "grade": -7.66
+      },
+      {
+        "distance": 18.407,
+        "grade": -9.12
+      },
+      {
+        "distance": 18.471,
+        "grade": -2.05
+      },
+      {
+        "distance": 18.538,
+        "grade": 5.35
+      },
+      {
+        "distance": 18.593,
+        "grade": 4.56
+      },
+      {
+        "distance": 18.648,
+        "grade": 7.4
+      },
+      {
+        "distance": 18.704,
+        "grade": 6.78
+      },
+      {
+        "distance": 18.764,
+        "grade": 6.72
+      },
+      {
+        "distance": 18.815,
+        "grade": 6.45
+      },
+      {
+        "distance": 18.878,
+        "grade": 6
+      },
+      {
+        "distance": 18.931,
+        "grade": 6.04
+      },
+      {
+        "distance": 18.985,
+        "grade": 6.69
+      },
+      {
+        "distance": 19.037,
+        "grade": 8.52
+      },
+      {
+        "distance": 19.098,
+        "grade": 6.24
+      },
+      {
+        "distance": 19.153,
+        "grade": 7.26
+      },
+      {
+        "distance": 19.208,
+        "grade": 7.56
+      },
+      {
+        "distance": 19.264,
+        "grade": 7.2
+      },
+      {
+        "distance": 19.324,
+        "grade": 5.35
+      },
+      {
+        "distance": 19.377,
+        "grade": 5.44
+      },
+      {
+        "distance": 19.43,
+        "grade": 7.75
+      },
+      {
+        "distance": 19.492,
+        "grade": 8.51
+      },
+      {
+        "distance": 19.543,
+        "grade": 7.93
+      },
+      {
+        "distance": 19.601,
+        "grade": 7.03
+      },
+      {
+        "distance": 19.66,
+        "grade": 7.13
+      },
+      {
+        "distance": 19.71,
+        "grade": 7.59
+      },
+      {
+        "distance": 19.772,
+        "grade": 6.57
+      },
+      {
+        "distance": 19.836,
+        "grade": 6.73
+      },
+      {
+        "distance": 19.891,
+        "grade": 7.3
+      },
+      {
+        "distance": 19.943,
+        "grade": 7.26
+      },
+      {
+        "distance": 19.997,
+        "grade": 6.31
+      },
+      {
+        "distance": 20.053,
+        "grade": 6.22
+      },
+      {
+        "distance": 20.108,
+        "grade": 9.33
+      },
+      {
+        "distance": 20.17,
+        "grade": 5.47
+      },
+      {
+        "distance": 20.222,
+        "grade": 5.26
+      },
+      {
+        "distance": 20.274,
+        "grade": 3.66
+      },
+      {
+        "distance": 20.331,
+        "grade": 6.14
+      },
+      {
+        "distance": 20.396,
+        "grade": 7.53
+      },
+      {
+        "distance": 20.459,
+        "grade": 7.55
+      },
+      {
+        "distance": 20.519,
+        "grade": 7.06
+      },
+      {
+        "distance": 20.57,
+        "grade": 7.17
+      },
+      {
+        "distance": 20.626,
+        "grade": 6.97
+      },
+      {
+        "distance": 20.684,
+        "grade": 7.3
+      },
+      {
+        "distance": 20.741,
+        "grade": 7.96
+      },
+      {
+        "distance": 20.796,
+        "grade": 7.31
+      },
+      {
+        "distance": 20.85,
+        "grade": 7.1
+      },
+      {
+        "distance": 20.904,
+        "grade": 6.09
+      },
+      {
+        "distance": 20.955,
+        "grade": 5.46
+      },
+      {
+        "distance": 21.012,
+        "grade": 6.3
+      },
+      {
+        "distance": 21.066,
+        "grade": 6.94
+      },
+      {
+        "distance": 21.117,
+        "grade": 6.26
+      },
+      {
+        "distance": 21.177,
+        "grade": 6.74
+      },
+      {
+        "distance": 21.24,
+        "grade": 5.93
+      },
+      {
+        "distance": 21.295,
+        "grade": 6.91
+      },
+      {
+        "distance": 21.347,
+        "grade": 7.33
+      },
+      {
+        "distance": 21.41,
+        "grade": 6.46
+      },
+      {
+        "distance": 21.467,
+        "grade": 6.29
+      },
+      {
+        "distance": 21.523,
+        "grade": 6.71
+      },
+      {
+        "distance": 21.574,
+        "grade": 5.69
+      },
+      {
+        "distance": 21.627,
+        "grade": 3.57
+      },
+      {
+        "distance": 21.683,
+        "grade": 6.27
+      },
+      {
+        "distance": 21.733,
+        "grade": 6.3
+      },
+      {
+        "distance": 21.795,
+        "grade": 5.63
+      },
+      {
+        "distance": 21.857,
+        "grade": 6.96
+      },
+      {
+        "distance": 21.912,
+        "grade": 8.36
+      },
+      {
+        "distance": 21.967,
+        "grade": 7.98
+      },
+      {
+        "distance": 22.034,
+        "grade": 5.28
+      },
+      {
+        "distance": 22.09,
+        "grade": 6.08
+      },
+      {
+        "distance": 22.143,
+        "grade": 7.16
+      },
+      {
+        "distance": 22.204,
+        "grade": 6.9
+      },
+      {
+        "distance": 22.257,
+        "grade": 4.72
+      },
+      {
+        "distance": 22.315,
+        "grade": 5.48
+      },
+      {
+        "distance": 22.376,
+        "grade": 7.05
+      },
+      {
+        "distance": 22.428,
+        "grade": 5.82
+      },
+      {
+        "distance": 22.478,
+        "grade": 6.16
+      },
+      {
+        "distance": 22.53,
+        "grade": 6.73
+      },
+      {
+        "distance": 22.596,
+        "grade": 6.18
+      },
+      {
+        "distance": 22.647,
+        "grade": 7.63
+      },
+      {
+        "distance": 22.703,
+        "grade": 6.45
+      },
+      {
+        "distance": 22.758,
+        "grade": 7.7
+      },
+      {
+        "distance": 22.815,
+        "grade": 5.87
+      },
+      {
+        "distance": 22.876,
+        "grade": 8.4
+      },
+      {
+        "distance": 22.928,
+        "grade": 4.98
+      },
+      {
+        "distance": 22.989,
+        "grade": 5.97
+      },
+      {
+        "distance": 23.05,
+        "grade": 7.21
+      },
+      {
+        "distance": 23.101,
+        "grade": 8.01
+      },
+      {
+        "distance": 23.161,
+        "grade": 8.3
+      },
+      {
+        "distance": 23.212,
+        "grade": 8.13
+      },
+      {
+        "distance": 23.267,
+        "grade": 8.56
+      },
+      {
+        "distance": 23.317,
+        "grade": 7.56
+      },
+      {
+        "distance": 23.37,
+        "grade": 8.71
+      },
+      {
+        "distance": 23.433,
+        "grade": 9.23
+      },
+      {
+        "distance": 23.487,
+        "grade": 7.48
+      },
+      {
+        "distance": 23.55,
+        "grade": 6.86
+      },
+      {
+        "distance": 23.606,
+        "grade": 7.29
+      },
+      {
+        "distance": 23.666,
+        "grade": 9.15
+      },
+      {
+        "distance": 23.718,
+        "grade": 5.98
+      },
+      {
+        "distance": 23.77,
+        "grade": 7.08
+      },
+      {
+        "distance": 23.828,
+        "grade": 8
+      },
+      {
+        "distance": 23.88,
+        "grade": 8.76
+      },
+      {
+        "distance": 23.933,
+        "grade": 8.45
+      },
+      {
+        "distance": 23.989,
+        "grade": 7.05
+      },
+      {
+        "distance": 24.047,
+        "grade": 7.21
+      },
+      {
+        "distance": 24.098,
+        "grade": 8.77
+      },
+      {
+        "distance": 24.15,
+        "grade": 7.75
+      },
+      {
+        "distance": 24.206,
+        "grade": 4.42
+      },
+      {
+        "distance": 24.26,
+        "grade": 7.05
+      },
+      {
+        "distance": 24.32,
+        "grade": 5.71
+      },
+      {
+        "distance": 24.383,
+        "grade": 6.2
+      },
+      {
+        "distance": 24.445,
+        "grade": 8.88
+      },
+      {
+        "distance": 24.498,
+        "grade": 9.14
+      },
+      {
+        "distance": 24.549,
+        "grade": 4.33
+      },
+      {
+        "distance": 24.605,
+        "grade": 7
+      },
+      {
+        "distance": 24.663,
+        "grade": 5.84
+      },
+      {
+        "distance": 24.72,
+        "grade": 2.65
+      },
+      {
+        "distance": 24.773,
+        "grade": -2.63
+      },
+      {
+        "distance": 24.833,
+        "grade": -5.83
+      },
+      {
+        "distance": 24.891,
+        "grade": -9.64
+      },
+      {
+        "distance": 24.953,
+        "grade": -10.09
+      },
+      {
+        "distance": 25.011,
+        "grade": -10.37
+      },
+      {
+        "distance": 25.061,
+        "grade": -8.38
+      },
+      {
+        "distance": 25.118,
+        "grade": -7.71
+      },
+      {
+        "distance": 25.177,
+        "grade": -6.5
+      },
+      {
+        "distance": 25.24,
+        "grade": -5.18
+      },
+      {
+        "distance": 25.302,
+        "grade": -3.74
+      },
+      {
+        "distance": 25.359,
+        "grade": -4.93
+      },
+      {
+        "distance": 25.419,
+        "grade": -6.26
+      },
+      {
+        "distance": 25.474,
+        "grade": -5.7
+      },
+      {
+        "distance": 25.56,
+        "grade": -8.97
+      },
+      {
+        "distance": 25.636,
+        "grade": -8.15
+      },
+      {
+        "distance": 25.696,
+        "grade": -6.62
+      },
+      {
+        "distance": 25.76,
+        "grade": -5.49
+      },
+      {
+        "distance": 25.82,
+        "grade": -6.8
+      },
+      {
+        "distance": 25.876,
+        "grade": -3.95
+      },
+      {
+        "distance": 25.935,
+        "grade": -6.74
+      },
+      {
+        "distance": 25.986,
+        "grade": -7.71
+      },
+      {
+        "distance": 26.038,
+        "grade": -6.89
+      },
+      {
+        "distance": 26.09,
+        "grade": -5.9
+      },
+      {
+        "distance": 26.152,
+        "grade": -6.83
+      },
+      {
+        "distance": 26.203,
+        "grade": -6.41
+      },
+      {
+        "distance": 26.272,
+        "grade": -7.26
+      },
+      {
+        "distance": 26.339,
+        "grade": -5.72
+      },
+      {
+        "distance": 26.402,
+        "grade": -5.24
+      },
+      {
+        "distance": 26.453,
+        "grade": -5.44
+      },
+      {
+        "distance": 26.529,
+        "grade": -7.11
+      },
+      {
+        "distance": 26.582,
+        "grade": -7.35
+      },
+      {
+        "distance": 26.654,
+        "grade": -7.49
+      },
+      {
+        "distance": 26.714,
+        "grade": -6.88
+      },
+      {
+        "distance": 26.769,
+        "grade": -6.39
+      },
+      {
+        "distance": 26.821,
+        "grade": -8.41
+      },
+      {
+        "distance": 26.89,
+        "grade": -8.12
+      },
+      {
+        "distance": 26.954,
+        "grade": -7.19
+      },
+      {
+        "distance": 27.01,
+        "grade": -6.58
+      },
+      {
+        "distance": 27.081,
+        "grade": -7.07
+      },
+      {
+        "distance": 27.131,
+        "grade": -6.96
+      },
+      {
+        "distance": 27.182,
+        "grade": -6.85
+      },
+      {
+        "distance": 27.235,
+        "grade": -5.33
+      },
+      {
+        "distance": 27.289,
+        "grade": -4.96
+      },
+      {
+        "distance": 27.347,
+        "grade": -6.21
+      },
+      {
+        "distance": 27.399,
+        "grade": -6
+      },
+      {
+        "distance": 27.456,
+        "grade": -4.2
+      },
+      {
+        "distance": 27.513,
+        "grade": -5.76
+      },
+      {
+        "distance": 27.568,
+        "grade": -8.6
+      },
+      {
+        "distance": 27.635,
+        "grade": -7.5
+      },
+      {
+        "distance": 27.691,
+        "grade": -5.86
+      },
+      {
+        "distance": 27.761,
+        "grade": -10.89
+      },
+      {
+        "distance": 27.812,
+        "grade": -6.58
+      },
+      {
+        "distance": 27.866,
+        "grade": -7.89
+      },
+      {
+        "distance": 27.919,
+        "grade": -7.66
+      },
+      {
+        "distance": 27.974,
+        "grade": -7.74
+      },
+      {
+        "distance": 28.028,
+        "grade": -7.33
+      },
+      {
+        "distance": 28.093,
+        "grade": -5.73
+      },
+      {
+        "distance": 28.145,
+        "grade": -4.36
+      },
+      {
+        "distance": 28.2,
+        "grade": -3.29
+      },
+      {
+        "distance": 28.256,
+        "grade": -6.58
+      },
+      {
+        "distance": 28.31,
+        "grade": -6.87
+      },
+      {
+        "distance": 28.383,
+        "grade": -7.43
+      },
+      {
+        "distance": 28.451,
+        "grade": -7.51
+      },
+      {
+        "distance": 28.509,
+        "grade": -8.01
+      },
+      {
+        "distance": 28.572,
+        "grade": -7.02
+      },
+      {
+        "distance": 28.636,
+        "grade": -6.61
+      },
+      {
+        "distance": 28.698,
+        "grade": -4.64
+      },
+      {
+        "distance": 28.762,
+        "grade": -7.83
+      },
+      {
+        "distance": 28.827,
+        "grade": -6.12
+      },
+      {
+        "distance": 28.892,
+        "grade": -5.59
+      },
+      {
+        "distance": 28.948,
+        "grade": -5.21
+      },
+      {
+        "distance": 29.007,
+        "grade": -6.75
+      },
+      {
+        "distance": 29.06,
+        "grade": -7.58
+      },
+      {
+        "distance": 29.112,
+        "grade": -7.89
+      },
+      {
+        "distance": 29.173,
+        "grade": -7.3
+      },
+      {
+        "distance": 29.227,
+        "grade": -6.92
+      },
+      {
+        "distance": 29.28,
+        "grade": -5.44
+      },
+      {
+        "distance": 29.344,
+        "grade": -8.09
+      },
+      {
+        "distance": 29.407,
+        "grade": -7.85
+      },
+      {
+        "distance": 29.457,
+        "grade": -7.53
+      },
+      {
+        "distance": 29.508,
+        "grade": -7.24
+      },
+      {
+        "distance": 29.558,
+        "grade": -7.39
+      },
+      {
+        "distance": 29.62,
+        "grade": -4.05
+      },
+      {
+        "distance": 29.671,
+        "grade": -7.09
+      },
+      {
+        "distance": 29.738,
+        "grade": -7.48
+      },
+      {
+        "distance": 29.795,
+        "grade": -7.51
+      },
+      {
+        "distance": 29.852,
+        "grade": -7.84
+      },
+      {
+        "distance": 29.909,
+        "grade": -6.39
+      },
+      {
+        "distance": 29.963,
+        "grade": -6.02
+      },
+      {
+        "distance": 30.015,
+        "grade": -6.64
+      },
+      {
+        "distance": 30.067,
+        "grade": -7.98
+      },
+      {
+        "distance": 30.132,
+        "grade": -6.84
+      },
+      {
+        "distance": 30.182,
+        "grade": -5.92
+      },
+      {
+        "distance": 30.243,
+        "grade": -11.98
+      },
+      {
+        "distance": 30.3,
+        "grade": -8.45
+      },
+      {
+        "distance": 30.351,
+        "grade": -3.56
+      },
+      {
+        "distance": 30.418,
+        "grade": -1.62
+      },
+      {
+        "distance": 30.475,
+        "grade": -5.47
+      },
+      {
+        "distance": 30.528,
+        "grade": -11.56
+      },
+      {
+        "distance": 30.59,
+        "grade": -8.21
+      },
+      {
+        "distance": 30.647,
+        "grade": -7.5
+      },
+      {
+        "distance": 30.698,
+        "grade": -8.04
+      },
+      {
+        "distance": 30.757,
+        "grade": -9.65
+      },
+      {
+        "distance": 30.816,
+        "grade": -8.37
+      },
+      {
+        "distance": 30.869,
+        "grade": -8.09
+      },
+      {
+        "distance": 30.926,
+        "grade": -7.51
+      },
+      {
+        "distance": 31.001,
+        "grade": -6.13
+      },
+      {
+        "distance": 31.076,
+        "grade": -5.49
+      },
+      {
+        "distance": 31.163,
+        "grade": -5.39
+      },
+      {
+        "distance": 31.215,
+        "grade": -7.14
+      },
+      {
+        "distance": 31.269,
+        "grade": -8.32
+      },
+      {
+        "distance": 31.329,
+        "grade": -8.42
+      },
+      {
+        "distance": 31.389,
+        "grade": -5.42
+      },
+      {
+        "distance": 31.445,
+        "grade": -8.88
+      },
+      {
+        "distance": 31.5,
+        "grade": -9.89
+      },
+      {
+        "distance": 31.55,
+        "grade": -7.56
+      },
+      {
+        "distance": 31.612,
+        "grade": -7.96
+      },
+      {
+        "distance": 31.663,
+        "grade": -6.14
+      },
+      {
+        "distance": 31.72,
+        "grade": -6.64
+      },
+      {
+        "distance": 31.774,
+        "grade": -7.06
+      },
+      {
+        "distance": 31.828,
+        "grade": -6.58
+      },
+      {
+        "distance": 31.89,
+        "grade": -7.59
+      },
+      {
+        "distance": 31.942,
+        "grade": -7.15
+      },
+      {
+        "distance": 32.013,
+        "grade": -8.35
+      },
+      {
+        "distance": 32.07,
+        "grade": -7.72
+      },
+      {
+        "distance": 32.135,
+        "grade": -8.39
+      },
+      {
+        "distance": 32.186,
+        "grade": -8.23
+      },
+      {
+        "distance": 32.239,
+        "grade": -8.2
+      },
+      {
+        "distance": 32.308,
+        "grade": -8.03
+      },
+      {
+        "distance": 32.368,
+        "grade": -8.13
+      },
+      {
+        "distance": 32.427,
+        "grade": -7.72
+      },
+      {
+        "distance": 32.502,
+        "grade": -7.7
+      },
+      {
+        "distance": 32.562,
+        "grade": -7.27
+      },
+      {
+        "distance": 32.615,
+        "grade": -7.12
+      },
+      {
+        "distance": 32.673,
+        "grade": -3.97
+      },
+      {
+        "distance": 32.733,
+        "grade": -7.48
+      },
+      {
+        "distance": 32.785,
+        "grade": -8.01
+      },
+      {
+        "distance": 32.842,
+        "grade": -7.13
+      },
+      {
+        "distance": 32.893,
+        "grade": -6.54
+      },
+      {
+        "distance": 32.974,
+        "grade": -7.8
+      },
+      {
+        "distance": 33.028,
+        "grade": -8
+      },
+      {
+        "distance": 33.085,
+        "grade": -7.85
+      },
+      {
+        "distance": 33.137,
+        "grade": -7.48
+      },
+      {
+        "distance": 33.2,
+        "grade": -5.42
+      },
+      {
+        "distance": 33.25,
+        "grade": -7.19
+      },
+      {
+        "distance": 33.309,
+        "grade": -7.37
+      },
+      {
+        "distance": 33.378,
+        "grade": -7.23
+      },
+      {
+        "distance": 33.429,
+        "grade": -6
+      },
+      {
+        "distance": 33.502,
+        "grade": -7
+      },
+      {
+        "distance": 33.565,
+        "grade": -7.55
+      },
+      {
+        "distance": 33.618,
+        "grade": -8.02
+      },
+      {
+        "distance": 33.668,
+        "grade": -6.38
+      },
+      {
+        "distance": 33.719,
+        "grade": -5.86
+      },
+      {
+        "distance": 33.784,
+        "grade": -7.87
+      },
+      {
+        "distance": 33.838,
+        "grade": -6.48
+      },
+      {
+        "distance": 33.889,
+        "grade": -6.94
+      },
+      {
+        "distance": 33.946,
+        "grade": -3.17
+      },
+      {
+        "distance": 34.02,
+        "grade": -4.55
+      },
+      {
+        "distance": 34.077,
+        "grade": -12.32
+      },
+      {
+        "distance": 34.128,
+        "grade": -7.44
+      },
+      {
+        "distance": 34.193,
+        "grade": 7.27
+      },
+      {
+        "distance": 34.252,
+        "grade": 10.94
+      },
+      {
+        "distance": 34.305,
+        "grade": 4.96
+      },
+      {
+        "distance": 34.356,
+        "grade": 3.29
+      },
+      {
+        "distance": 34.411,
+        "grade": 4.77
+      },
+      {
+        "distance": 34.464,
+        "grade": 4.94
+      },
+      {
+        "distance": 34.517,
+        "grade": 1.49
+      },
+      {
+        "distance": 34.581,
+        "grade": 4.42
+      },
+      {
+        "distance": 34.638,
+        "grade": 4.37
+      },
+      {
+        "distance": 34.69,
+        "grade": 4.44
+      },
+      {
+        "distance": 34.746,
+        "grade": 5.36
+      },
+      {
+        "distance": 34.809,
+        "grade": 5.69
+      },
+      {
+        "distance": 34.861,
+        "grade": 6.11
+      },
+      {
+        "distance": 34.914,
+        "grade": 6.49
+      },
+      {
+        "distance": 34.969,
+        "grade": 5.19
+      },
+      {
+        "distance": 35.021,
+        "grade": 5.26
+      },
+      {
+        "distance": 35.081,
+        "grade": 6.15
+      },
+      {
+        "distance": 35.144,
+        "grade": 6.84
+      },
+      {
+        "distance": 35.206,
+        "grade": 7.74
+      },
+      {
+        "distance": 35.257,
+        "grade": 8.78
+      },
+      {
+        "distance": 35.308,
+        "grade": 8.3
+      },
+      {
+        "distance": 35.361,
+        "grade": 9.51
+      },
+      {
+        "distance": 35.414,
+        "grade": 10.6
+      },
+      {
+        "distance": 35.47,
+        "grade": 6.79
+      },
+      {
+        "distance": 35.522,
+        "grade": 7.36
+      },
+      {
+        "distance": 35.573,
+        "grade": 6.82
+      },
+      {
+        "distance": 35.625,
+        "grade": 6.54
+      },
+      {
+        "distance": 35.688,
+        "grade": 7.99
+      },
+      {
+        "distance": 35.738,
+        "grade": 8.95
+      },
+      {
+        "distance": 35.795,
+        "grade": 8.31
+      },
+      {
+        "distance": 35.856,
+        "grade": 5.72
+      },
+      {
+        "distance": 35.915,
+        "grade": 7.88
+      },
+      {
+        "distance": 35.973,
+        "grade": 8.95
+      },
+      {
+        "distance": 36.028,
+        "grade": 9.44
+      },
+      {
+        "distance": 36.096,
+        "grade": 8.32
+      },
+      {
+        "distance": 36.153,
+        "grade": 8.47
+      },
+      {
+        "distance": 36.213,
+        "grade": 9.18
+      },
+      {
+        "distance": 36.264,
+        "grade": 8.23
+      },
+      {
+        "distance": 36.325,
+        "grade": 8.44
+      },
+      {
+        "distance": 36.381,
+        "grade": 8.47
+      },
+      {
+        "distance": 36.437,
+        "grade": 7.81
+      },
+      {
+        "distance": 36.488,
+        "grade": 8.2
+      },
+      {
+        "distance": 36.539,
+        "grade": 7.71
+      },
+      {
+        "distance": 36.59,
+        "grade": 8.08
+      },
+      {
+        "distance": 36.651,
+        "grade": 8.3
+      },
+      {
+        "distance": 36.704,
+        "grade": 9.39
+      },
+      {
+        "distance": 36.766,
+        "grade": 8.12
+      },
+      {
+        "distance": 36.819,
+        "grade": 8.09
+      },
+      {
+        "distance": 36.872,
+        "grade": 7.78
+      },
+      {
+        "distance": 36.929,
+        "grade": 8.39
+      },
+      {
+        "distance": 36.99,
+        "grade": 8.79
+      },
+      {
+        "distance": 37.044,
+        "grade": 9.26
+      },
+      {
+        "distance": 37.101,
+        "grade": 8.96
+      },
+      {
+        "distance": 37.156,
+        "grade": 9.56
+      },
+      {
+        "distance": 37.208,
+        "grade": 10.22
+      },
+      {
+        "distance": 37.267,
+        "grade": 7.07
+      },
+      {
+        "distance": 37.319,
+        "grade": 2.71
+      },
+      {
+        "distance": 37.369,
+        "grade": 7.38
+      },
+      {
+        "distance": 37.421,
+        "grade": 6.92
+      },
+      {
+        "distance": 37.476,
+        "grade": 7.94
+      },
+      {
+        "distance": 37.536,
+        "grade": 9.74
+      },
+      {
+        "distance": 37.589,
+        "grade": 10.2
+      },
+      {
+        "distance": 37.644,
+        "grade": 8.34
+      },
+      {
+        "distance": 37.694,
+        "grade": 6.79
+      },
+      {
+        "distance": 37.748,
+        "grade": 7.99
+      },
+      {
+        "distance": 37.806,
+        "grade": 8.97
+      },
+      {
+        "distance": 37.862,
+        "grade": 6.87
+      },
+      {
+        "distance": 37.924,
+        "grade": 5.33
+      },
+      {
+        "distance": 37.975,
+        "grade": 3.15
+      },
+      {
+        "distance": 38.032,
+        "grade": 1.42
+      },
+      {
+        "distance": 38.086,
+        "grade": 2.21
+      },
+      {
+        "distance": 38.16,
+        "grade": 6.07
+      },
+      {
+        "distance": 38.215,
+        "grade": 4.74
+      },
+      {
+        "distance": 38.265,
+        "grade": 0.4
+      },
+      {
+        "distance": 38.32,
+        "grade": -4.54
+      },
+      {
+        "distance": 38.378,
+        "grade": -5.17
+      },
+      {
+        "distance": 38.435,
+        "grade": -5.67
+      },
+      {
+        "distance": 38.512,
+        "grade": -5.04
+      },
+      {
+        "distance": 38.565,
+        "grade": -2.45
+      },
+      {
+        "distance": 38.625,
+        "grade": -1.5
+      },
+      {
+        "distance": 38.683,
+        "grade": -1.72
+      },
+      {
+        "distance": 38.777,
+        "grade": -6.06
+      },
+      {
+        "distance": 38.84,
+        "grade": -7.04
+      },
+      {
+        "distance": 38.893,
+        "grade": -7.01
+      },
+      {
+        "distance": 38.95,
+        "grade": -6.09
+      },
+      {
+        "distance": 39.008,
+        "grade": -4.8
+      },
+      {
+        "distance": 39.068,
+        "grade": -5.57
+      },
+      {
+        "distance": 39.124,
+        "grade": -4.79
+      },
+      {
+        "distance": 39.18,
+        "grade": -3.9
+      },
+      {
+        "distance": 39.251,
+        "grade": -3.39
+      },
+      {
+        "distance": 39.307,
+        "grade": -3.23
+      },
+      {
+        "distance": 39.361,
+        "grade": -5.52
+      },
+      {
+        "distance": 39.419,
+        "grade": -7.49
+      },
+      {
+        "distance": 39.482,
+        "grade": -6.93
+      },
+      {
+        "distance": 39.576,
+        "grade": -6.05
+      },
+      {
+        "distance": 39.638,
+        "grade": -6.81
+      },
+      {
+        "distance": 39.704,
+        "grade": -7.29
+      },
+      {
+        "distance": 39.764,
+        "grade": -7.63
+      },
+      {
+        "distance": 39.829,
+        "grade": -7.28
+      },
+      {
+        "distance": 39.879,
+        "grade": -8
+      },
+      {
+        "distance": 39.931,
+        "grade": -7.27
+      },
+      {
+        "distance": 39.983,
+        "grade": -7.14
+      },
+      {
+        "distance": 40.036,
+        "grade": -7.88
+      },
+      {
+        "distance": 40.09,
+        "grade": -7.78
+      },
+      {
+        "distance": 40.144,
+        "grade": -7.27
+      },
+      {
+        "distance": 40.2,
+        "grade": -7.34
+      },
+      {
+        "distance": 40.252,
+        "grade": -4.37
+      },
+      {
+        "distance": 40.317,
+        "grade": -2.33
+      },
+      {
+        "distance": 40.376,
+        "grade": -2.38
+      },
+      {
+        "distance": 40.432,
+        "grade": -4.45
+      },
+      {
+        "distance": 40.5,
+        "grade": -7.32
+      },
+      {
+        "distance": 40.559,
+        "grade": -7.21
+      },
+      {
+        "distance": 40.62,
+        "grade": -6.54
+      },
+      {
+        "distance": 40.681,
+        "grade": -5.92
+      },
+      {
+        "distance": 40.742,
+        "grade": -5.41
+      },
+      {
+        "distance": 40.798,
+        "grade": -5.48
+      },
+      {
+        "distance": 40.85,
+        "grade": -5.21
+      },
+      {
+        "distance": 40.901,
+        "grade": -4.91
+      },
+      {
+        "distance": 40.962,
+        "grade": -6.03
+      },
+      {
+        "distance": 41.015,
+        "grade": -6.6
+      },
+      {
+        "distance": 41.068,
+        "grade": -4.88
+      },
+      {
+        "distance": 41.123,
+        "grade": -6.02
+      },
+      {
+        "distance": 41.181,
+        "grade": -7.43
+      },
+      {
+        "distance": 41.25,
+        "grade": -7.61
+      },
+      {
+        "distance": 41.305,
+        "grade": -7.53
+      },
+      {
+        "distance": 41.364,
+        "grade": -1.7
+      },
+      {
+        "distance": 41.419,
+        "grade": -0.37
+      },
+      {
+        "distance": 41.469,
+        "grade": -0.2
+      },
+      {
+        "distance": 41.528,
+        "grade": -0.68
+      },
+      {
+        "distance": 41.592,
+        "grade": -1.56
+      },
+      {
+        "distance": 41.669,
+        "grade": -2.61
+      },
+      {
+        "distance": 41.739,
+        "grade": -3.72
+      },
+      {
+        "distance": 41.79,
+        "grade": -1.96
+      },
+      {
+        "distance": 41.84,
+        "grade": -1.99
+      },
+      {
+        "distance": 41.908,
+        "grade": -3.51
+      },
+      {
+        "distance": 41.98,
+        "grade": -7.08
+      },
+      {
+        "distance": 42.037,
+        "grade": -8.59
+      },
+      {
+        "distance": 42.104,
+        "grade": -8.28
+      },
+      {
+        "distance": 42.161,
+        "grade": -7.86
+      },
+      {
+        "distance": 42.212,
+        "grade": -9.25
+      },
+      {
+        "distance": 42.283,
+        "grade": -8.61
+      },
+      {
+        "distance": 42.336,
+        "grade": -8.42
+      },
+      {
+        "distance": 42.391,
+        "grade": -8.04
+      },
+      {
+        "distance": 42.447,
+        "grade": -8.76
+      },
+      {
+        "distance": 42.502,
+        "grade": -6.14
+      },
+      {
+        "distance": 42.57,
+        "grade": -9.59
+      },
+      {
+        "distance": 42.621,
+        "grade": -6.09
+      },
+      {
+        "distance": 42.68,
+        "grade": -4.6
+      },
+      {
+        "distance": 42.744,
+        "grade": -8.03
+      },
+      {
+        "distance": 42.799,
+        "grade": -8.07
+      },
+      {
+        "distance": 42.857,
+        "grade": -8.08
+      },
+      {
+        "distance": 42.911,
+        "grade": -9.28
+      },
+      {
+        "distance": 42.963,
+        "grade": -7.44
+      },
+      {
+        "distance": 43.019,
+        "grade": -4.48
+      },
+      {
+        "distance": 43.078,
+        "grade": -4.94
+      },
+      {
+        "distance": 43.135,
+        "grade": -7.4
+      },
+      {
+        "distance": 43.194,
+        "grade": -6.25
+      },
+      {
+        "distance": 43.254,
+        "grade": -9.62
+      },
+      {
+        "distance": 43.311,
+        "grade": -10.2
+      },
+      {
+        "distance": 43.364,
+        "grade": -7.71
+      },
+      {
+        "distance": 43.433,
+        "grade": -7.76
+      },
+      {
+        "distance": 43.485,
+        "grade": -3.78
+      },
+      {
+        "distance": 43.552,
+        "grade": -3.62
+      },
+      {
+        "distance": 43.604,
+        "grade": -5.72
+      },
+      {
+        "distance": 43.656,
+        "grade": -8.83
+      },
+      {
+        "distance": 43.724,
+        "grade": -6.46
+      },
+      {
+        "distance": 43.786,
+        "grade": -7.82
+      },
+      {
+        "distance": 43.84,
+        "grade": -6.62
+      },
+      {
+        "distance": 43.899,
+        "grade": -6.09
+      },
+      {
+        "distance": 43.977,
+        "grade": -6.4
+      },
+      {
+        "distance": 44.031,
+        "grade": -5.08
+      },
+      {
+        "distance": 44.11,
+        "grade": -4.81
+      },
+      {
+        "distance": 44.163,
+        "grade": -2.98
+      },
+      {
+        "distance": 44.213,
+        "grade": -1.79
+      },
+      {
+        "distance": 44.266,
+        "grade": -2.28
+      },
+      {
+        "distance": 44.345,
+        "grade": 1.15
+      },
+      {
+        "distance": 44.401,
+        "grade": 1.43
+      },
+      {
+        "distance": 44.461,
+        "grade": 1.16
+      },
+      {
+        "distance": 44.524,
+        "grade": 0.64
+      },
+      {
+        "distance": 44.59,
+        "grade": 0.6
+      },
+      {
+        "distance": 44.652,
+        "grade": 0.65
+      },
+      {
+        "distance": 44.75,
+        "grade": 1.63
+      },
+      {
+        "distance": 44.816,
+        "grade": 5.31
+      },
+      {
+        "distance": 44.898,
+        "grade": 2.2
+      },
+      {
+        "distance": 44.967,
+        "grade": 3.34
+      },
+      {
+        "distance": 45.027,
+        "grade": 3.84
+      },
+      {
+        "distance": 45.082,
+        "grade": 3.78
+      },
+      {
+        "distance": 45.136,
+        "grade": 2.8
+      },
+      {
+        "distance": 45.189,
+        "grade": 2.44
+      },
+      {
+        "distance": 45.243,
+        "grade": -0.73
+      },
+      {
+        "distance": 45.32,
+        "grade": 7.17
+      },
+      {
+        "distance": 45.377,
+        "grade": 7.93
+      },
+      {
+        "distance": 45.44,
+        "grade": 8.53
+      },
+      {
+        "distance": 45.5,
+        "grade": 9.2
+      },
+      {
+        "distance": 45.567,
+        "grade": 8.92
+      },
+      {
+        "distance": 45.622,
+        "grade": 8.53
+      },
+      {
+        "distance": 45.68,
+        "grade": 6.57
+      },
+      {
+        "distance": 45.739,
+        "grade": 6.78
+      },
+      {
+        "distance": 45.791,
+        "grade": 8.13
+      },
+      {
+        "distance": 45.842,
+        "grade": 7.55
+      },
+      {
+        "distance": 45.899,
+        "grade": 8.87
+      },
+      {
+        "distance": 45.96,
+        "grade": 8.44
+      },
+      {
+        "distance": 46.022,
+        "grade": 9.17
+      },
+      {
+        "distance": 46.073,
+        "grade": 9.5
+      },
+      {
+        "distance": 46.14,
+        "grade": 8.52
+      },
+      {
+        "distance": 46.199,
+        "grade": 8.35
+      },
+      {
+        "distance": 46.252,
+        "grade": 7.98
+      },
+      {
+        "distance": 46.305,
+        "grade": 8.4
+      },
+      {
+        "distance": 46.37,
+        "grade": 3.84
+      },
+      {
+        "distance": 46.421,
+        "grade": 4.29
+      },
+      {
+        "distance": 46.475,
+        "grade": 6.12
+      },
+      {
+        "distance": 46.529,
+        "grade": 4.86
+      },
+      {
+        "distance": 46.592,
+        "grade": 6.44
+      },
+      {
+        "distance": 46.643,
+        "grade": 7.72
+      },
+      {
+        "distance": 46.707,
+        "grade": 8.4
+      },
+      {
+        "distance": 46.761,
+        "grade": 6.36
+      },
+      {
+        "distance": 46.836,
+        "grade": 5.6
+      },
+      {
+        "distance": 46.9,
+        "grade": 8.24
+      },
+      {
+        "distance": 46.955,
+        "grade": 4.68
+      },
+      {
+        "distance": 47.01,
+        "grade": 4.4
+      },
+      {
+        "distance": 47.069,
+        "grade": 7.9
+      },
+      {
+        "distance": 47.126,
+        "grade": 4.04
+      },
+      {
+        "distance": 47.177,
+        "grade": 6.98
+      },
+      {
+        "distance": 47.238,
+        "grade": 6.99
+      },
+      {
+        "distance": 47.297,
+        "grade": 7
+      },
+      {
+        "distance": 47.349,
+        "grade": 7.27
+      },
+      {
+        "distance": 47.406,
+        "grade": 7.01
+      },
+      {
+        "distance": 47.467,
+        "grade": 7.09
+      },
+      {
+        "distance": 47.529,
+        "grade": 7.02
+      },
+      {
+        "distance": 47.583,
+        "grade": 6.85
+      },
+      {
+        "distance": 47.644,
+        "grade": 6.73
+      },
+      {
+        "distance": 47.705,
+        "grade": 6.71
+      },
+      {
+        "distance": 47.757,
+        "grade": 11.39
+      },
+      {
+        "distance": 47.814,
+        "grade": 5.65
+      },
+      {
+        "distance": 47.873,
+        "grade": 5.23
+      },
+      {
+        "distance": 47.933,
+        "grade": 6.14
+      },
+      {
+        "distance": 47.987,
+        "grade": 5.97
+      },
+      {
+        "distance": 48.044,
+        "grade": 4.88
+      },
+      {
+        "distance": 48.109,
+        "grade": 7.75
+      },
+      {
+        "distance": 48.166,
+        "grade": 8.05
+      },
+      {
+        "distance": 48.227,
+        "grade": 7.71
+      },
+      {
+        "distance": 48.287,
+        "grade": 6.45
+      },
+      {
+        "distance": 48.347,
+        "grade": 7.02
+      },
+      {
+        "distance": 48.403,
+        "grade": 7.3
+      },
+      {
+        "distance": 48.46,
+        "grade": 7.38
+      },
+      {
+        "distance": 48.512,
+        "grade": 7.29
+      },
+      {
+        "distance": 48.572,
+        "grade": 7.75
+      },
+      {
+        "distance": 48.63,
+        "grade": 7.5
+      },
+      {
+        "distance": 48.693,
+        "grade": 8.01
+      },
+      {
+        "distance": 48.755,
+        "grade": 8.55
+      },
+      {
+        "distance": 48.813,
+        "grade": 5.15
+      },
+      {
+        "distance": 48.87,
+        "grade": 6
+      },
+      {
+        "distance": 48.928,
+        "grade": 6.2
+      },
+      {
+        "distance": 48.991,
+        "grade": 6.84
+      },
+      {
+        "distance": 49.043,
+        "grade": 6.79
+      },
+      {
+        "distance": 49.099,
+        "grade": 6.84
+      },
+      {
+        "distance": 49.154,
+        "grade": 3.99
+      },
+      {
+        "distance": 49.216,
+        "grade": 5.78
+      },
+      {
+        "distance": 49.282,
+        "grade": 7.07
+      },
+      {
+        "distance": 49.339,
+        "grade": 6.99
+      },
+      {
+        "distance": 49.392,
+        "grade": 6.62
+      },
+      {
+        "distance": 49.447,
+        "grade": 6.66
+      },
+      {
+        "distance": 49.502,
+        "grade": 6.93
+      },
+      {
+        "distance": 49.562,
+        "grade": 6.55
+      },
+      {
+        "distance": 49.62,
+        "grade": 6.88
+      },
+      {
+        "distance": 49.683,
+        "grade": 7.33
+      },
+      {
+        "distance": 49.745,
+        "grade": 5.26
+      },
+      {
+        "distance": 49.806,
+        "grade": 6.8
+      },
+      {
+        "distance": 49.87,
+        "grade": 7.28
+      },
+      {
+        "distance": 49.924,
+        "grade": 7.41
+      },
+      {
+        "distance": 50,
+        "grade": 5.16
+      },
+      {
+        "distance": 50.054,
+        "grade": 7.25
+      },
+      {
+        "distance": 50.105,
+        "grade": 7.76
+      },
+      {
+        "distance": 50.159,
+        "grade": 8.23
+      },
+      {
+        "distance": 50.227,
+        "grade": 8.48
+      },
+      {
+        "distance": 50.292,
+        "grade": 6.74
+      },
+      {
+        "distance": 50.344,
+        "grade": 5.57
+      },
+      {
+        "distance": 50.397,
+        "grade": 7.72
+      },
+      {
+        "distance": 50.449,
+        "grade": 7.33
+      },
+      {
+        "distance": 50.505,
+        "grade": 5.57
+      },
+      {
+        "distance": 50.559,
+        "grade": 7.23
+      },
+      {
+        "distance": 50.61,
+        "grade": 4.9
+      },
+      {
+        "distance": 50.665,
+        "grade": 5.23
+      },
+      {
+        "distance": 50.718,
+        "grade": 7.03
+      },
+      {
+        "distance": 50.773,
+        "grade": 6.91
+      },
+      {
+        "distance": 50.832,
+        "grade": 7.56
+      },
+      {
+        "distance": 50.883,
+        "grade": 8.52
+      },
+      {
+        "distance": 50.941,
+        "grade": 7.51
+      },
+      {
+        "distance": 50.994,
+        "grade": 7.55
+      },
+      {
+        "distance": 51.046,
+        "grade": 6.63
+      },
+      {
+        "distance": 51.098,
+        "grade": 5.9
+      },
+      {
+        "distance": 51.152,
+        "grade": 4.66
+      },
+      {
+        "distance": 51.21,
+        "grade": 11.54
+      },
+      {
+        "distance": 51.26,
+        "grade": 11.91
+      },
+      {
+        "distance": 51.312,
+        "grade": 11.32
+      },
+      {
+        "distance": 51.367,
+        "grade": 11.8
+      },
+      {
+        "distance": 51.422,
+        "grade": 9.39
+      },
+      {
+        "distance": 51.474,
+        "grade": 6.92
+      },
+      {
+        "distance": 51.53,
+        "grade": 4.3
+      },
+      {
+        "distance": 51.584,
+        "grade": 8.47
+      },
+      {
+        "distance": 51.638,
+        "grade": 7.26
+      },
+      {
+        "distance": 51.694,
+        "grade": 7.11
+      },
+      {
+        "distance": 51.747,
+        "grade": 7.52
+      },
+      {
+        "distance": 51.815,
+        "grade": 5.61
+      },
+      {
+        "distance": 51.889,
+        "grade": 7
+      },
+      {
+        "distance": 51.945,
+        "grade": 3.97
+      },
+      {
+        "distance": 51.995,
+        "grade": 4.73
+      },
+      {
+        "distance": 52.046,
+        "grade": 6.92
+      },
+      {
+        "distance": 52.12,
+        "grade": 6.74
+      },
+      {
+        "distance": 52.177,
+        "grade": 7.97
+      },
+      {
+        "distance": 52.234,
+        "grade": 7.14
+      },
+      {
+        "distance": 52.292,
+        "grade": 5.56
+      },
+      {
+        "distance": 52.353,
+        "grade": 6.8
+      },
+      {
+        "distance": 52.416,
+        "grade": 7.35
+      },
+      {
+        "distance": 52.47,
+        "grade": 8.14
+      },
+      {
+        "distance": 52.522,
+        "grade": 7.94
+      },
+      {
+        "distance": 52.574,
+        "grade": 5.88
+      },
+      {
+        "distance": 52.634,
+        "grade": 5
+      },
+      {
+        "distance": 52.686,
+        "grade": 6.83
+      },
+      {
+        "distance": 52.736,
+        "grade": 7.58
+      },
+      {
+        "distance": 52.787,
+        "grade": 7.06
+      },
+      {
+        "distance": 52.844,
+        "grade": 7.69
+      },
+      {
+        "distance": 52.905,
+        "grade": 6.52
+      },
+      {
+        "distance": 52.958,
+        "grade": 7.25
+      },
+      {
+        "distance": 53.011,
+        "grade": 4.3
+      },
+      {
+        "distance": 53.062,
+        "grade": 8.35
+      },
+      {
+        "distance": 53.126,
+        "grade": 8.27
+      },
+      {
+        "distance": 53.18,
+        "grade": 8.42
+      },
+      {
+        "distance": 53.246,
+        "grade": 8.81
+      },
+      {
+        "distance": 53.307,
+        "grade": 11.73
+      },
+      {
+        "distance": 53.36,
+        "grade": 3.45
+      },
+      {
+        "distance": 53.41,
+        "grade": -3.36
+      },
+      {
+        "distance": 53.472,
+        "grade": -3.38
+      },
+      {
+        "distance": 53.532,
+        "grade": -5.01
+      },
+      {
+        "distance": 53.598,
+        "grade": -4.52
+      },
+      {
+        "distance": 53.659,
+        "grade": -5.93
+      },
+      {
+        "distance": 53.716,
+        "grade": -7.77
+      },
+      {
+        "distance": 53.782,
+        "grade": -8.6
+      },
+      {
+        "distance": 53.848,
+        "grade": -7.39
+      },
+      {
+        "distance": 53.915,
+        "grade": -6.43
+      },
+      {
+        "distance": 53.97,
+        "grade": -7.47
+      },
+      {
+        "distance": 54.024,
+        "grade": -7.13
+      },
+      {
+        "distance": 54.074,
+        "grade": -6.12
+      },
+      {
+        "distance": 54.129,
+        "grade": -3.12
+      },
+      {
+        "distance": 54.179,
+        "grade": -6.6
+      },
+      {
+        "distance": 54.229,
+        "grade": -6.71
+      },
+      {
+        "distance": 54.28,
+        "grade": -6.56
+      },
+      {
+        "distance": 54.363,
+        "grade": -6.09
+      },
+      {
+        "distance": 54.416,
+        "grade": -4.71
+      },
+      {
+        "distance": 54.474,
+        "grade": -11.18
+      },
+      {
+        "distance": 54.547,
+        "grade": -9.39
+      },
+      {
+        "distance": 54.61,
+        "grade": -6.25
+      },
+      {
+        "distance": 54.678,
+        "grade": -6.77
+      },
+      {
+        "distance": 54.732,
+        "grade": -6.02
+      },
+      {
+        "distance": 54.787,
+        "grade": -6.63
+      },
+      {
+        "distance": 54.846,
+        "grade": -6.38
+      },
+      {
+        "distance": 54.903,
+        "grade": -7.38
+      },
+      {
+        "distance": 54.96,
+        "grade": -7.33
+      },
+      {
+        "distance": 55.035,
+        "grade": -7.28
+      },
+      {
+        "distance": 55.097,
+        "grade": -5.46
+      },
+      {
+        "distance": 55.153,
+        "grade": -2.68
+      },
+      {
+        "distance": 55.209,
+        "grade": -0.9
+      },
+      {
+        "distance": 55.268,
+        "grade": -0.67
+      },
+      {
+        "distance": 55.323,
+        "grade": -0.18
+      },
+      {
+        "distance": 55.38,
+        "grade": 0.53
+      },
+      {
+        "distance": 55.448,
+        "grade": 0.15
+      },
+      {
+        "distance": 55.504,
+        "grade": 0
+      },
+      {
+        "distance": 55.564,
+        "grade": 0.16
+      },
+      {
+        "distance": 55.621,
+        "grade": 0.18
+      },
+      {
+        "distance": 55.719,
+        "grade": 0.4
+      },
+      {
+        "distance": 55.788,
+        "grade": 0.44
+      },
+      {
+        "distance": 55.895,
+        "grade": 0.37
+      },
+      {
+        "distance": 55.999,
+        "grade": 0.48
+      },
+      {
+        "distance": 56.061,
+        "grade": 1.14
+      },
+      {
+        "distance": 56.116,
+        "grade": 0.54
+      },
+      {
+        "distance": 56.228,
+        "grade": 0.36
+      },
+      {
+        "distance": 56.333,
+        "grade": 0.57
+      },
+      {
+        "distance": 56.411,
+        "grade": 0.64
+      },
+      {
+        "distance": 56.512,
+        "grade": 0.99
+      },
+      {
+        "distance": 56.574,
+        "grade": 0.64
+      },
+      {
+        "distance": 56.629,
+        "grade": 0.36
+      },
+      {
+        "distance": 56.703,
+        "grade": 0.68
+      },
+      {
+        "distance": 56.759,
+        "grade": 0.54
+      },
+      {
+        "distance": 56.83,
+        "grade": 0.42
+      },
+      {
+        "distance": 56.901,
+        "grade": 0
+      },
+      {
+        "distance": 56.957,
+        "grade": 0.36
+      },
+      {
+        "distance": 57.02,
+        "grade": 0.48
+      },
+      {
+        "distance": 57.084,
+        "grade": -0.16
+      },
+      {
+        "distance": 57.142,
+        "grade": -4.49
+      },
+      {
+        "distance": 57.213,
+        "grade": -6.91
+      },
+      {
+        "distance": 57.271,
+        "grade": -7.23
+      },
+      {
+        "distance": 57.34,
+        "grade": -7.83
+      },
+      {
+        "distance": 57.407,
+        "grade": -7.41
+      },
+      {
+        "distance": 57.463,
+        "grade": -7.02
+      },
+      {
+        "distance": 57.514,
+        "grade": -7.05
+      },
+      {
+        "distance": 57.566,
+        "grade": -6.17
+      },
+      {
+        "distance": 57.62,
+        "grade": -7.95
+      },
+      {
+        "distance": 57.679,
+        "grade": -7.49
+      },
+      {
+        "distance": 57.73,
+        "grade": -7.41
+      },
+      {
+        "distance": 57.809,
+        "grade": -7.34
+      },
+      {
+        "distance": 57.864,
+        "grade": -7.46
+      },
+      {
+        "distance": 57.916,
+        "grade": -6.56
+      },
+      {
+        "distance": 57.968,
+        "grade": -8
+      },
+      {
+        "distance": 58.023,
+        "grade": -7.9
+      },
+      {
+        "distance": 58.078,
+        "grade": -7.97
+      },
+      {
+        "distance": 58.131,
+        "grade": -7.92
+      },
+      {
+        "distance": 58.185,
+        "grade": -7.81
+      },
+      {
+        "distance": 58.237,
+        "grade": -6.82
+      },
+      {
+        "distance": 58.29,
+        "grade": -5.18
+      },
+      {
+        "distance": 58.349,
+        "grade": -7.07
+      },
+      {
+        "distance": 58.402,
+        "grade": -6.57
+      },
+      {
+        "distance": 58.461,
+        "grade": -6.75
+      },
+      {
+        "distance": 58.525,
+        "grade": -5.7
+      },
+      {
+        "distance": 58.576,
+        "grade": -6.96
+      },
+      {
+        "distance": 58.63,
+        "grade": -7.94
+      },
+      {
+        "distance": 58.685,
+        "grade": -7.13
+      },
+      {
+        "distance": 58.742,
+        "grade": -6.12
+      },
+      {
+        "distance": 58.798,
+        "grade": -5.95
+      },
+      {
+        "distance": 58.861,
+        "grade": -6.69
+      },
+      {
+        "distance": 58.925,
+        "grade": -7.18
+      },
+      {
+        "distance": 58.999,
+        "grade": -6.64
+      },
+      {
+        "distance": 59.059,
+        "grade": -5.78
+      },
+      {
+        "distance": 59.11,
+        "grade": -5.3
+      },
+      {
+        "distance": 59.161,
+        "grade": -7.86
+      },
+      {
+        "distance": 59.22,
+        "grade": -7.76
+      },
+      {
+        "distance": 59.281,
+        "grade": -7.96
+      },
+      {
+        "distance": 59.343,
+        "grade": -7.19
+      },
+      {
+        "distance": 59.394,
+        "grade": -6.11
+      },
+      {
+        "distance": 59.455,
+        "grade": -7.06
+      },
+      {
+        "distance": 59.525,
+        "grade": -7.68
+      },
+      {
+        "distance": 59.586,
+        "grade": -7.73
+      },
+      {
+        "distance": 59.64,
+        "grade": -5.77
+      },
+      {
+        "distance": 59.694,
+        "grade": -5.31
+      },
+      {
+        "distance": 59.758,
+        "grade": -8.66
+      },
+      {
+        "distance": 59.826,
+        "grade": -8.26
+      },
+      {
+        "distance": 59.879,
+        "grade": -6.38
+      },
+      {
+        "distance": 59.939,
+        "grade": -9.32
+      },
+      {
+        "distance": 59.997,
+        "grade": -8.78
+      },
+      {
+        "distance": 60.05,
+        "grade": -8.11
+      },
+      {
+        "distance": 60.104,
+        "grade": -7.98
+      },
+      {
+        "distance": 60.16,
+        "grade": -7.8
+      },
+      {
+        "distance": 60.216,
+        "grade": -5.59
+      },
+      {
+        "distance": 60.282,
+        "grade": -8.86
+      },
+      {
+        "distance": 60.338,
+        "grade": -8.15
+      },
+      {
+        "distance": 60.39,
+        "grade": -7.91
+      },
+      {
+        "distance": 60.441,
+        "grade": -8.53
+      },
+      {
+        "distance": 60.497,
+        "grade": -8.21
+      },
+      {
+        "distance": 60.558,
+        "grade": -8.06
+      },
+      {
+        "distance": 60.638,
+        "grade": -7.65
+      },
+      {
+        "distance": 60.698,
+        "grade": -7.59
+      },
+      {
+        "distance": 60.753,
+        "grade": -7.15
+      },
+      {
+        "distance": 60.807,
+        "grade": -7.42
+      },
+      {
+        "distance": 60.866,
+        "grade": -7.39
+      },
+      {
+        "distance": 60.922,
+        "grade": -8.08
+      },
+      {
+        "distance": 60.979,
+        "grade": -8.27
+      },
+      {
+        "distance": 61.041,
+        "grade": -7.84
+      },
+      {
+        "distance": 61.106,
+        "grade": -7.74
+      },
+      {
+        "distance": 61.161,
+        "grade": -7.06
+      },
+      {
+        "distance": 61.235,
+        "grade": -7.57
+      },
+      {
+        "distance": 61.292,
+        "grade": -7.55
+      },
+      {
+        "distance": 61.345,
+        "grade": -6.8
+      },
+      {
+        "distance": 61.407,
+        "grade": -6.99
+      },
+      {
+        "distance": 61.475,
+        "grade": -8.51
+      },
+      {
+        "distance": 61.543,
+        "grade": -8.15
+      },
+      {
+        "distance": 61.594,
+        "grade": -8.1
+      },
+      {
+        "distance": 61.646,
+        "grade": -8.53
+      },
+      {
+        "distance": 61.702,
+        "grade": -8.97
+      },
+      {
+        "distance": 61.763,
+        "grade": -7.79
+      },
+      {
+        "distance": 61.816,
+        "grade": -7.15
+      },
+      {
+        "distance": 61.867,
+        "grade": -7.41
+      },
+      {
+        "distance": 61.927,
+        "grade": -7.86
+      },
+      {
+        "distance": 61.997,
+        "grade": -7.59
+      },
+      {
+        "distance": 62.066,
+        "grade": -7.95
+      },
+      {
+        "distance": 62.121,
+        "grade": -7.75
+      },
+      {
+        "distance": 62.176,
+        "grade": -7.71
+      },
+      {
+        "distance": 62.235,
+        "grade": -7.42
+      },
+      {
+        "distance": 62.291,
+        "grade": -5.69
+      },
+      {
+        "distance": 62.345,
+        "grade": -7.66
+      },
+      {
+        "distance": 62.403,
+        "grade": -9.78
+      },
+      {
+        "distance": 62.463,
+        "grade": -6.2
+      },
+      {
+        "distance": 62.516,
+        "grade": -7.75
+      },
+      {
+        "distance": 62.567,
+        "grade": -2.34
+      },
+      {
+        "distance": 62.62,
+        "grade": -9.8
+      },
+      {
+        "distance": 62.697,
+        "grade": -8.82
+      },
+      {
+        "distance": 62.778,
+        "grade": -5.46
+      },
+      {
+        "distance": 62.851,
+        "grade": -6.53
+      },
+      {
+        "distance": 62.917,
+        "grade": -4.28
+      },
+      {
+        "distance": 62.969,
+        "grade": -3.46
+      },
+      {
+        "distance": 63.019,
+        "grade": -2.19
+      },
+      {
+        "distance": 63.105,
+        "grade": -1.74
+      },
+      {
+        "distance": 63.164,
+        "grade": -2.23
+      },
+      {
+        "distance": 63.219,
+        "grade": -1.44
+      },
+      {
+        "distance": 63.272,
+        "grade": -2.09
+      },
+      {
+        "distance": 63.325,
+        "grade": -2.62
+      },
+      {
+        "distance": 63.398,
+        "grade": -1.51
+      },
+      {
+        "distance": 63.458,
+        "grade": -3.35
+      },
+      {
+        "distance": 63.522,
+        "grade": -4.98
+      },
+      {
+        "distance": 63.586,
+        "grade": -2.03
+      },
+      {
+        "distance": 63.644,
+        "grade": 1.04
+      },
+      {
+        "distance": 63.701,
+        "grade": 0.88
+      },
+      {
+        "distance": 63.752,
+        "grade": -1.96
+      },
+      {
+        "distance": 63.832,
+        "grade": -1.5
+      },
+      {
+        "distance": 63.926,
+        "grade": -5.2
+      },
+      {
+        "distance": 63.983,
+        "grade": -6.64
+      },
+      {
+        "distance": 64.045,
+        "grade": -3.72
+      },
+      {
+        "distance": 64.098,
+        "grade": -8.12
+      },
+      {
+        "distance": 64.165,
+        "grade": -3.9
+      },
+      {
+        "distance": 64.217,
+        "grade": -5.58
+      },
+      {
+        "distance": 64.288,
+        "grade": -3.65
+      },
+      {
+        "distance": 64.347,
+        "grade": -2.72
+      },
+      {
+        "distance": 64.413,
+        "grade": -1.96
+      },
+      {
+        "distance": 64.466,
+        "grade": -1.15
+      },
+      {
+        "distance": 64.527,
+        "grade": -1.97
+      },
+      {
+        "distance": 64.593,
+        "grade": -1.81
+      },
+      {
+        "distance": 64.66,
+        "grade": -2.84
+      },
+      {
+        "distance": 64.753,
+        "grade": -2.47
+      },
+      {
+        "distance": 64.807,
+        "grade": -4.11
+      },
+      {
+        "distance": 64.896,
+        "grade": -6.48
+      },
+      {
+        "distance": 64.946,
+        "grade": -8.56
+      },
+      {
+        "distance": 65,
+        "grade": -5.92
+      },
+      {
+        "distance": 65.056,
+        "grade": -6.66
+      },
+      {
+        "distance": 65.113,
+        "grade": -6.5
+      },
+      {
+        "distance": 65.164,
+        "grade": -4.93
+      },
+      {
+        "distance": 65.231,
+        "grade": -5.18
+      },
+      {
+        "distance": 65.289,
+        "grade": -6.03
+      },
+      {
+        "distance": 65.363,
+        "grade": -5.86
+      },
+      {
+        "distance": 65.421,
+        "grade": -4.78
+      },
+      {
+        "distance": 65.478,
+        "grade": -4.03
+      },
+      {
+        "distance": 65.531,
+        "grade": -2.65
+      },
+      {
+        "distance": 65.584,
+        "grade": -6.88
+      },
+      {
+        "distance": 65.637,
+        "grade": -4.12
+      },
+      {
+        "distance": 65.705,
+        "grade": -3.55
+      },
+      {
+        "distance": 65.758,
+        "grade": -3
+      },
+      {
+        "distance": 65.823,
+        "grade": -2.14
+      },
+      {
+        "distance": 65.897,
+        "grade": -6.41
+      },
+      {
+        "distance": 65.947,
+        "grade": -6.13
+      },
+      {
+        "distance": 65.999,
+        "grade": -5.96
+      },
+      {
+        "distance": 66.067,
+        "grade": -6.17
+      },
+      {
+        "distance": 66.124,
+        "grade": -6.55
+      },
+      {
+        "distance": 66.184,
+        "grade": -6.35
+      },
+      {
+        "distance": 66.246,
+        "grade": -1.93
+      },
+      {
+        "distance": 66.306,
+        "grade": -9.64
+      },
+      {
+        "distance": 66.368,
+        "grade": -2.75
+      },
+      {
+        "distance": 66.425,
+        "grade": -9.44
+      },
+      {
+        "distance": 66.479,
+        "grade": -2.05
+      },
+      {
+        "distance": 66.538,
+        "grade": 1.18
+      },
+      {
+        "distance": 66.624,
+        "grade": -1.38
+      },
+      {
+        "distance": 66.703,
+        "grade": -2.28
+      },
+      {
+        "distance": 66.756,
+        "grade": -2.08
+      },
+      {
+        "distance": 66.775,
+        "grade": -1.1
+      }
+    ]
+  }
+]
