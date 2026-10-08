@@ -1,56 +1,35 @@
-Product Requirements Document (PRD)
-Project: Interactive BLE Smart Trainer Dashboard & Video Simulator
-Target Hardware: Wahoo KICKR CORE (Power, Cadence, and FTMS Resistance Control via BLE) and Garmin Enduro 3 (Heart Rate Broadcast via BLE)
-Primary Platform: Mobile Web Browser (Android Chrome or iOS via WebBLE/Bluefy)
-Architecture: Single-Page Application (SPA) using HTML, CSS, Vanilla JavaScript, and the YouTube IFrame Player API. No backend server.
-1. Product Overview
-Objective: Build a zero-dependency, client-side mobile web application that transforms a static indoor workout into an interactive simulation. The app overlays real-time metrics on a YouTube feed, controls the smart trainer's resistance based on pre-encoded routes (derived from GPX files), and modulates video playback speed based on the rider's virtual speed.
-Design Philosophy: Immersive, mobile-first, HUD (Heads-Up Display) layout. The UI must sit transparently over the video feed, with large touch targets placed at the edges of the screen to minimize video obstruction.
-2. Core Features & Requirements
-2.1. Route Data & GPX Pipeline
-Source Data: Routes are sourced from raw GPX files located in a local /data/routes/source directory.
-Conversion Utility: A standalone Node.js or browser-based utility script to parse these GPX files and convert them into an optimized JSON schema.
-GPX Parsing Constraints: Calculate cumulative distance (Haversine formula), extract elevation to calculate segment gradients (%), and smooth/decimate the data into manageable segments to prevent flooding the trainer with FTMS commands.
-Initial Route Specification:
-The first encoded route must map to the YouTube video ID 3wED7BS-BXM.
-The corresponding GPX file will represent the route context of that video.
-JSON Schema Output:
-id: Unique identifier.
-youtubeId: The associated video ID (e.g., "3wED7BS-BXM").
-baseSpeedKmh: The average recording speed of the video (used as a baseline for 1.0x playback sync).
-defaultMode: SIM or ERG.
-segments: Array mapping distance (km) to either grade (%) or targetPower (watts).
-2.2. Route Modes: SIM vs. ERG
-The user must select an execution mode before starting a route:
-SIM (Simulation) Mode: The trainer dynamically adjusts resistance based on the parsed elevation gradient of the route segment. Virtual speed and video playback scale based on the rider's power output against the gradient and assumed system weight.
-ERG (Target Power) Mode: The user specifies a flat target wattage (e.g., locking the KICKR to 200W). The trainer ignores gradients, and virtual speed/video playback decouple from elevation, progressing at a steady rate based on sustained power output.
-2.3. Video & HUD Overlay Integration
-YouTube IFrame API: Embed the target YouTube video as the full-screen background.
-Playback Speed Control: Dynamically adjust the video playback rate (player.setPlaybackRate()) based on virtual speed vs. base recording speed. (Note: YouTube supports discrete rates: 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0).
-Transparent Dashboard: Metric displays (Power, Cadence, HR, Distance, Time, Current Grade/Watts Target) and controls must float over the video using CSS grid and z-index.
-2.4. Web Bluetooth: Reading & Controlling (FTMS)
-Sensors (Read): Heart Rate Service (0x180D) and Cycling Power Service (0x1818).
-Trainer Control (Write via FTMS 0x1826):
-SIM Mode: Utilize the Fitness Machine Control Point (0x2AD9) to send "Set Target Inclination" commands based on the route gradients.
-ERG Mode: Send "Set Target Power" commands to lock the KICKR CORE to the selected wattage.
-2.5. Session Recording & Strava API
-Data Aggregation: Maintain a recording state array { timestamp, distance, heartRate, power, cadence, virtualSpeed, altitude } at 1 Hz.
-TCX Generation: Translate the array into a valid Training Center XML (TCX) schema client-side. The virtual distance and simulated altitude must be included for Strava map generation.
-Strava Upload: POST the generated .tcx payload to https://www.strava.com/api/v3/uploads with activity:write permissions via client-side OAuth 2.0 (credentials stored in localStorage).
-3. Agent Implementation Phases
-Phase 1: GPX Conversion Tool & Route Scaffold
-Write the GPX-to-JSON parser utility.
-Initialize the routes.json catalog, explicitly defining the 3wED7BS-BXM video as the first mapped route.
-Phase 2: YouTube API & HUD Layout
-Create the core layout with the YouTube IFrame background.
-Build the floating CSS Grid layout, including UI elements for selecting the active route, toggling SIM/ERG modes, and manually adjusting target watts.
-Phase 3: Advanced BLE & FTMS Control
-Implement standard BLE reads for Garmin HR and Wahoo Power/Cadence.
-Implement FTMS connection logic, writing the specific byte array structures required for both "Set Target Inclination" (SIM) and "Set Target Power" (ERG).
-Phase 4: Route Simulation & Physics Engine
-Implement the core execution loop that syncs virtual distance with the JSON route array.
-In SIM mode: Write the current incline to the trainer and throttle YouTube playback based on power-to-speed physics.
-In ERG mode: Write the target watts to the trainer and maintain steady video progression.
-Phase 5: Recording, TCX, & Strava
-Implement the 1Hz recording array capturing virtual distance and elevation.
-Write the pure JS TCX generator and implement the Strava OAuth and multipart form upload logic. Provide a local download fallback.
+# Yahooligan: procedural 3D workouts
+
+## Goal
+
+Replace GPX route selection and YouTube playback with configurable, timed workouts and live 3D terrain. Primary hardware is the Wahoo KICKR Core, optionally with a Bluetooth heart-rate monitor. This is a static client-side application with no server-side account or API credentials.
+
+## Setup and workout schedule
+
+Choose recovery, steady ride, rolling hills, sustained climb, hill repeats or intervals. Accept a duration of 5–180 minutes, a starting grade of −5% to 10%, and a starting power of 50–500 W. Store both starting settings so either mode can be used. Include 15% warm-up, 70% main phases and 15% cool-down. Transition between phase targets with a smooth ramp lasting up to 12 seconds. Clamp course grades to −5% through 12%.
+
+Generate one schedule whose phases contain name, start/end active seconds, grade and target watts. Use the schedule for rendering, trainer targets, HUD and profile chart. Scenery randomness must not change workout intensity. Starting values apply immediately during warm-up; ERG efforts are multiples of the starting watt target.
+
+## Timing and modes
+
+A single active-workout clock defines course position and completion. Scenic camera movement uses a nominal speed of 7 m/s; measured power drives separately labelled virtual speed and distance. Pausing freezes time, terrain position and recording. Stop exactly at the selected duration. Pause on hidden pages, WebGL context loss, long browser interruptions, peripheral disconnection or prolonged missing power data.
+
+SIM applies the current grade via FTMS indoor-bike simulation parameters. ERG applies the current target watts, bounded to advertised limits. In ERG the grade is scenic only and virtual speed uses flat-road physics. Permit mode changes by pausing, cancelling queued targets, neutralizing old load, applying the new mode and resuming if the ride had been running.
+
+## Visuals
+
+Use locally vendored Three.js with no CDN dependency. Procedurally construct the road, terrain, mountains and deterministic scenery placement. Load locally generated Blender GLB pine, rock and chalet models; fall back to simple procedural models if loading fails. Instance repeated objects. Support first-person and follow-camera views, desktop and mobile layouts, fullscreen where available, and explicit messaging when WebGL is unavailable.
+
+Display measured power/cadence/optional HR, virtual speed/distance, current grade or target watts, remaining time, phase and next transition. The grade chart shows the full course with a marker and completed shading. In ERG add a scheduled watt trace. Keep the road visible around the HUD, particularly on phones.
+
+## Bluetooth
+
+Require a secure context and Web Bluetooth. Read FTMS capabilities and supported power range. Enable indications on the control point before requesting control. Use `0x11` simulation, `0x05` target watts, `0x07` start/resume and `0x08` stop/pause. Serialize writes and wait for matching `0x80` success responses. Deduplicate unchanged targets and limit updates to approximately once per second. Reject queued old-mode targets; reject pending commands on disconnect. Timeout requires reconnecting to avoid confusing late acknowledgements with new commands.
+
+Use FTMS Indoor Bike Data for power/cadence, with optional Cycling Power Service fallback. Parse variable fields and truncated packets defensively. Discover a separate Heart Rate Service on user request. Reconnect through a new user gesture, rediscover services/capabilities and reacquire control before explicitly resuming.
+
+## Recording and validation
+
+Record at 1 Hz and export TCX with active duration, virtual distance/altitude, measured power/cadence/HR and virtual speed. Keep the existing manual Strava upload link. Do not invent GPS coordinates. Preserve the previous activity until a new workout records samples.
+
+Validate every profile's duration and transitions, stable physics, pause/resume, export, FTMS packets and asynchronous control behavior. Exercise the app in Chromium on desktop and mobile, including missing WebGL and a simulated KICKR connection/disconnection. Run the static build and check the Git diff. Physical KICKR resistance behavior remains a separate hardware check.

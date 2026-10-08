@@ -1,0 +1,10 @@
+import { cp, mkdir, rm } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+const root = fileURLToPath(new URL("../", import.meta.url));
+const output = path.join(root, "dist");
+await rm(output, { recursive: true, force: true });
+await mkdir(output);
+for (const file of ["index.html", "css", "js", "assets"])
+  await cp(path.join(root, file), path.join(output, file), { recursive: true });
+console.log("Static site built in dist/. Serve over HTTPS for Web Bluetooth.");

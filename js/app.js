@@ -1,308 +1,562 @@
-// js/app.js
+import {
+  PROFILES,
+  generateWorkout,
+  sampleWorkout,
+  formatTime,
+  clamp,
+} from "./workout.js";
+import { Session } from "./session.js";
+import { Trainer, connectHeartRate, powerCommand } from "./ble.js";
+import { RouteScene } from "./route-scene.js";
+import { downloadTCX } from "./tcx.js";
 
-let player; // YouTube Player instance
-let allRoutes = [];
-let routeData = null;
-let currentSegmentIndex = 0;
+const $ = (id) => document.getElementById(id);
+const form = $("workout-form");
+let seed = Math.floor(Math.random() * 100000);
+let workout, session, scene, lastSession, hrDevice;
+let demo = false,
+  busy = false,
+  targetBusy = false,
+  renderAvailable = true;
+let messageTimer,
+  previewTimer,
+  lastFrame = performance.now(),
+  lastUi = 0,
+  lastControl = -1,
+  powerWatchStart = 0;
+let metrics = { power: 0, cadence: 0, hr: 0 };
+const received = { power: 0, cadence: 0, hr: 0 };
+const trainer = new Trainer({
+  onMetrics: (data) => {
+    if (demo) return;
+    Object.assign(metrics, data);
+    for (const key of Object.keys(data)) received[key] = performance.now();
+  },
+  onDisconnect: () => {
+    if (demo) return;
+    session?.pause();
+    metrics.power = 0;
+    metrics.cadence = 0;
+    received.power = 0;
+    received.cadence = 0;
+    showMessage(
+      "Trainer disconnected. Workout paused. Reconnect KICKR, then resume.",
+      true,
+    );
+    updateUI();
+  },
+});
 
-// State
-let state = {
-    isRunning: false,
-    mode: 'SIM',
-    power: 0,
-    cadence: 0,
-    hr: 0,
-    speedKmh: 0,
-    distanceKm: 0,
-    timeSeconds: 0,
-    currentGrade: 0,
-    targetWatts: 150,
-    baseSpeedKmh: 25
-};
-
-// DOM Elements
-const ui = {
-    hudOverlay: document.getElementById('hud'),
-    routeChooser: document.getElementById('route-chooser-overlay'),
-    routeSelect: document.getElementById('route-select'),
-    btnConfirmRoute: document.getElementById('btn-confirm-route'),
-    btnFullscreen: document.getElementById('btn-fullscreen'),
-
-    power: document.getElementById('metric-power'),
-    cadence: document.getElementById('metric-cadence'),
-    hr: document.getElementById('metric-hr'),
-    speed: document.getElementById('metric-speed'),
-    distance: document.getElementById('metric-distance'),
-    time: document.getElementById('metric-time'),
-    grade: document.getElementById('metric-grade'),
-    targetPower: document.getElementById('metric-target-power'),
-
-    btnTrainer: document.getElementById('btn-connect-trainer'),
-    btnHr: document.getElementById('btn-connect-hr'),
-    btnStart: document.getElementById('btn-start-route'),
-    btnTcx: document.getElementById('btn-download-tcx'),
-    btnStrava: document.getElementById('btn-upload-strava'),
-
-    radiosMode: document.getElementsByName('mode'),
-    ergControls: document.getElementById('erg-controls'),
-    inputWatts: document.getElementById('input-target-watts'),
-    btnSetWatts: document.getElementById('btn-set-watts')
-};
-
-// YouTube IFrame API Ready Callback
-function onYouTubeIframeAPIReady() {
-    fetchRouteData();
+function showMessage(text, error = false) {
+  clearTimeout(messageTimer);
+  $("message").textContent = text;
+  $("message").classList.toggle("error", error);
+  $("message").hidden = false;
+  if (!error)
+    messageTimer = setTimeout(() => {
+      $("message").hidden = true;
+    }, 6500);
 }
 
-async function fetchRouteData() {
+function selectedMode() {
+  return form.elements.mode.value;
+}
+function readWorkout() {
+  return generateWorkout({
+    profile: $("profile").value,
+    minutes: $("minutes").valueAsNumber,
+    startGrade: $("start-grade").valueAsNumber,
+    startWatts: $("start-watts").valueAsNumber,
+    seed,
+  });
+}
+function buildChart() {
+  $("course-title").textContent = workout.name;
+  $("course-duration").textContent = `${workout.duration / 60} MIN`;
+  $("course-seed").textContent =
+    `ROUTE ${workout.seed.toString().padStart(4, "0")}`;
+  $("chart-end").textContent = `${workout.duration / 60} MIN`;
+  let grade = "",
+    watts = "";
+  const maxWatts = Math.max(...workout.phases.map((phase) => phase.watts), 1);
+  for (let i = 0; i <= 600; i++) {
+    const sample = sampleWorkout(workout, (workout.duration * i) / 600);
+    const x = (i / 600) * 1000;
+    grade += `${i ? "L" : "M"}${x.toFixed(2)},${gradeY(sample.grade).toFixed(2)} `;
+    watts += `${i ? "L" : "M"}${x.toFixed(2)},${(125 - (sample.watts / maxWatts) * 100).toFixed(2)} `;
+  }
+  const area = `${grade} L1000,140 L0,140 Z`;
+  $("grade-line").setAttribute("d", grade);
+  $("grade-area").setAttribute("d", area);
+  $("done-area").setAttribute("d", area);
+  $("watts-line").setAttribute("d", watts);
+  $("phase-grid").replaceChildren();
+  const addLine = (x1, y1, x2, y2, opacity) => {
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    for (const [key, value] of Object.entries({
+      x1,
+      y1,
+      x2,
+      y2,
+      stroke: "#bfd0be",
+      "stroke-opacity": opacity,
+      "stroke-width": 1,
+      "vector-effect": "non-scaling-stroke",
+    }))
+      line.setAttribute(key, value);
+    $("phase-grid").append(line);
+  };
+  for (const grade of [-5, 0, 5, 10]) {
+    const y = gradeY(grade);
+    addLine(0, y, 1000, y, 0.12);
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.textContent = `${grade}%`;
+    text.setAttribute("x", 4);
+    text.setAttribute("y", y - 4);
+    text.setAttribute("fill", "#a7b8ad");
+    text.setAttribute("font-size", 9);
+    $("phase-grid").append(text);
+  }
+  for (const phase of workout.phases.slice(1))
+    addLine(
+      (phase.start / workout.duration) * 1000,
+      0,
+      (phase.start / workout.duration) * 1000,
+      140,
+      0.1,
+    );
+}
+function gradeY(grade) {
+  return 125 - ((grade + 5) / 17) * 110;
+}
+function preview() {
+  $("profile-description").textContent =
+    PROFILES[$("profile").value].description;
+  $("mode-description").textContent =
+    selectedMode() === "SIM"
+      ? "Resistance follows the road grade. Starting power is saved for ERG."
+      : "Resistance holds scheduled watts. Starting grade shapes the scenery.";
+  if (!form.checkValidity()) return;
+  try {
+    workout = readWorkout();
+    session = new Session(workout, selectedMode());
+    scene?.setWorkout(workout);
+    buildChart();
+    updateUI();
+  } catch (error) {
+    showMessage(error.message, true);
+  }
+}
+
+function prepare(isDemo) {
+  if (!form.reportValidity()) return false;
+  if (!renderAvailable) {
+    showMessage(
+      "Live 3D is unavailable. Enable WebGL or use another browser before riding.",
+      true,
+    );
+    return false;
+  }
+  clearTimeout(previewTimer);
+  if (session?.records.length) lastSession = session;
+  workout = readWorkout();
+  session = new Session(workout, selectedMode());
+  demo = isDemo;
+  document.body.classList.toggle("is-demo", demo);
+  if (demo) {
+    trainer.disconnect();
+    hrDevice?.gatt.disconnect();
+    hrDevice = null;
+  }
+  metrics = { power: 0, cadence: 0, hr: 0 };
+  received.power = 0;
+  received.cadence = 0;
+  received.hr = 0;
+  lastControl = -1;
+  $("setup-panel").hidden = true;
+  $("hud").hidden = false;
+  document.body.classList.add("riding");
+  $("ride-mode").value = session.mode;
+  scene?.setWorkout(workout);
+  buildChart();
+  updateUI();
+  window.scrollTo(0, 0);
+  return true;
+}
+
+async function controlFailure(error) {
+  session?.pause();
+  trainer.disconnect();
+  showMessage(
+    `${error.message} Workout paused. Reconnect the trainer before resuming.`,
+    true,
+  );
+  updateUI();
+}
+async function runAction(action) {
+  if (busy) return;
+  busy = true;
+  updateUI();
+  try {
+    await action();
+  } catch (error) {
+    showMessage(error.message, true);
+  } finally {
+    busy = false;
+    updateUI();
+  }
+}
+async function startSession() {
+  if (!session || session.status === "finished") return;
+  if (!demo) {
+    if (!trainer.connected) {
+      showMessage(
+        "Connect your KICKR Core before starting, or choose demo from New workout.",
+        true,
+      );
+      return;
+    }
     try {
-        const response = await fetch('data/routes.json');
-        allRoutes = await response.json();
-
-        // Populate route chooser
-        allRoutes.forEach((route, idx) => {
-            const option = document.createElement('option');
-            option.value = idx;
-            option.text = route.name || route.id;
-            ui.routeSelect.appendChild(option);
-        });
-    } catch (err) {
-        console.error("Failed to load route data", err);
+      await trainer.start(session.mode, session.sample);
+    } catch (error) {
+      await controlFailure(error);
+      return;
     }
+    if (!trainer.connected) return;
+    if (document.hidden) {
+      await pauseSession("Workout paused while the page is hidden.");
+      return;
+    }
+  }
+  $("message").hidden = true;
+  session.start();
+  powerWatchStart = performance.now();
+  lastFrame = performance.now();
+  lastControl = Math.floor(session.elapsed);
+  updateUI();
+}
+async function pauseSession(reason) {
+  session?.pause();
+  updateUI();
+  if (!demo) {
+    try {
+      await trainer.stop(true);
+    } catch (error) {
+      await controlFailure(error);
+      return;
+    }
+  }
+  if (reason) showMessage(reason);
+}
+function interruptSession(reason) {
+  // A sensor picker or a pending mode command must not delay freezing the clock.
+  session?.pause();
+  updateUI();
+  if (busy) pauseSession(reason);
+  else runAction(() => pauseSession(reason));
+}
+async function finishSession() {
+  session?.finish();
+  updateUI();
+  if (!demo) {
+    try {
+      await trainer.stop(false);
+    } catch (error) {
+      await controlFailure(error);
+      return;
+    }
+  }
+  showMessage("Ride complete. Download your TCX to save or upload to Strava.");
 }
 
-ui.btnConfirmRoute.addEventListener('click', () => {
-    const selectedIdx = ui.routeSelect.value;
-    if (selectedIdx === "") return;
-
-    routeData = allRoutes[selectedIdx];
-    state.baseSpeedKmh = routeData.baseSpeedKmh || 25;
-
-    ui.routeChooser.style.display = 'none';
-    ui.hudOverlay.style.display = 'flex';
-
-    // Init player
-    if (!player) {
-        player = new YT.Player('youtube-player', {
-            videoId: routeData.youtubeId,
-            playerVars: {
-                'autoplay': 0,
-                'controls': 0,
-                'disablekb': 1,
-                'modestbranding': 1,
-                'rel': 0,
-                'showinfo': 0
-            },
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  try {
+    prepare(false);
+  } catch (error) {
+    showMessage(error.message, true);
+  }
 });
-
-ui.btnFullscreen.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-            console.error(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
-        });
-    } else {
-        document.exitFullscreen();
-    }
+form.addEventListener("input", () => {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(preview, 180);
 });
-
-function onPlayerReady(event) {
-    console.log("YouTube Player Ready");
-}
-
-function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
-        stopSession();
-    }
-}
-
-// BLE Callbacks
-BLE.onPowerData = (val) => { state.power = val; updateUI(); };
-BLE.onCadenceData = (val) => { state.cadence = val; updateUI(); };
-BLE.onHrData = (val) => { state.hr = val; updateUI(); };
-
-// Event Listeners
-ui.btnTrainer.addEventListener('click', async () => {
-    const success = await BLE.connectTrainer();
-    if (success) {
-        ui.btnTrainer.innerText = "Trainer Connected";
-        ui.btnTrainer.disabled = true;
-    }
+$("btn-regenerate").addEventListener("click", () => {
+  seed = (seed + 7919) >>> 0;
+  preview();
 });
-
-ui.btnHr.addEventListener('click', async () => {
-    const success = await BLE.connectHR();
-    if (success) {
-        ui.btnHr.innerText = "HR Connected";
-        ui.btnHr.disabled = true;
+$("btn-demo").addEventListener("click", () =>
+  runAction(async () => {
+    if (prepare(true)) await startSession();
+  }),
+);
+$("btn-start").addEventListener("click", () =>
+  runAction(() =>
+    session.status === "running" ? pauseSession() : startSession(),
+  ),
+);
+$("btn-finish").addEventListener("click", () => runAction(finishSession));
+$("btn-trainer").addEventListener("click", () =>
+  runAction(async () => {
+    try {
+      const name = await trainer.connect();
+      if (!trainer.capabilities[session.mode]) {
+        session.mode = trainer.capabilities.SIM ? "SIM" : "ERG";
+        $("ride-mode").value = session.mode;
+      }
+      const peak = Math.max(...workout.phases.map((phase) => phase.watts));
+      showMessage(
+        `Connected to ${name}.${peak > trainer.powerRange.max ? ` ERG targets will be limited to ${trainer.powerRange.max} W.` : ""}`,
+      );
+    } catch (error) {
+      showMessage(error.message, true);
     }
+  }),
+);
+$("btn-hr").addEventListener("click", () =>
+  runAction(async () => {
+    hrDevice = await connectHeartRate(
+      (data) => {
+        Object.assign(metrics, data);
+        received.hr = performance.now();
+      },
+      () => {
+        hrDevice = null;
+        metrics.hr = 0;
+        received.hr = 0;
+        updateUI();
+      },
+    );
+    showMessage(`Connected to ${hrDevice.name || "heart-rate monitor"}.`);
+  }),
+);
+$("ride-mode").addEventListener("change", () => {
+  const nextMode = $("ride-mode").value;
+  runAction(async () => {
+    const running = session.status === "running";
+    session.pause();
+    if (!demo && trainer.connected) {
+      try {
+        await trainer.stop(true); // Cancels queued targets from the previous mode.
+        if (!trainer.capabilities[nextMode])
+          throw new Error(`Trainer does not support ${nextMode}.`);
+        if (running) await trainer.start(nextMode, session.sample);
+      } catch (error) {
+        $("ride-mode").value = session.mode;
+        await controlFailure(error);
+        return;
+      }
+    }
+    session.mode = nextMode;
+    if (running && (demo || trainer.connected)) {
+      if (document.hidden) {
+        await pauseSession("Workout paused while the page is hidden.");
+        return;
+      }
+      session.start();
+      lastFrame = performance.now();
+      powerWatchStart = lastFrame;
+    }
+    lastControl = -1;
+  });
 });
-
-ui.radiosMode.forEach(radio => {
-    radio.addEventListener('change', (e) => {
-        state.mode = e.target.value;
-        ui.ergControls.style.display = state.mode === 'ERG' ? 'flex' : 'none';
-        ui.grade.parentElement.style.display = state.mode === 'SIM' ? 'flex' : 'none';
-
-        if (state.isRunning) applyTrainerMode();
-    });
+$("btn-edit").addEventListener("click", () =>
+  runAction(async () => {
+    await pauseSession();
+    if (session.records.length) lastSession = session;
+    document.body.classList.remove("riding");
+    $("setup-panel").hidden = false;
+    $("hud").hidden = true;
+    demo = false;
+    document.body.classList.remove("is-demo");
+    form.elements.mode.value = session.mode;
+    preview();
+    if (lastSession)
+      showMessage(
+        "Your previous activity remains available from Download TCX until your next ride records data.",
+      );
+  }),
+);
+$("btn-tcx").addEventListener("click", () =>
+  downloadTCX(session.records.length ? session : lastSession),
+);
+$("btn-camera").addEventListener("click", () => {
+  if (!scene) return;
+  scene.cameraMode = scene.cameraMode === "first" ? "follow" : "first";
+  $("btn-camera").textContent =
+    scene.cameraMode === "first" ? "Follow camera" : "First-person camera";
+  scene.render(session?.elapsed || 0);
 });
-
-ui.btnSetWatts.addEventListener('click', () => {
-    state.targetWatts = parseInt(ui.inputWatts.value, 10);
-    if (state.isRunning && state.mode === 'ERG') {
-        BLE.setTargetPower(state.targetWatts);
-    }
-    updateUI();
+$("btn-fullscreen").addEventListener("click", async () => {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else await document.documentElement.requestFullscreen();
+  } catch {
+    showMessage("Fullscreen is unavailable in this browser.");
+  }
 });
-
-ui.btnStart.addEventListener('click', () => {
-    if (state.isRunning) {
-        stopSession();
-    } else {
-        startSession();
-    }
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && session?.status === "running")
+    interruptSession(
+      "Workout paused while the page is hidden. Resume when ready.",
+    );
 });
-
-function applyTrainerMode() {
-    if (state.mode === 'ERG') {
-        BLE.setTargetPower(state.targetWatts);
-    } else {
-        // SIM mode - will be updated in the tick loop
-        BLE.setTargetInclination(state.currentGrade);
-    }
-}
-
-let tickInterval;
-
-function startSession() {
-    if (!routeData) return;
-
-    state.isRunning = true;
-    ui.btnStart.innerText = "Stop Route";
-
-    applyTrainerMode();
-
-    if (player && player.playVideo) {
-        player.playVideo();
-    }
-
-    // Start 1Hz Execution Loop
-    tickInterval = setInterval(tick, 1000);
-}
-
-function stopSession() {
-    state.isRunning = false;
-    ui.btnStart.innerText = "Start Route";
-
-    clearInterval(tickInterval);
-
-    if (player && player.pauseVideo) {
-        player.pauseVideo();
-    }
-
-    ui.btnTcx.disabled = false;
-    ui.btnStrava.disabled = false;
-}
-
-function tick() {
-    state.timeSeconds++;
-
-    if (state.mode === 'SIM') {
-        // 1. Calculate Speed based on Physics
-        state.speedKmh = Physics.calculateSpeedKmh(state.power, state.currentGrade, 1);
-
-        // 2. Adjust Video Playback Rate
-        // Ratio of current virtual speed to the video's base recording speed
-        let speedRatio = state.speedKmh / state.baseSpeedKmh;
-
-        // YouTube discrete playback rates: 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0
-        let targetRate = 1.0;
-        if (speedRatio < 0.375) targetRate = 0.25;
-        else if (speedRatio < 0.625) targetRate = 0.5;
-        else if (speedRatio < 0.875) targetRate = 0.75;
-        else if (speedRatio < 1.125) targetRate = 1.0;
-        else if (speedRatio < 1.375) targetRate = 1.25;
-        else if (speedRatio < 1.75) targetRate = 1.5;
-        else targetRate = 2.0;
-
-        if (player && player.getPlaybackRate() !== targetRate) {
-            player.setPlaybackRate(targetRate);
-        }
-
-    } else {
-        // ERG Mode
-        // Virtual speed decoupled from elevation. Assuming fixed speed based on sustained power on flat.
-        state.speedKmh = Physics.calculateSpeedKmh(state.power, 0, 1);
-
-        if (player && player.getPlaybackRate() !== 1.0) {
-            player.setPlaybackRate(1.0); // Maintain steady progression
-        }
-    }
-
-    // 3. Accumulate Distance
-    // Distance (km) = Speed (km/h) * Time (hours)
-    const distanceThisSecond = state.speedKmh * (1 / 3600);
-    state.distanceKm += distanceThisSecond;
-
-    // 4. Check Route Segments and update Incline if necessary
-    updateRouteSegment();
-
-    // 5. Record Data Point for TCX
-    if (window.TCX) {
-        window.TCX.recordPoint({
-            timeOffset: state.timeSeconds,
-            distance: state.distanceKm * 1000, // meters
-            hr: state.hr,
-            cadence: state.cadence,
-            power: state.power,
-            speed: state.speedKmh / 3.6, // m/s
-            // Approximation for TCX altitude based on accumulated grade (simplified)
-            // A more complex implementation would track absolute altitude from the GPX.
-            altitude: 0
-        });
-    }
-
-    updateUI();
-}
-
-function updateRouteSegment() {
-    if (!routeData || currentSegmentIndex >= routeData.segments.length - 1) return;
-
-    const nextSegment = routeData.segments[currentSegmentIndex + 1];
-
-    if (state.distanceKm >= nextSegment.distance) {
-        currentSegmentIndex++;
-        const newGrade = routeData.segments[currentSegmentIndex].grade;
-
-        if (newGrade !== state.currentGrade) {
-            state.currentGrade = newGrade;
-            if (state.mode === 'SIM') {
-                BLE.setTargetInclination(state.currentGrade);
-            }
-        }
-    }
-}
-
-function formatTime(totalSeconds) {
-    const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
-    const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
-    const s = (totalSeconds % 60).toString().padStart(2, '0');
-    return `${h}:${m}:${s}`;
-}
+window.addEventListener("pagehide", () => {
+  session?.pause();
+  trainer.disconnect();
+  hrDevice?.gatt.disconnect();
+});
 
 function updateUI() {
-    ui.power.innerText = state.power;
-    ui.cadence.innerText = state.cadence;
-    ui.hr.innerText = state.hr;
-    ui.speed.innerText = state.speedKmh.toFixed(1);
-    ui.distance.innerText = state.distanceKm.toFixed(2);
-    ui.time.innerText = formatTime(state.timeSeconds);
-    ui.grade.innerText = state.currentGrade.toFixed(1);
-    ui.targetPower.innerText = state.targetWatts;
+  if (!session) return;
+  const sample = session.sample;
+  const erg = session.mode === "ERG";
+  const running = session.status === "running",
+    finished = session.status === "finished";
+  const now = performance.now();
+  if (!demo)
+    for (const key of Object.keys(metrics))
+      if (now - received[key] > 5000) metrics[key] = 0;
+  $("metric-power").textContent =
+    demo || (received.power && now - received.power < 5000)
+      ? Math.round(metrics.power)
+      : "—";
+  $("metric-cadence").textContent =
+    demo || (received.cadence && now - received.cadence < 5000)
+      ? Math.round(metrics.cadence)
+      : "—";
+  $("metric-hr").textContent =
+    demo || (received.hr && now - received.hr < 5000)
+      ? Math.round(metrics.hr)
+      : "—";
+  $("metric-speed").textContent = (session.velocity * 3.6).toFixed(1);
+  $("metric-distance").textContent = (session.distance / 1000).toFixed(2);
+  $("target-label").textContent = erg ? "ERG TARGET" : "SIM GRADE";
+  const watts =
+    !demo && trainer.connected
+      ? new DataView(
+          powerCommand(sample.watts, trainer.powerRange).buffer,
+        ).getInt16(1, true)
+      : Math.round(sample.watts);
+  $("metric-target").textContent = erg ? watts : sample.grade.toFixed(1);
+  $("target-unit").textContent = erg ? "W" : "%";
+  $("remaining").textContent = formatTime(workout.duration - session.elapsed);
+  $("session-status").textContent =
+    `${demo ? "DEMO · " : ""}${{ ready: "READY TO RIDE", running: "ON THE ROAD", paused: "PAUSED", finished: "RIDE COMPLETE" }[session.status]}`;
+  $("current-phase").textContent = finished ? "Finish line" : sample.phase;
+  $("next-phase").textContent = finished
+    ? `${formatTime(session.elapsed)} active · ${(session.distance / 1000).toFixed(2)} virtual km`
+    : `${sample.next} in ${formatTime(sample.untilNext)}`;
+  $("btn-start").textContent = running
+    ? "Pause ride"
+    : session.status === "paused"
+      ? "Resume ride"
+      : "Start ride";
+  $("btn-start").disabled = busy || finished || !renderAvailable;
+  $("btn-finish").disabled = busy || finished || session.elapsed === 0;
+  $("btn-edit").disabled = busy;
+  $("btn-trainer").disabled = busy || demo || trainer.connected || running;
+  $("btn-trainer").textContent = demo
+    ? "Demo · no trainer"
+    : trainer.connected
+      ? "KICKR connected"
+      : "Connect KICKR";
+  $("btn-hr").disabled = busy || demo || !!hrDevice?.gatt.connected;
+  $("btn-hr").textContent = hrDevice?.gatt.connected
+    ? "HR connected"
+    : "Connect HR";
+  $("ride-mode").disabled = busy || finished;
+  for (const option of $("ride-mode").options)
+    option.disabled =
+      !demo && trainer.connected && !trainer.capabilities[option.value];
+  $("btn-tcx").disabled =
+    !session.records.length && !lastSession?.records.length;
+  $("watts-line").toggleAttribute("hidden", !erg);
+  $("watts-legend").hidden = !erg;
+  $("course-mode").textContent = `${session.mode}${demo ? " / DEMO" : ""}`;
+  $("progress-label").textContent =
+    `${Math.round(sample.progress * 100)}% complete`;
+  const x = sample.progress * 1000;
+  $("chart-marker").setAttribute("x1", x);
+  $("chart-marker").setAttribute("x2", x);
+  $("done-width").setAttribute("width", x);
+  $("chart-dot").setAttribute("cx", x);
+  $("chart-dot").setAttribute("cy", gradeY(sample.grade));
+  $("profile-chart").setAttribute(
+    "aria-label",
+    `${workout.name}: ${Math.round(sample.progress * 100)}% complete, current grade ${sample.grade.toFixed(1)}%, ${erg ? `${watts} target watts, ` : ""}${formatTime(workout.duration - session.elapsed)} remaining.`,
+  );
 }
+
+try {
+  scene = new RouteScene($("route-canvas"), (message) => {
+    renderAvailable = false;
+    interruptSession(message);
+    showMessage(message, true);
+  });
+} catch {
+  renderAvailable = false;
+  showMessage(
+    "Live 3D requires WebGL. Enable hardware acceleration or try another browser. Your workout setup is still available.",
+    true,
+  );
+}
+preview();
+new ResizeObserver(([entry]) => {
+  document.body.style.setProperty(
+    "--controls-height",
+    `${entry.contentRect.height + 26}px`,
+  );
+}).observe(document.querySelector(".controls"));
+
+function frame(now) {
+  const dt = (now - lastFrame) / 1000;
+  lastFrame = now;
+  if (session?.status === "running") {
+    if (dt > 2 || document.hidden) {
+      interruptSession(
+        "Workout paused after a browser interruption. Resume when ready.",
+      );
+    } else {
+      if (demo) {
+        metrics = {
+          power: Math.round(
+            session.sample.watts + Math.sin(session.elapsed / 5) * 6,
+          ),
+          cadence: Math.round(83 + Math.sin(session.elapsed / 8) * 4),
+          hr: Math.round(118 + 15 * session.sample.progress),
+        };
+      } else if (now - Math.max(received.power, powerWatchStart) > 10000) {
+        interruptSession(
+          "Power data stopped arriving. Workout paused; check the trainer connection.",
+        );
+      }
+      session.advance(dt, metrics);
+      if (session.status === "finished") {
+        if (busy) finishSession();
+        else runAction(finishSession);
+      } else if (
+        !demo &&
+        !busy &&
+        !targetBusy &&
+        Math.floor(session.elapsed) !== lastControl
+      ) {
+        lastControl = Math.floor(session.elapsed);
+        targetBusy = true;
+        trainer
+          .setTarget(session.mode, session.sample)
+          .catch(controlFailure)
+          .finally(() => {
+            targetBusy = false;
+          });
+      }
+    }
+  }
+  if (now - lastUi > 100) {
+    updateUI();
+    lastUi = now;
+  }
+  if (renderAvailable && !document.hidden) scene?.render(session?.elapsed || 0);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);

@@ -1,25 +1,18 @@
 {
-  "name": "app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "yahooligan",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Procedural 3D workouts for Bluetooth smart trainers",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node scripts/serve.mjs",
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node verification/workout.test.mjs && node verification/ble.test.mjs",
+    "test:browser": "node verification/browser.cjs",
+    "scenery": "blender --background --python scripts/generate_scenery.py"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bigreddog/yahooligan.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/bigreddog/yahooligan/issues"
-  },
-  "homepage": "https://github.com/bigreddog/yahooligan#readme",
-  "dependencies": {
-    "@xmldom/xmldom": "^0.9.12",
-    "playwright": "^1.63.0"
+  "devDependencies": {
+    "playwright": "1.62.1"
   }
 }

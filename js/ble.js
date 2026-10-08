@@ -1,220 +1,344 @@
-// js/ble.js
+import { clamp } from "./workout.js";
 
-const BLE = {
-    // Services
-    SERVICES: {
-        HR: 0x180D,
-        POWER: 0x1818,
-        FTMS: 0x1826
-    },
-    // Characteristics
-    CHARACTERISTICS: {
-        HR_MEASUREMENT: 0x2A37,
-        POWER_MEASUREMENT: 0x2A63,
-        FTMS_CONTROL_POINT: 0x2AD9,
-        FTMS_INDOOR_BIKE_DATA: 0x2AD2,
-        FTMS_STATUS: 0x2ADA
-    },
+export function simulationCommand(grade) {
+  if (!Number.isFinite(grade)) throw new Error("Invalid grade.");
+  const bytes = new Uint8Array(7);
+  const view = new DataView(bytes.buffer);
+  bytes[0] = 0x11; // Set Indoor Bike Simulation Parameters (not treadmill inclination).
+  view.setInt16(1, 0, true); // Wind speed, 0.001 m/s.
+  view.setInt16(3, Math.round(clamp(grade, -5, 12) * 100), true); // Grade, 0.01%.
+  bytes[5] = 40; // Rolling resistance coefficient: 0.004 / 0.0001.
+  bytes[6] = 51; // Wind resistance coefficient: 0.51 / 0.01 kg/m.
+  return bytes;
+}
 
-    // State
-    trainerDevice: null,
-    hrDevice: null,
+export function powerCommand(watts, range = { min: 0, max: 1800, step: 1 }) {
+  if (!Number.isFinite(watts)) throw new Error("Invalid power.");
+  const bounded = clamp(watts, range.min, range.max);
+  const quantized = clamp(
+    range.min + Math.round((bounded - range.min) / range.step) * range.step,
+    range.min,
+    range.max,
+  );
+  const bytes = new Uint8Array(3);
+  bytes[0] = 0x05;
+  new DataView(bytes.buffer).setInt16(1, quantized, true);
+  return bytes;
+}
 
-    ftmsControlCharacteristic: null,
-
-    onPowerData: null,
-    onCadenceData: null,
-    onHrData: null,
-
-    async connectTrainer() {
+// Bluetooth write completion isn't an FTMS acknowledgement. Wait for indication 0x80.
+export class FTMSControl {
+  constructor(characteristic, timeout = 5000) {
+    this.characteristic = characteristic;
+    this.timeout = timeout;
+    this.tail = Promise.resolve();
+    this.generation = 0;
+    this.pending = null;
+    this.failed = false;
+    this.handleResponse = this.handleResponse.bind(this);
+    characteristic.addEventListener(
+      "characteristicvaluechanged",
+      this.handleResponse,
+    );
+  }
+  handleResponse(event) {
+    const value = event.target.value;
+    if (
+      !this.pending ||
+      value.byteLength < 3 ||
+      value.getUint8(0) !== 0x80 ||
+      value.getUint8(1) !== this.pending.opcode
+    )
+      return;
+    const pending = this.pending;
+    const result = value.getUint8(2);
+    if (result === 1) pending.resolve();
+    else
+      pending.reject(
+        new Error(
+          {
+            2: "Trainer does not support this command.",
+            3: "Trainer rejected the target.",
+            4: "Trainer could not complete the command.",
+            5: "Trainer control was lost. Close other training apps and reconnect.",
+          }[result] ?? `Trainer error ${result}.`,
+        ),
+      );
+  }
+  send(bytes) {
+    const generation = this.generation;
+    const task = this.tail.then(() => {
+      if (generation !== this.generation) throw new Error("Command cancelled.");
+      if (this.failed) throw new Error("Trainer control needs reconnection.");
+      return new Promise((resolve, reject) => {
+        const settle = (error) => {
+          clearTimeout(timer);
+          this.pending = null;
+          if (error) reject(error);
+          else resolve();
+        };
+        const timer = setTimeout(() => {
+          this.failed = true; // Late indications must not acknowledge a later command.
+          settle(
+            new Error("Trainer response timed out. Reconnect the trainer."),
+          );
+        }, this.timeout);
+        const pending = {
+          opcode: bytes[0],
+          resolve: () => settle(),
+          reject: settle,
+        };
+        this.pending = pending;
         try {
-            console.log("Requesting Bluetooth Device for Trainer...");
-            const device = await navigator.bluetooth.requestDevice({
-                filters: [{ services: [this.SERVICES.FTMS] }],
-                optionalServices: [this.SERVICES.POWER]
-            });
-
-            console.log("Connecting to GATT Server...");
-            const server = await device.gatt.connect();
-            this.trainerDevice = device;
-
-            device.addEventListener('gattserverdisconnected', () => {
-                console.log("Trainer disconnected");
-                this.trainerDevice = null;
-                this.ftmsControlCharacteristic = null;
-            });
-
-            // Set up Power/Cadence if available
-            try {
-                const powerService = await server.getPrimaryService(this.SERVICES.POWER);
-                const powerCharacteristic = await powerService.getCharacteristic(this.CHARACTERISTICS.POWER_MEASUREMENT);
-                await powerCharacteristic.startNotifications();
-                powerCharacteristic.addEventListener('characteristicvaluechanged', (e) => this.handlePowerData(e));
-                console.log("Power notifications started.");
-            } catch (err) {
-                console.warn("Could not set up Cycling Power service. Falling back to FTMS Indoor Bike Data if needed.", err);
-            }
-
-            // Set up FTMS
-            const ftmsService = await server.getPrimaryService(this.SERVICES.FTMS);
-
-            // Indoor Bike Data for power/cadence fallback (if CPS not available)
-            try {
-                const indoorBikeData = await ftmsService.getCharacteristic(this.CHARACTERISTICS.FTMS_INDOOR_BIKE_DATA);
-                await indoorBikeData.startNotifications();
-                indoorBikeData.addEventListener('characteristicvaluechanged', (e) => this.handleIndoorBikeData(e));
-                console.log("Indoor Bike Data notifications started.");
-            } catch (err) {
-                console.log("Could not setup Indoor Bike Data", err);
-            }
-
-            // Control Point for SIM/ERG commands
-            this.ftmsControlCharacteristic = await ftmsService.getCharacteristic(this.CHARACTERISTICS.FTMS_CONTROL_POINT);
-
-            // Request control
-            await this.requestControl();
-
-            return true;
+          const write =
+            this.characteristic.writeValueWithResponse ??
+            this.characteristic.writeValue;
+          Promise.resolve(write.call(this.characteristic, bytes)).catch(
+            (error) => {
+              if (this.pending === pending) {
+                this.failed = true;
+                settle(error);
+              }
+            },
+          );
         } catch (error) {
-            console.error("Trainer connection failed", error);
-            return false;
+          this.failed = true;
+          settle(error);
         }
-    },
+      });
+    });
+    this.tail = task.catch(() => {});
+    return task;
+  }
+  cancelQueued() {
+    this.generation++;
+  }
+  dispose() {
+    this.cancelQueued();
+    this.pending?.reject(new Error("Trainer disconnected."));
+    this.characteristic.removeEventListener(
+      "characteristicvaluechanged",
+      this.handleResponse,
+    );
+  }
+}
 
-    async connectHR() {
-        try {
-            console.log("Requesting Bluetooth Device for HR...");
-            const device = await navigator.bluetooth.requestDevice({
-                filters: [{ services: [this.SERVICES.HR] }]
-            });
-
-            console.log("Connecting to GATT Server...");
-            const server = await device.gatt.connect();
-            this.hrDevice = device;
-
-            device.addEventListener('gattserverdisconnected', () => {
-                console.log("HR disconnected");
-                this.hrDevice = null;
-            });
-
-            const service = await server.getPrimaryService(this.SERVICES.HR);
-            const characteristic = await service.getCharacteristic(this.CHARACTERISTICS.HR_MEASUREMENT);
-            await characteristic.startNotifications();
-            characteristic.addEventListener('characteristicvaluechanged', (e) => this.handleHrData(e));
-
-            console.log("HR notifications started.");
-            return true;
-        } catch (error) {
-            console.error("HR connection failed", error);
-            return false;
-        }
-    },
-
-    handlePowerData(event) {
-        const value = event.target.value;
-        const flags = value.getUint16(0, true);
-        const power = value.getInt16(2, true);
-
-        if (this.onPowerData) this.onPowerData(power);
-
-        // Check if crank data (cadence) is present
-        const hasCrankData = (flags & 0x20) !== 0;
-        if (hasCrankData) {
-            // Simplified cadence calculation logic would go here.
-            // Full CPS parsing requires maintaining previous revolution count and time.
-            // For this scaffold, we notify app.js that data arrived.
-            // Often, Indoor Bike Data is easier for raw instant cadence.
-        }
-    },
-
-    handleIndoorBikeData(event) {
-        const value = event.target.value;
-        const flags = value.getUint16(0, true);
-
-        let offset = 2;
-
-        // Instantaneous Speed
-        const hasSpeed = (flags & 0x01) === 0;
-        if (hasSpeed) offset += 2;
-
-        // Average Speed
-        if ((flags & 0x02) !== 0) offset += 2;
-
-        // Instantaneous Cadence
-        const hasCadence = (flags & 0x04) !== 0;
-        if (hasCadence) {
-            const cadence = value.getUint16(offset, true) / 2; // RPM is 0.5/bit
-            if (this.onCadenceData) this.onCadenceData(cadence);
-            offset += 2;
-        }
-
-        // Average Cadence
-        if ((flags & 0x08) !== 0) offset += 2;
-
-        // Total Distance
-        if ((flags & 0x10) !== 0) offset += 3;
-
-        // Resistance Level
-        if ((flags & 0x20) !== 0) offset += 2;
-
-        // Instantaneous Power
-        const hasPower = (flags & 0x40) !== 0;
-        if (hasPower) {
-            const power = value.getInt16(offset, true);
-            if (this.onPowerData) this.onPowerData(power); // Call if CPS didn't already
-            offset += 2;
-        }
-    },
-
-    handleHrData(event) {
-        const value = event.target.value;
-        const flags = value.getUint8(0);
-        const format = flags & 0x01;
-        const hr = format === 1 ? value.getUint16(1, true) : value.getUint8(1);
-
-        if (this.onHrData) this.onHrData(hr);
-    },
-
-    async requestControl() {
-        if (!this.ftmsControlCharacteristic) return;
-        try {
-            // Opcode 0x00: Request Control
-            const command = new Uint8Array([0x00]);
-            await this.ftmsControlCharacteristic.writeValue(command);
-            console.log("Requested FTMS control.");
-        } catch (error) {
-            console.error("Failed to request FTMS control", error);
-        }
-    },
-
-    async setTargetPower(watts) {
-        if (!this.ftmsControlCharacteristic) return;
-        try {
-            // Opcode 0x05: Set Target Power
-            const buffer = new ArrayBuffer(3);
-            const view = new DataView(buffer);
-            view.setUint8(0, 0x05); // Opcode
-            view.setInt16(1, watts, true); // Watts (Little Endian)
-            await this.ftmsControlCharacteristic.writeValue(new Uint8Array(buffer));
-        } catch (error) {
-            console.error("Failed to set Target Power", error);
-        }
-    },
-
-    async setTargetInclination(gradePercent) {
-        if (!this.ftmsControlCharacteristic) return;
-        try {
-            // Opcode 0x03: Set Target Inclination
-            // Resolution: 0.01%
-            const val = Math.round(gradePercent * 100);
-
-            const buffer = new ArrayBuffer(3);
-            const view = new DataView(buffer);
-            view.setUint8(0, 0x03); // Opcode
-            view.setInt16(1, val, true); // Incline (Little Endian)
-            await this.ftmsControlCharacteristic.writeValue(new Uint8Array(buffer));
-        } catch (error) {
-            console.error("Failed to set Target Inclination", error);
-        }
+export class Trainer {
+  constructor({ onMetrics = () => {}, onDisconnect = () => {} } = {}) {
+    this.onMetrics = onMetrics;
+    this.onDisconnect = onDisconnect;
+    this.device = null;
+    this.control = null;
+    this.capabilities = { SIM: false, ERG: false };
+    this.powerRange = { min: 0, max: 1800, step: 1 };
+    this.lastCrank = null;
+    this.lastTarget = null;
+  }
+  get connected() {
+    return !!this.device?.gatt.connected && !!this.control;
+  }
+  async connect() {
+    if (!navigator.bluetooth || !globalThis.isSecureContext)
+      throw new Error(
+        "Trainer connection requires HTTPS and a browser with Web Bluetooth, such as Chrome on Android or desktop.",
+      );
+    this.disconnect();
+    const device = await navigator.bluetooth.requestDevice({
+      filters: [{ services: [0x1826] }],
+      optionalServices: [0x1818],
+    });
+    this.device = device;
+    device.addEventListener("gattserverdisconnected", () => {
+      if (this.device !== device) return;
+      this.control?.dispose();
+      this.control = null;
+      this.lastTarget = null;
+      this.lastCrank = null;
+      this.onDisconnect();
+    });
+    try {
+      const server = await device.gatt.connect();
+      const service = await server.getPrimaryService(0x1826);
+      const feature = await (
+        await service.getCharacteristic(0x2acc)
+      ).readValue();
+      if (feature.byteLength < 8)
+        throw new Error("Trainer returned incomplete FTMS capabilities.");
+      const targets = feature.getUint32(4, true);
+      this.capabilities = {
+        SIM: !!(targets & (1 << 13)),
+        ERG: !!(targets & (1 << 3)),
+      };
+      if (!this.capabilities.SIM && !this.capabilities.ERG)
+        throw new Error(
+          "Trainer does not expose simulation or target-power control. Check KICKR firmware.",
+        );
+      if (this.capabilities.ERG) {
+        const range = await (
+          await service.getCharacteristic(0x2ad8)
+        ).readValue();
+        if (range.byteLength < 6)
+          throw new Error("Trainer returned an incomplete power range.");
+        this.powerRange = {
+          min: range.getInt16(0, true),
+          max: range.getInt16(2, true),
+          step: range.getUint16(4, true),
+        };
+        if (
+          this.powerRange.step <= 0 ||
+          this.powerRange.max < this.powerRange.min
+        )
+          throw new Error("Trainer power range is invalid.");
+      }
+      const characteristic = await service.getCharacteristic(0x2ad9);
+      this.control = new FTMSControl(characteristic);
+      await characteristic.startNotifications();
+      await this.control.send(new Uint8Array([0x00])); // Request Control.
+      const data = await service.getCharacteristic(0x2ad2);
+      await data.startNotifications();
+      data.addEventListener("characteristicvaluechanged", (event) =>
+        this.parseIndoorBike(event.target.value),
+      );
+      // Indoor Bike Data supplies power/cadence on KICKR Core. CPS is optional fallback.
+      try {
+        const cps = await server.getPrimaryService(0x1818);
+        const power = await cps.getCharacteristic(0x2a63);
+        await power.startNotifications();
+        power.addEventListener("characteristicvaluechanged", (event) =>
+          this.parsePower(event.target.value),
+        );
+      } catch {
+        /* Optional service. */
+      }
+      return device.name || "KICKR Core";
+    } catch (error) {
+      this.disconnect();
+      throw error;
     }
-};
+  }
+  parseIndoorBike(value) {
+    if (value.byteLength < 2) return;
+    const flags = value.getUint16(0, true);
+    let offset = 2;
+    const metrics = {};
+    const read = (length, parse) => {
+      if (offset + length > value.byteLength) return false;
+      parse?.(offset);
+      offset += length;
+      return true;
+    };
+    if (!(flags & 1) && !read(2)) return;
+    if (flags & 2 && !read(2)) return;
+    if (
+      flags & 4 &&
+      !read(2, (at) => {
+        metrics.cadence = value.getUint16(at, true) / 2;
+      })
+    )
+      return;
+    if (flags & 8 && !read(2)) return;
+    if (flags & 16 && !read(3)) return;
+    if (flags & 32 && !read(2)) return;
+    if (
+      flags & 64 &&
+      !read(2, (at) => {
+        metrics.power = Math.max(0, value.getInt16(at, true));
+      })
+    )
+      return;
+    if (Object.keys(metrics).length) this.onMetrics(metrics);
+  }
+  parsePower(value) {
+    if (value.byteLength < 4) return;
+    const metrics = { power: Math.max(0, value.getInt16(2, true)) };
+    const flags = value.getUint16(0, true);
+    const at =
+      4 + (flags & 1 ? 1 : 0) + (flags & 4 ? 2 : 0) + (flags & 16 ? 6 : 0);
+    if (flags & 32 && value.byteLength >= at + 4) {
+      const crank = {
+        revs: value.getUint16(at, true),
+        time: value.getUint16(at + 2, true),
+      };
+      if (this.lastCrank) {
+        const deltaTime = (crank.time - this.lastCrank.time + 65536) % 65536;
+        const deltaRevs = (crank.revs - this.lastCrank.revs + 65536) % 65536;
+        if (deltaTime > 0) {
+          const cadence = (deltaRevs * 60 * 1024) / deltaTime;
+          if (cadence < 250) metrics.cadence = cadence;
+        }
+      }
+      this.lastCrank = crank;
+    }
+    this.onMetrics(metrics);
+  }
+  async start(mode, sample) {
+    if (!this.connected)
+      throw new Error("Connect the trainer before starting.");
+    if (!this.capabilities[mode])
+      throw new Error(`Trainer does not support ${mode}.`);
+    await this.control.send(new Uint8Array([0x07]));
+    this.lastTarget = null;
+    await this.setTarget(mode, sample);
+  }
+  async setTarget(mode, sample) {
+    if (!this.connected) throw new Error("Trainer disconnected.");
+    if (!this.capabilities[mode])
+      throw new Error(`Trainer does not support ${mode}.`);
+    const bytes =
+      mode === "SIM"
+        ? simulationCommand(Math.round(sample.grade * 10) / 10)
+        : powerCommand(sample.watts, this.powerRange);
+    const key = Array.from(bytes).join(",");
+    if (key === this.lastTarget) return;
+    await this.control.send(bytes);
+    this.lastTarget = key;
+  }
+  async stop(pause = false) {
+    if (!this.connected) return;
+    this.control.cancelQueued();
+    this.lastTarget = null;
+    // Switch out of ERG load before stopping; don't leave a high target behind.
+    if (this.capabilities.SIM) await this.control.send(simulationCommand(0));
+    else if (this.capabilities.ERG)
+      await this.control.send(
+        powerCommand(this.powerRange.min, this.powerRange),
+      );
+    await this.control.send(new Uint8Array([0x08, pause ? 0x02 : 0x01]));
+    this.lastTarget = null;
+  }
+  disconnect() {
+    this.control?.dispose();
+    this.control = null;
+    const device = this.device;
+    this.device = null;
+    device?.gatt.disconnect();
+    this.lastTarget = null;
+    this.lastCrank = null;
+  }
+}
+
+export async function connectHeartRate(onMetrics, onDisconnect = () => {}) {
+  if (!navigator.bluetooth || !globalThis.isSecureContext)
+    throw new Error("Heart rate requires HTTPS and Web Bluetooth.");
+  const device = await navigator.bluetooth.requestDevice({
+    filters: [{ services: [0x180d] }],
+  });
+  try {
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService(0x180d);
+    const characteristic = await service.getCharacteristic(0x2a37);
+    await characteristic.startNotifications();
+    characteristic.addEventListener("characteristicvaluechanged", (event) => {
+      const value = event.target.value;
+      if (value.byteLength < 2) return;
+      const wide = value.getUint8(0) & 1;
+      if (wide && value.byteLength < 3) return;
+      onMetrics({ hr: wide ? value.getUint16(1, true) : value.getUint8(1) });
+    });
+    device.addEventListener("gattserverdisconnected", onDisconnect);
+    return device;
+  } catch (error) {
+    device.gatt.disconnect();
+    throw error;
+  }
+}

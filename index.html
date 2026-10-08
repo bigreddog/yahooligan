@@ -1,99 +1,282 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yahooligan - Interactive Trainer</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <!-- Route Selection Overlay -->
-    <div id="route-chooser-overlay">
-        <div class="route-chooser-content">
-            <h1>Yahooligan Virtual Ride</h1>
-            <p>Select a route to begin:</p>
-            <select id="route-select">
-                <!-- Populated via JS -->
-            </select>
-            <button id="btn-confirm-route">Load Route</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#152e29" />
+    <title>Yahooligan · Your next summit</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23152e29'/%3E%3Cpath d='M6 29L18 10L26 23L30 17L36 29' fill='none' stroke='%23edc78d' stroke-width='3'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="importmap">
+      { "imports": { "three": "./js/vendor/three/three.module.min.js" } }
+    </script>
+  </head>
+  <body>
+    <canvas
+      id="route-canvas"
+      aria-label="Live 3D alpine workout route"
+    ></canvas>
+    <div class="scene-vignette" aria-hidden="true"></div>
+    <header>
+      <a class="brand" href="./" aria-label="Yahooligan home"
+        ><svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M5 29 18 9l9 14 5-8 7 14M13 17l5 4 5-4" /></svg
+        ><span>yahooligan<span class="brand-dot">.</span></span></a
+      >
+      <div class="header-actions">
+        <span class="environment-label">ALPINE / PROCEDURAL</span
+        ><button id="btn-camera" class="icon-button" title="Switch camera">
+          Follow camera</button
+        ><button
+          id="btn-fullscreen"
+          class="icon-button"
+          aria-label="Toggle fullscreen"
+        >
+          ⛶
+        </button>
+      </div>
+    </header>
+    <main>
+      <section
+        id="setup-panel"
+        class="glass setup-panel"
+        aria-labelledby="setup-title"
+      >
+        <div class="eyebrow">
+          <span class="live-dot"></span> A NEW ROAD, EVERY RIDE
         </div>
-    </div>
-
-    <!-- Background YouTube Video -->
-    <div id="video-background">
-        <div id="youtube-player"></div>
-    </div>
-
-    <!-- HUD Overlay -->
-    <div id="hud" style="display: none;">
-        <!-- Top Bar: Metrics -->
-        <div id="metrics-bar" class="hud-panel">
-            <div class="metric">
-                <span class="label">POWER</span>
-                <span id="metric-power" class="value">--</span> <span class="unit">W</span>
+        <h1 id="setup-title">Your next<br /><em>summit.</em></h1>
+        <p class="intro">
+          Build a workout. Find your rhythm.<br />Let the road unfold.
+        </p>
+        <form id="workout-form">
+          <label for="profile">WORKOUT PROFILE</label
+          ><select id="profile" name="profile">
+            <option value="recovery">Recovery</option>
+            <option value="steady">Steady ride</option>
+            <option value="rolling" selected>Rolling hills</option>
+            <option value="climb">Sustained climb</option>
+            <option value="repeats">Hill repeats</option>
+            <option value="intervals">Intervals</option>
+          </select>
+          <p id="profile-description" class="field-help"></p>
+          <div class="field-row">
+            <div>
+              <label for="minutes">DURATION <span>min</span></label
+              ><input
+                id="minutes"
+                type="number"
+                min="5"
+                max="180"
+                step="1"
+                value="30"
+                required
+              />
             </div>
-            <div class="metric">
-                <span class="label">CADENCE</span>
-                <span id="metric-cadence" class="value">--</span> <span class="unit">rpm</span>
+            <div>
+              <label for="start-grade">STARTING GRADE <span>%</span></label
+              ><input
+                id="start-grade"
+                type="number"
+                min="-5"
+                max="10"
+                step="0.5"
+                value="0"
+                required
+              />
             </div>
-            <div class="metric">
-                <span class="label">HR</span>
-                <span id="metric-hr" class="value">--</span> <span class="unit">bpm</span>
-            </div>
-            <div class="metric">
-                <span class="label">SPEED</span>
-                <span id="metric-speed" class="value">--</span> <span class="unit">km/h</span>
-            </div>
-            <div class="metric">
-                <span class="label">DIST</span>
-                <span id="metric-distance" class="value">0.00</span> <span class="unit">km</span>
-            </div>
-            <div class="metric">
-                <span class="label">TIME</span>
-                <span id="metric-time" class="value">00:00:00</span>
-            </div>
-            <div class="metric">
-                <span class="label">GRADE</span>
-                <span id="metric-grade" class="value">--</span> <span class="unit">%</span>
-            </div>
-            <div class="metric">
-                <span class="label">TARGET W</span>
-                <span id="metric-target-power" class="value">--</span> <span class="unit">W</span>
-            </div>
+          </div>
+          <label for="start-watts">STARTING POWER <span>W</span></label
+          ><input
+            id="start-watts"
+            type="number"
+            min="50"
+            max="500"
+            step="5"
+            value="150"
+            required
+          />
+          <fieldset class="mode-switch">
+            <legend>TRAINER MODE</legend>
+            <label
+              ><input type="radio" name="mode" value="SIM" checked /><span
+                >SIM <small>Follow the hills</small></span
+              ></label
+            ><label
+              ><input type="radio" name="mode" value="ERG" /><span
+                >ERG <small>Hold target watts</small></span
+              ></label
+            >
+          </fieldset>
+          <p id="mode-description" class="field-help">
+            Resistance follows the road grade. Starting power is saved for ERG.
+          </p>
+          <button id="btn-prepare" class="primary" type="submit">
+            Prepare workout <span>↗</span></button
+          ><button id="btn-demo" type="button" class="text-button">
+            Explore with demo power →
+          </button>
+        </form>
+        <div class="setup-footer">
+          <span>Wahoo KICKR Core · Bluetooth FTMS</span
+          ><button id="btn-regenerate" class="text-button" type="button">
+            New scenery ↻
+          </button>
         </div>
-
-        <!-- Top Controls / Options (Below Data Bar) -->
-        <div class="top-controls hud-panel" style="display:flex; justify-content: flex-end; padding: 5px; background: transparent; border: none;">
-            <button id="btn-fullscreen" title="Toggle Fullscreen">⛶</button>
+      </section>
+      <section id="hud" hidden aria-label="Workout dashboard">
+        <div class="metrics glass">
+          <div>
+            <span>POWER</span><strong id="metric-power">—</strong
+            ><small>W</small>
+          </div>
+          <div>
+            <span>CADENCE</span><strong id="metric-cadence">—</strong
+            ><small>rpm</small>
+          </div>
+          <div>
+            <span>HEART RATE</span><strong id="metric-hr">—</strong
+            ><small>bpm</small>
+          </div>
+          <div>
+            <span>VIRTUAL SPEED</span><strong id="metric-speed">0.0</strong
+            ><small>km/h</small>
+          </div>
+          <div>
+            <span>DISTANCE</span><strong id="metric-distance">0.00</strong
+            ><small>km</small>
+          </div>
+          <div class="target-metric">
+            <span id="target-label">SIM GRADE</span
+            ><strong id="metric-target">0.0</strong
+            ><small id="target-unit">%</small>
+          </div>
         </div>
-
-        <!-- Controls: Bottom or Side -->
-        <div id="controls-panel" class="hud-panel">
-            <button id="btn-connect-trainer">Trainer</button>
-            <button id="btn-connect-hr">HR</button>
-
-            <div class="mode-toggles">
-                <label><input type="radio" name="mode" value="SIM" checked> SIM</label>
-                <label><input type="radio" name="mode" value="ERG"> ERG</label>
-            </div>
-
-            <div id="erg-controls" style="display:none;">
-                <label>Target W: <input type="number" id="input-target-watts" value="150" step="5" style="width: 50px;"></label>
-                <button id="btn-set-watts">Set</button>
-            </div>
-
-            <button id="btn-start-route">Start</button>
-
-            <button id="btn-download-tcx" disabled>TCX</button>
-            <a id="btn-upload-strava" href="https://www.strava.com/upload/select" target="_blank" class="button disabled">Strava</a>
+        <div class="phase-card glass">
+          <div class="eyebrow" id="session-status">READY TO RIDE</div>
+          <h2 id="current-phase">Warm-up</h2>
+          <p id="next-phase">Up next: Rolling climb 1</p>
+          <div class="phase-time">
+            <strong id="remaining">30:00</strong><span>remaining</span>
+          </div>
         </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <script src="js/ble.js"></script>
-    <script src="js/physics.js"></script>
-    <script src="js/tcx.js"></script>
-    <script src="js/app.js"></script>
-</body>
+        <div class="controls glass">
+          <button id="btn-trainer">Connect KICKR</button
+          ><button id="btn-hr">Connect HR</button
+          ><label class="compact-mode" for="ride-mode"
+            >MODE
+            <select id="ride-mode">
+              <option value="SIM">SIM</option>
+              <option value="ERG">ERG</option>
+            </select></label
+          ><button id="btn-start" class="primary">Start ride</button
+          ><button id="btn-finish" disabled>Finish</button
+          ><button id="btn-edit">New workout</button
+          ><button id="btn-tcx" disabled>Download TCX</button
+          ><a
+            href="https://www.strava.com/upload/select"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Strava ↗</a
+          >
+        </div>
+      </section>
+      <section
+        id="course-panel"
+        class="course-panel glass"
+        aria-labelledby="course-title"
+      >
+        <div class="course-heading">
+          <div>
+            <span class="eyebrow">YOUR COURSE</span>
+            <h2 id="course-title">Rolling hills</h2>
+          </div>
+          <div class="course-summary">
+            <span id="course-duration">30 MIN</span
+            ><span id="course-mode">SIM</span
+            ><span id="course-seed">ROUTE 0001</span>
+          </div>
+        </div>
+        <div class="chart-legend">
+          <span><i class="grade-key"></i> Grade %</span
+          ><span id="watts-legend" hidden
+            ><i class="watts-key"></i> Target watts</span
+          ><span class="chart-caption">Warm-up & cool-down included</span>
+        </div>
+        <svg
+          id="profile-chart"
+          viewBox="0 0 1000 140"
+          role="img"
+          aria-label="Workout grade profile and current progress"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="grade-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#e8c28d" stop-opacity=".27" />
+              <stop offset="100%" stop-color="#e8c28d" stop-opacity=".015" />
+            </linearGradient>
+            <clipPath id="done-clip">
+              <rect id="done-width" width="0" height="140" />
+            </clipPath>
+          </defs>
+          <g id="phase-grid"></g>
+          <path id="grade-area" fill="url(#grade-fill)" />
+          <path
+            id="done-area"
+            fill="#9fcab2"
+            opacity=".2"
+            clip-path="url(#done-clip)"
+          />
+          <path
+            id="grade-line"
+            fill="none"
+            stroke="#e8c28d"
+            stroke-width="2"
+            vector-effect="non-scaling-stroke"
+          />
+          <path
+            id="watts-line"
+            fill="none"
+            stroke="#8ac2cb"
+            stroke-width="1.5"
+            stroke-dasharray="4 4"
+            vector-effect="non-scaling-stroke"
+            hidden
+          />
+          <line
+            id="chart-marker"
+            x1="0"
+            x2="0"
+            y1="0"
+            y2="140"
+            stroke="#f8f0dd"
+            stroke-width="1"
+            vector-effect="non-scaling-stroke"
+          />
+          <circle id="chart-dot" r="4" fill="#fff3d8" />
+        </svg>
+        <div class="chart-axis">
+          <span id="chart-start">0 MIN</span
+          ><span id="progress-label">0% complete</span
+          ><span id="chart-end">30 MIN</span>
+        </div>
+      </section>
+    </main>
+    <div
+      id="message"
+      class="message"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+    <noscript
+      ><p class="message">
+        Enable JavaScript to generate and ride a workout.
+      </p></noscript
+    >
+    <script type="module" src="js/app.js"></script>
+  </body>
 </html>
