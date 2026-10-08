@@ -11,7 +11,7 @@ npm ci
 npm start
 ```
 
-Open `http://localhost:8000`. Choose **Prepare workout**, connect your KICKR, then start. **Explore with demo power** runs without Bluetooth. Use **Follow camera** to switch from first-person to the cyclist view.
+Open `http://localhost:8000`. Choose **Prepare workout**, connect your KICKR, then start. **Explore with demo power** runs without Bluetooth. Phones start in the cyclist view; use the camera button to switch views.
 
 Web Bluetooth requires a secure context and a compatible browser, such as Chrome on Android or desktop. Localhost is suitable for desktop development; accessing an HTTP LAN address from a phone is not a secure context. Serve the production build over HTTPS for phone/trainer use. Ordinary iOS Safari does not expose Web Bluetooth.
 
@@ -34,6 +34,14 @@ Deploy the contents of `dist/` to any static HTTPS host. Files use relative URLs
 The road, current grade and progress marker follow **active workout time**, so the workout finishes in the duration you chose. The scenic road advances at a nominal 25.2 km/h. Measured power feeds a separate virtual-speed/distance simulation; the animated camera is not a measurement of wheel speed. In ERG, virtual speed uses flat-road physics. Regenerating scenery preserves all workout targets.
 
 Pauses freeze the course, clock and recording. Changing mode briefly pauses control, clears queued old targets and applies the new mode before resuming. The app pauses if hidden, disconnected, interrupted by a long browser stall, or missing power telemetry for 10 seconds. Resume explicitly after reconnecting. Finishing or pausing attempts a neutral load followed by an acknowledged FTMS stop/pause. If a control command fails, the app reports the failure and disconnects; it cannot guarantee a command was applied by disconnected hardware.
+
+## Ride display
+
+Power, cadence, heart rate and the current grade or ERG target stay visible in a compact strip. Remaining time sits just below, alongside **Ride data**, camera and fullscreen controls. Branding becomes a faint watermark on the route.
+
+The thin course profile shows your position and current phase; tap it to expand the chart. **Ride data** opens speed, distance, elapsed time, mode and the next phase. **Ride tools** opens trainer connections, SIM/ERG selection, finish, export and new-workout controls. Pause/resume stays within reach. Close panels with their close button, Escape or a tap on the road; opening a panel does not pause your workout.
+
+Brief panels announce each new minute, phase and substantial target change, then disappear after 4.5 seconds. Target alerts require a cumulative 1 percentage point grade change in SIM or 15 W in ERG, with at least 20 seconds between these alerts. Ready, pause and finish notices stay visible until you open a panel or resume. Phone landscape places the compact chart and pause/tools controls in opposite lower corners to keep the cyclist clear.
 
 ## KICKR Core
 
@@ -70,4 +78,4 @@ npm start
 npm run test:browser
 ```
 
-To use system Chromium, set `CHROMIUM_PATH=/usr/bin/chromium`. `TEST_BASE_URL` can select another running server. Browser screenshots and a sample export are written to the ignored `verification/results/` directory. Tests cover duration, transitions, physics, export, FTMS packets/acknowledgements/cancellation/timeouts, capability discovery, 3D slope alignment, mobile layouts and session controls. They cannot certify physical trainer behavior.
+To use system Chromium, set `CHROMIUM_PATH=/usr/bin/chromium`. `TEST_BASE_URL` can select another running server. Browser screenshots and a sample export are written to the ignored `verification/results/` directory. Tests cover duration, transitions, physics, export, FTMS packets/acknowledgements/cancellation/timeouts, capability discovery, 3D slope alignment, portrait/landscape/small-phone layouts, panel controls, workout alerts and session controls. They cannot certify physical trainer behavior.

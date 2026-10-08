@@ -9,9 +9,12 @@ import { Session } from "./session.js";
 import { Trainer, connectHeartRate, powerCommand } from "./ble.js";
 import { RouteScene } from "./route-scene.js";
 import { downloadTCX } from "./tcx.js";
+import { RidePresentation } from "./ride-presentation.js";
 
 const $ = (id) => document.getElementById(id);
 const form = $("workout-form");
+const presentation = new RidePresentation();
+let cameraChosen = false;
 let seed = Math.floor(Math.random() * 100000);
 let workout, session, scene, lastSession, hrDevice;
 let demo = false,
@@ -35,6 +38,7 @@ const trainer = new Trainer({
   onDisconnect: () => {
     if (demo) return;
     session?.pause();
+    presentation.open("tools");
     metrics.power = 0;
     metrics.cadence = 0;
     received.power = 0;
@@ -176,6 +180,10 @@ function prepare(isDemo) {
   $("setup-panel").hidden = true;
   $("hud").hidden = false;
   document.body.classList.add("riding");
+  presentation.enter({ demo });
+  if (scene && !cameraChosen && matchMedia("(max-width: 849px)").matches)
+    scene.cameraMode = "follow";
+  updateCameraButton();
   $("ride-mode").value = session.mode;
   scene?.setWorkout(workout);
   buildChart();
@@ -187,6 +195,7 @@ function prepare(isDemo) {
 async function controlFailure(error) {
   session?.pause();
   trainer.disconnect();
+  presentation.open("tools");
   showMessage(
     `${error.message} Workout paused. Reconnect the trainer before resuming.`,
     true,
@@ -210,6 +219,7 @@ async function startSession() {
   if (!session || session.status === "finished") return;
   if (!demo) {
     if (!trainer.connected) {
+      presentation.open("tools");
       showMessage(
         "Connect your KICKR Core before starting, or choose demo from New workout.",
         true,
@@ -230,6 +240,7 @@ async function startSession() {
   }
   $("message").hidden = true;
   session.start();
+  presentation.close();
   powerWatchStart = performance.now();
   lastFrame = performance.now();
   lastControl = Math.floor(session.elapsed);
@@ -358,6 +369,7 @@ $("ride-mode").addEventListener("change", () => {
       powerWatchStart = lastFrame;
     }
     lastControl = -1;
+    presentation.close(true);
   });
 });
 $("btn-edit").addEventListener("click", () =>
@@ -365,12 +377,15 @@ $("btn-edit").addEventListener("click", () =>
     await pauseSession();
     if (session.records.length) lastSession = session;
     document.body.classList.remove("riding");
+    presentation.exit();
+    updateCameraButton();
     $("setup-panel").hidden = false;
     $("hud").hidden = true;
     demo = false;
     document.body.classList.remove("is-demo");
     form.elements.mode.value = session.mode;
     preview();
+    $("profile").focus();
     if (lastSession)
       showMessage(
         "Your previous activity remains available from Download TCX until your next ride records data.",
@@ -383,10 +398,29 @@ $("btn-tcx").addEventListener("click", () =>
 $("btn-camera").addEventListener("click", () => {
   if (!scene) return;
   scene.cameraMode = scene.cameraMode === "first" ? "follow" : "first";
-  $("btn-camera").textContent =
-    scene.cameraMode === "first" ? "Follow camera" : "First-person camera";
+  cameraChosen = true;
+  updateCameraButton();
   scene.render(session?.elapsed || 0);
 });
+function updateCameraButton() {
+  const follow = scene?.cameraMode === "follow";
+  const short =
+    document.body.classList.contains("riding") &&
+    matchMedia("(max-width: 849px)").matches;
+  $("btn-camera").textContent = follow
+    ? short
+      ? "First-person"
+      : "First-person camera"
+    : short
+      ? "Cyclist view"
+      : "Follow camera";
+  $("btn-camera").setAttribute(
+    "aria-label",
+    follow ? "Switch to first-person camera" : "Switch to follow camera",
+  );
+  $("btn-camera").setAttribute("aria-pressed", String(follow));
+}
+window.addEventListener("resize", updateCameraButton);
 $("btn-fullscreen").addEventListener("click", async () => {
   try {
     if (document.fullscreenElement) await document.exitFullscreen();
@@ -441,12 +475,22 @@ function updateUI() {
   $("metric-target").textContent = erg ? watts : sample.grade.toFixed(1);
   $("target-unit").textContent = erg ? "W" : "%";
   $("remaining").textContent = formatTime(workout.duration - session.elapsed);
+  $("metric-elapsed").textContent = formatTime(session.elapsed);
+  $("data-mode").textContent = session.mode;
   $("session-status").textContent =
     `${demo ? "DEMO · " : ""}${{ ready: "READY TO RIDE", running: "ON THE ROAD", paused: "PAUSED", finished: "RIDE COMPLETE" }[session.status]}`;
   $("current-phase").textContent = finished ? "Finish line" : sample.phase;
   $("next-phase").textContent = finished
     ? `${formatTime(session.elapsed)} active · ${(session.distance / 1000).toFixed(2)} virtual km`
     : `${sample.next} in ${formatTime(sample.untilNext)}`;
+  $("data-next").textContent = $("next-phase").textContent;
+  $("ride-status").textContent =
+    `${demo ? "DEMO · " : ""}${{ ready: "READY", running: "RIDING", paused: "PAUSED", finished: "COMPLETE" }[session.status]}`;
+  $("profile-phase").textContent = finished ? "Ride complete" : sample.phase;
+  $("profile-completion").textContent = `${Math.round(sample.progress * 100)}%`;
+  $("event-detail").textContent = erg
+    ? `Target ${watts} W`
+    : `${sample.grade.toFixed(1)}% grade`;
   $("btn-start").textContent = running
     ? "Pause ride"
     : session.status === "paused"
@@ -486,6 +530,13 @@ function updateUI() {
     "aria-label",
     `${workout.name}: ${Math.round(sample.progress * 100)}% complete, current grade ${sample.grade.toFixed(1)}%, ${erg ? `${watts} target watts, ` : ""}${formatTime(workout.duration - session.elapsed)} remaining.`,
   );
+  if (!busy)
+    presentation.update({
+      status: session.status,
+      mode: session.mode,
+      elapsed: session.elapsed,
+      sample,
+    });
 }
 
 try {
@@ -502,12 +553,6 @@ try {
   );
 }
 preview();
-new ResizeObserver(([entry]) => {
-  document.body.style.setProperty(
-    "--controls-height",
-    `${entry.contentRect.height + 26}px`,
-  );
-}).observe(document.querySelector(".controls"));
 
 function frame(now) {
   const dt = (now - lastFrame) / 1000;

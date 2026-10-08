@@ -5,6 +5,10 @@ const path = require("node:path");
 
 const base = process.env.TEST_BASE_URL || "http://127.0.0.1:8000";
 const output = path.resolve(__dirname, "results");
+const openTools = async (page) => {
+  if (!(await page.locator("#ride-tools").isVisible()))
+    await page.click("#btn-tools");
+};
 
 (async () => {
   await fs.mkdir(output, { recursive: true });
@@ -105,6 +109,7 @@ const output = path.resolve(__dirname, "results");
     const remaining = await page.locator("#remaining").textContent();
     await page.waitForTimeout(600);
     assert.equal(await page.locator("#remaining").textContent(), remaining);
+    await openTools(page);
     await page.selectOption("#ride-mode", "ERG");
     await page.waitForFunction(
       () =>
@@ -124,6 +129,7 @@ const output = path.resolve(__dirname, "results");
         document.querySelector("#session-status").textContent ===
         "DEMO · ON THE ROAD",
     );
+    await openTools(page);
     await page.click("#btn-finish");
     await page.waitForFunction(
       () =>
@@ -185,23 +191,97 @@ const output = path.resolve(__dirname, "results");
       ),
       false,
     );
+    await mobile.waitForFunction(
+      () => document.querySelector(".phase-card").hidden,
+    );
+    assert.equal(
+      await mobile.locator("#btn-camera").getAttribute("aria-pressed"),
+      "true",
+    );
+    const checkRideLayout = async () => {
+      const geometry = await mobile.evaluate(() => {
+        const rect = (selector) =>
+          document.querySelector(selector).getBoundingClientRect();
+        const chart = rect("#course-panel"),
+          dock = rect(".ride-dock");
+        const metrics = rect(".metrics"),
+          fullscreen = rect("#btn-fullscreen");
+        const intersects = (a, b) =>
+          a.left < b.right &&
+          a.right > b.left &&
+          a.top < b.bottom &&
+          a.bottom > b.top;
+        const center = {
+          left: innerWidth * 0.4,
+          right: innerWidth * 0.6,
+          top: innerHeight * 0.4,
+          bottom: innerHeight * 0.6,
+        };
+        return {
+          overflow: document.documentElement.scrollWidth > innerWidth,
+          overlap: intersects(chart, dock),
+          centerBlocked: [
+            ".metrics",
+            "#ride-view-controls",
+            "#course-panel",
+            ".ride-dock",
+          ].some((selector) => intersects(rect(selector), center)),
+          fullscreenBelow: fullscreen.top >= metrics.bottom,
+          headerHeight: rect("header").height,
+        };
+      });
+      assert.equal(geometry.overflow, false);
+      assert.equal(geometry.overlap, false);
+      assert.equal(geometry.centerBlocked, false);
+      assert.equal(geometry.fullscreenBelow, true);
+      assert.equal(geometry.headerHeight, 0);
+    };
+    await checkRideLayout();
+    await mobile.screenshot({ path: path.join(output, "ride-mobile.png") });
+    await mobile.click("#btn-data");
+    assert.equal(await mobile.locator("#ride-data").isVisible(), true);
+    assert.equal(await mobile.locator("#metric-speed").isVisible(), true);
+    await mobile.click("#btn-close-data");
+    assert.equal(
+      await mobile.evaluate(() => document.activeElement.id),
+      "btn-data",
+    );
+    await mobile.click("#btn-tools");
+    assert.equal(await mobile.locator("#ride-tools").isVisible(), true);
+    const elapsed = await mobile.locator("#metric-elapsed").textContent();
+    await mobile.waitForFunction(
+      (previous) =>
+        document.querySelector("#metric-elapsed").textContent !== previous,
+      elapsed,
+    );
+    await mobile.keyboard.press("Escape");
+    assert.equal(await mobile.locator("#ride-tools").isVisible(), false);
+    assert.equal(
+      await mobile.evaluate(() => document.activeElement.id),
+      "btn-tools",
+    );
+    const compactHeight = (await mobile.locator("#course-panel").boundingBox())
+      .height;
+    await mobile.click("#btn-profile");
+    assert.ok(
+      (await mobile.locator("#course-panel").boundingBox()).height >
+        compactHeight,
+    );
+    await mobile.click("#btn-profile");
+    await mobile.setViewportSize({ width: 844, height: 390 });
+    await checkRideLayout();
+    await mobile.screenshot({ path: path.join(output, "ride-landscape.png") });
+    await mobile.setViewportSize({ width: 320, height: 568 });
+    await checkRideLayout();
     await mobile.screenshot({
-      path: path.join(output, "ride-mobile.png"),
-      fullPage: true,
+      path: path.join(output, "ride-small-phone.png"),
     });
     await mobile.click("#btn-start");
-    await mobile.setViewportSize({ width: 844, height: 390 });
-    await mobile.screenshot({ path: path.join(output, "ride-landscape.png") });
-    const overlaps = await mobile.evaluate(() => {
-      const chart = document
-        .querySelector("#course-panel")
-        .getBoundingClientRect();
-      const controls = document
-        .querySelector(".controls")
-        .getBoundingClientRect();
-      return chart.bottom > controls.top;
-    });
-    assert.equal(overlaps, false);
+    assert.equal(await mobile.locator(".phase-card").isVisible(), true);
+    assert.equal(
+      await mobile.locator("#event-reason").textContent(),
+      "Take a breather",
+    );
     await mobile.close();
 
     const hardware = await browser.newPage({
@@ -316,6 +396,7 @@ const output = path.resolve(__dirname, "results");
       ),
       [0, 7, 0x11],
     );
+    await openTools(hardware);
     await hardware.selectOption("#ride-mode", "ERG");
     await hardware.waitForFunction(
       () =>

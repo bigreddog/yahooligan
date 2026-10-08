@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <meta name="theme-color" content="#152e29" />
     <title>Yahooligan · Your next summit</title>
     <link
@@ -128,7 +131,7 @@
         </div>
       </section>
       <section id="hud" hidden aria-label="Workout dashboard">
-        <div class="metrics glass">
+        <div class="metrics glass" aria-label="Essential ride data">
           <div>
             <span>POWER</span><strong id="metric-power">—</strong
             ><small>W</small>
@@ -141,47 +144,120 @@
             <span>HEART RATE</span><strong id="metric-hr">—</strong
             ><small>bpm</small>
           </div>
-          <div>
-            <span>VIRTUAL SPEED</span><strong id="metric-speed">0.0</strong
-            ><small>km/h</small>
-          </div>
-          <div>
-            <span>DISTANCE</span><strong id="metric-distance">0.00</strong
-            ><small>km</small>
-          </div>
           <div class="target-metric">
             <span id="target-label">SIM GRADE</span
             ><strong id="metric-target">0.0</strong
             ><small id="target-unit">%</small>
           </div>
         </div>
-        <div class="phase-card glass">
-          <div class="eyebrow" id="session-status">READY TO RIDE</div>
-          <h2 id="current-phase">Warm-up</h2>
-          <p id="next-phase">Up next: Rolling climb 1</p>
-          <div class="phase-time">
-            <strong id="remaining">30:00</strong><span>remaining</span>
+        <div id="ride-view-controls" class="ride-view-controls">
+          <div class="ride-clock">
+            <span id="ride-status">READY</span>
+            <div><strong id="remaining">30:00</strong><small>left</small></div>
           </div>
-        </div>
-        <div class="controls glass">
-          <button id="btn-trainer">Connect KICKR</button
-          ><button id="btn-hr">Connect HR</button
-          ><label class="compact-mode" for="ride-mode"
-            >MODE
-            <select id="ride-mode">
-              <option value="SIM">SIM</option>
-              <option value="ERG">ERG</option>
-            </select></label
-          ><button id="btn-start" class="primary">Start ride</button
-          ><button id="btn-finish" disabled>Finish</button
-          ><button id="btn-edit">New workout</button
-          ><button id="btn-tcx" disabled>Download TCX</button
-          ><a
-            href="https://www.strava.com/upload/select"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Strava ↗</a
+          <button
+            id="btn-data"
+            class="icon-button"
+            aria-expanded="false"
+            aria-controls="ride-data"
           >
+            Ride data
+          </button>
+        </div>
+        <section
+          id="ride-data"
+          class="ride-data glass"
+          hidden
+          aria-label="Detailed ride data"
+        >
+          <div class="panel-heading">
+            <h2>Ride data</h2>
+            <button
+              id="btn-close-data"
+              class="icon-button"
+              aria-label="Close ride data"
+            >
+              ×
+            </button>
+          </div>
+          <div class="detail-metrics">
+            <div>
+              <span>VIRTUAL SPEED</span><strong id="metric-speed">0.0</strong
+              ><small>km/h</small>
+            </div>
+            <div>
+              <span>DISTANCE</span><strong id="metric-distance">0.00</strong
+              ><small>km</small>
+            </div>
+            <div>
+              <span>ACTIVE TIME</span><strong id="metric-elapsed">00:00</strong>
+            </div>
+            <div>
+              <span>TRAINER MODE</span><strong id="data-mode">SIM</strong>
+            </div>
+          </div>
+          <p id="data-next" class="field-help"></p>
+        </section>
+        <div class="phase-card glass" hidden>
+          <div class="eyebrow" id="event-reason">WORKOUT UPDATE</div>
+          <span id="session-status" class="sr-only">READY TO RIDE</span>
+          <h2 id="current-phase">Warm-up</h2>
+          <p id="event-detail">0.0% grade</p>
+          <p id="next-phase">Up next: Rolling climb 1</p>
+        </div>
+        <span
+          id="ride-announcement"
+          class="sr-only"
+          role="status"
+          aria-live="polite"
+        ></span>
+        <section
+          id="ride-tools"
+          class="controls glass"
+          hidden
+          aria-label="Ride tools"
+        >
+          <div class="panel-heading">
+            <h2>Ride tools</h2>
+            <button
+              id="btn-close-tools"
+              class="icon-button"
+              aria-label="Close ride tools"
+            >
+              ×
+            </button>
+          </div>
+          <div class="tool-actions">
+            <button id="btn-trainer">Connect KICKR</button
+            ><button id="btn-hr">Connect HR</button>
+            <label class="compact-mode" for="ride-mode"
+              >MODE
+              <select id="ride-mode">
+                <option value="SIM">SIM</option>
+                <option value="ERG">ERG</option>
+              </select></label
+            >
+            <button id="btn-finish" disabled>Finish ride</button
+            ><button id="btn-edit">New workout</button
+            ><button id="btn-tcx" disabled>Download TCX</button>
+            <a
+              href="https://www.strava.com/upload/select"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Strava ↗</a
+            >
+          </div>
+        </section>
+        <div class="ride-dock">
+          <button id="btn-start" class="primary">Start ride</button>
+          <button
+            id="btn-tools"
+            class="icon-button"
+            aria-expanded="false"
+            aria-controls="ride-tools"
+          >
+            Ride tools <span aria-hidden="true">⋯</span>
+          </button>
         </div>
       </section>
       <section
@@ -189,6 +265,18 @@
         class="course-panel glass"
         aria-labelledby="course-title"
       >
+        <button
+          id="btn-profile"
+          class="profile-toggle"
+          aria-expanded="false"
+          aria-controls="profile-chart"
+        >
+          <span id="profile-phase">Warm-up</span
+          ><span
+            ><span id="profile-completion">0%</span> · Profile
+            <span id="profile-chevron" aria-hidden="true">⌃</span></span
+          >
+        </button>
         <div class="course-heading">
           <div>
             <span class="eyebrow">YOUR COURSE</span>

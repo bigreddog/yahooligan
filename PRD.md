@@ -28,6 +28,14 @@ Require a secure context and Web Bluetooth. Read FTMS capabilities and supported
 
 Use FTMS Indoor Bike Data for power/cadence, with optional Cycling Power Service fallback. Parse variable fields and truncated packets defensively. Discover a separate Heart Rate Service on user request. Reconnect through a new user gesture, rediscover services/capabilities and reacquire control before explicitly resuming.
 
+## Mobile ride presentation
+
+Prioritize a clear road and visible cyclist. Default to follow camera on phones unless the rider has explicitly chosen another view. Keep only power, cadence, heart rate and target in the top strip. Place remaining time, camera and fullscreen below it, and turn the logo into a low-opacity route watermark during a ride.
+
+Keep pause/resume and a Ride tools toggle at the bottom. Put connection, mode, finish, export and setup actions in an optional sheet. Put secondary telemetry in a separate Ride data panel. Show a compact, expandable course profile with progress and current phase. Panels must close without pausing, with accessible buttons and Escape support. Preserve usable touch targets and safe-area spacing in portrait and landscape.
+
+Announce minute boundaries, phase changes and substantial target changes in a temporary 4.5-second panel. Debounce cumulative SIM grade changes of at least one percentage point and ERG changes of at least 15 W by 20 active seconds. Keep pause/ready/finish notices persistent. Suppress transient notices while a panel is open and announce significant events through a polite live region.
+
 ## Recording and validation
 
 Record at 1 Hz and export TCX with active duration, virtual distance/altitude, measured power/cadence/HR and virtual speed. Keep the existing manual Strava upload link. Do not invent GPS coordinates. Preserve the previous activity until a new workout records samples.
