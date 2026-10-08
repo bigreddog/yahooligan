@@ -149,6 +149,18 @@
             ><strong id="metric-target">0.0</strong
             ><small id="target-unit">%</small>
           </div>
+          <div class="landscape-metric">
+            <span>VIRTUAL SPEED</span><strong id="landscape-speed">0.0</strong
+            ><small>km/h</small>
+          </div>
+          <div class="landscape-metric">
+            <span>DISTANCE</span><strong id="landscape-distance">0.00</strong
+            ><small>km</small>
+          </div>
+          <div class="landscape-metric">
+            <span>ACTIVE TIME</span
+            ><strong id="landscape-elapsed">00:00</strong>
+          </div>
         </div>
         <div id="ride-view-controls" class="ride-view-controls">
           <div class="ride-clock">
@@ -237,6 +249,18 @@
                 <option value="ERG">ERG</option>
               </select></label
             >
+            <label class="compact-mode" for="sky-mode"
+              >SKY
+              <select id="sky-mode">
+                <option value="auto">Journey</option>
+                <option value="clear">Daylight</option>
+                <option value="sunset">Sunset</option>
+                <option value="moon">Moonlight</option>
+                <option value="rain">Rain</option>
+                <option value="hail">Hail</option>
+                <option value="storm">Storm</option>
+              </select>
+            </label>
             <button id="btn-finish" disabled>Finish ride</button
             ><button id="btn-edit">New workout</button
             ><button id="btn-tcx" disabled>Download TCX</button>

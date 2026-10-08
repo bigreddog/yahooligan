@@ -395,6 +395,10 @@ $("btn-edit").addEventListener("click", () =>
 $("btn-tcx").addEventListener("click", () =>
   downloadTCX(session.records.length ? session : lastSession),
 );
+$("sky-mode").addEventListener("change", () => {
+  scene?.atmosphere.setMode($("sky-mode").value);
+  scene?.render(session?.elapsed || 0);
+});
 $("btn-camera").addEventListener("click", () => {
   if (!scene) return;
   scene.cameraMode = scene.cameraMode === "first" ? "follow" : "first";
@@ -465,6 +469,9 @@ function updateUI() {
       : "—";
   $("metric-speed").textContent = (session.velocity * 3.6).toFixed(1);
   $("metric-distance").textContent = (session.distance / 1000).toFixed(2);
+  $("landscape-speed").textContent = $("metric-speed").textContent;
+  $("landscape-distance").textContent = $("metric-distance").textContent;
+  $("landscape-elapsed").textContent = formatTime(session.elapsed);
   $("target-label").textContent = erg ? "ERG TARGET" : "SIM GRADE";
   const watts =
     !demo && trainer.connected
@@ -601,7 +608,13 @@ function frame(now) {
     updateUI();
     lastUi = now;
   }
-  if (renderAvailable && !document.hidden) scene?.render(session?.elapsed || 0);
+  if (renderAvailable && !document.hidden)
+    scene?.render(
+      session?.elapsed || 0,
+      session?.status === "running" && (demo || now - received.cadence < 5000)
+        ? metrics.cadence
+        : 0,
+    );
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

@@ -22,6 +22,13 @@ const openTools = async (page) => {
   const errors = [];
   const attach = (page) => {
     page.on("pageerror", (error) => errors.push(error.message));
+    page.on("console", (message) => {
+      if (
+        message.type() === "error" &&
+        /THREE|shader|WebGL/i.test(message.text())
+      )
+        errors.push(message.text());
+    });
     page.on("response", (response) => {
       if (response.status() >= 400)
         errors.push(`${response.status()} ${response.url()}`);
@@ -66,6 +73,39 @@ const openTools = async (page) => {
       scene.setWorkout(workout);
       scene.render(180);
       state.drawCalls = scene.renderer.info.render.calls;
+      state.landmarks = scene.landmarks.userData;
+      scene.render(180.25, 60);
+      state.slowPedal = scene.pedalAngle;
+      scene.render(180.5, 120);
+      state.fastPedal = scene.pedalAngle;
+      scene.render(180.5, 120);
+      state.pausedPedal = scene.pedalAngle;
+      scene.render(180.75, 0);
+      state.coastingPedal = scene.pedalAngle;
+      state.weather = [];
+      for (const mode of ["clear", "sunset", "moon", "rain", "hail", "storm"]) {
+        scene.atmosphere.setMode(mode);
+        scene.render(180.75);
+        state.weather.push({
+          mode: scene.atmosphere.mood,
+          rain: scene.atmosphere.rain.visible,
+          hail: scene.atmosphere.hail.visible,
+          moon: scene.atmosphere.moon.visible,
+        });
+      }
+      scene.atmosphere.setMode("auto");
+      scene.render(318.1);
+      state.lightning = scene.atmosphere.lightning.visible;
+      scene.atmosphere.setMode("storm");
+      scene.render(318.1);
+      state.lightning = scene.atmosphere.lightning.visible;
+      scene.atmosphere.reducedMotion = true;
+      scene.render(318.1);
+      state.reducedMotion =
+        !scene.atmosphere.lightning.visible && !scene.atmosphere.rain.visible;
+      state.pedalAngleBeforeReset = scene.pedalAngle;
+      scene.setWorkout(workout);
+      state.resetPedal = scene.pedalAngle;
       const z = 180 * 7;
       const a = scene.point(z),
         b = scene.point(z + 1);
@@ -80,6 +120,21 @@ const openTools = async (page) => {
     assert.equal(rendering.gl, true);
     assert.ok(rendering.width > 1000 && rendering.drawCalls > 0);
     assert.ok(rendering.slopeError < 0.1);
+    assert.ok(
+      rendering.landmarks.goats > 0 &&
+        rendering.landmarks.cliffs > 0 &&
+        rendering.landmarks.boulders > 0,
+    );
+    assert.ok(Math.abs(rendering.slowPedal - Math.PI / 2) < 1e-8);
+    assert.ok(Math.abs(rendering.fastPedal - Math.PI * 1.5) < 1e-8);
+    assert.equal(rendering.pausedPedal, rendering.fastPedal);
+    assert.equal(rendering.coastingPedal, rendering.fastPedal);
+    assert.equal(rendering.resetPedal, 0);
+    assert.equal(rendering.weather.find((w) => w.mode === "moon").moon, true);
+    assert.equal(rendering.weather.find((w) => w.mode === "rain").rain, true);
+    assert.equal(rendering.weather.find((w) => w.mode === "hail").hail, true);
+    assert.equal(rendering.lightning, true);
+    assert.equal(rendering.reducedMotion, true);
     await page.screenshot({ path: path.join(output, "setup-desktop.png") });
     const route = await page.locator("#course-seed").textContent();
     const gradePath = await page.locator("#grade-line").getAttribute("d");
@@ -270,6 +325,19 @@ const openTools = async (page) => {
     await mobile.click("#btn-profile");
     await mobile.setViewportSize({ width: 844, height: 390 });
     await checkRideLayout();
+    const landscapeData = await mobile.evaluate(() =>
+      ["speed", "distance", "elapsed"].map((metric) => ({
+        visible:
+          document.querySelector(`#landscape-${metric}`).getBoundingClientRect()
+            .width > 0,
+        value: document.querySelector(`#landscape-${metric}`).textContent,
+        detailed: document.querySelector(`#metric-${metric}`).textContent,
+      })),
+    );
+    for (const metric of landscapeData) {
+      assert.equal(metric.visible, true);
+      assert.equal(metric.value, metric.detailed);
+    }
     await mobile.screenshot({ path: path.join(output, "ride-landscape.png") });
     await mobile.setViewportSize({ width: 320, height: 568 });
     await checkRideLayout();
@@ -282,6 +350,16 @@ const openTools = async (page) => {
       await mobile.locator("#event-reason").textContent(),
       "Take a breather",
     );
+    assert.equal(await mobile.locator("#landscape-speed").isVisible(), false);
+    await openTools(mobile);
+    for (const mode of ["sunset", "moon", "rain", "hail", "storm", "auto"]) {
+      await mobile.selectOption("#sky-mode", mode);
+      assert.equal(
+        await mobile.locator("#session-status").textContent(),
+        "DEMO · PAUSED",
+      );
+    }
+    await mobile.click("#btn-close-tools");
     await mobile.close();
 
     const hardware = await browser.newPage({

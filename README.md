@@ -37,7 +37,7 @@ Pauses freeze the course, clock and recording. Changing mode briefly pauses cont
 
 ## Ride display
 
-Power, cadence, heart rate and the current grade or ERG target stay visible in a compact strip. Remaining time sits just below, alongside **Ride data**, camera and fullscreen controls. Branding becomes a faint watermark on the route.
+Power, cadence, heart rate and the current grade or ERG target stay visible in a compact strip. In phone landscape, the strip also shows virtual speed, distance and active time. Remaining time sits just below, alongside **Ride data**, camera and fullscreen controls. Branding becomes a faint watermark on the route.
 
 The thin course profile shows your position and current phase; tap it to expand the chart. **Ride data** opens speed, distance, elapsed time, mode and the next phase. **Ride tools** opens trainer connections, SIM/ERG selection, finish, export and new-workout controls. Pause/resume stays within reach. Close panels with their close button, Escape or a tap on the road; opening a panel does not pause your workout.
 
@@ -63,7 +63,9 @@ The small GLB models in `assets/` were generated with Blender 4.3.2. To rebuild 
 npm run scenery
 ```
 
-This runs `scripts/generate_scenery.py` with Blender on your PATH. Blender is not needed to run the app. The road, terrain, mountain shapes and scenery placements are generated in the browser. Asset-loading failures fall back to procedural trees/rocks. WebGL failure prevents starting a ride and displays a clear error.
+This runs `scripts/generate_scenery.py` with Blender on your PATH. Blender is not needed to run the app. The road, terrain, mountain shapes and scenery placements are generated in the browser. Rocky banks, grassy dells, cliffs, boulders and mountain goats (including kids) vary along the course. Repeated landmarks use instanced meshes. The cyclist has articulated legs and cranks: cadence controls pedal revolutions, zero/missing cadence stops pedalling, and pause freezes the animation. Wheel rotation follows scenic movement.
+
+**Sky** in Ride tools selects daylight, sunset, moonlight with stars, rain, hail or a distant lightning storm. **Journey** cycles through these moods every 150 active seconds, starting in daylight; sky and lighting colors transition gradually. Clouds drift and weather particles stay close to the camera so rendering cost does not grow with workout duration. Weather is visual and does not change trainer targets. Reduced-motion preferences disable moving precipitation and lightning. Asset-loading failures fall back to procedural trees/rocks. WebGL failure prevents starting a ride and displays a clear error.
 
 Legacy GPX examples are archived in `data/routes/source/`; the workout runtime does not load them. YouTube and the GPX conversion pipeline have been removed.
 
@@ -78,4 +80,4 @@ npm start
 npm run test:browser
 ```
 
-To use system Chromium, set `CHROMIUM_PATH=/usr/bin/chromium`. `TEST_BASE_URL` can select another running server. Browser screenshots and a sample export are written to the ignored `verification/results/` directory. Tests cover duration, transitions, physics, export, FTMS packets/acknowledgements/cancellation/timeouts, capability discovery, 3D slope alignment, portrait/landscape/small-phone layouts, panel controls, workout alerts and session controls. They cannot certify physical trainer behavior.
+To use system Chromium, set `CHROMIUM_PATH=/usr/bin/chromium`. `TEST_BASE_URL` can select another running server. Browser screenshots and a sample export are written to the ignored `verification/results/` directory. Tests cover duration, transitions, physics, export, FTMS packets/acknowledgements/cancellation/timeouts, capability discovery, 3D slope alignment, cadence-driven pedalling, scenery landmarks and sky/weather modes, portrait/landscape/small-phone layouts, panel controls, workout alerts and session controls. They cannot certify physical trainer behavior.

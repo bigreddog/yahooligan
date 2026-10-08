@@ -22,6 +22,10 @@ Use locally vendored Three.js with no CDN dependency. Procedurally construct the
 
 Display measured power/cadence/optional HR, virtual speed/distance, current grade or target watts, remaining time, phase and next transition. The grade chart shows the full course with a marker and completed shading. In ERG add a scheduled watt trace. Keep the road visible around the HUD, particularly on phones.
 
+Animate articulated cyclist legs, cranks and wheels. Integrate measured cadence against active-time increments; stop pedalling at zero or stale cadence and freeze animation on pause. In landscape on phones, add virtual speed, distance and elapsed time to the top metrics without obstructing the centered route.
+
+Generate roadside cliffs, boulders, grassy hollows and goats on outcrops, with deterministic placement and instancing. Provide drifting clouds and selectable daylight, sunset, moonlight/stars, rain, hail and distant lightning. Journey mode changes moods every 150 active seconds with smooth sky/lighting transitions. Keep the road visible in dark/weather modes; weather never affects trainer resistance. Respect reduced-motion preferences for precipitation and lightning and bound particle counts independent of course length.
+
 ## Bluetooth
 
 Require a secure context and Web Bluetooth. Read FTMS capabilities and supported power range. Enable indications on the control point before requesting control. Use `0x11` simulation, `0x05` target watts, `0x07` start/resume and `0x08` stop/pause. Serialize writes and wait for matching `0x80` success responses. Deduplicate unchanged targets and limit updates to approximately once per second. Reject queued old-mode targets; reject pending commands on disconnect. Timeout requires reconnecting to avoid confusing late acknowledgements with new commands.

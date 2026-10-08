@@ -2,11 +2,15 @@ import * as THREE from "three";
 import { GLTFLoader } from "./vendor/three/loaders/GLTFLoader.js";
 import { sampleWorkout, random, clamp, smoothstep } from "./workout.js";
 
+import { Atmosphere } from "./atmosphere.js";
+import { addLandmarks } from "./landmarks.js";
+import { makeCyclist, pedalPhase } from "./cyclist.js";
+
 const COURSE_SPEED = 7; // Scheduled scenic metres/second, independent of measured speed.
 const STEP = 16;
 const SKY = 0xb5d5d3;
 const TERRAIN_OFFSETS = [
-  -420, -200, -100, -40, -12, -6, 0, 6, 12, 40, 100, 200, 420,
+  -420, -200, -100, -60, -35, -20, -12, -6, 0, 6, 12, 20, 35, 60, 100, 200, 420,
 ];
 
 export class RouteScene {
@@ -24,10 +28,12 @@ export class RouteScene {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(SKY);
     this.scene.fog = new THREE.Fog(SKY, 170, 780);
-    this.scene.add(new THREE.HemisphereLight(0xe9fff6, 0x354c34, 2.2));
+    const ambient = new THREE.HemisphereLight(0xe9fff6, 0x354c34, 2.2);
+    this.scene.add(ambient);
     const sun = new THREE.DirectionalLight(0xffe5b1, 2.4);
     sun.position.set(-100, 180, -50);
     this.scene.add(sun);
+    this.atmosphere = new Atmosphere(this.scene, sun, ambient);
     this.camera = new THREE.PerspectiveCamera(66, 1, 0.1, 1800);
     this.course = new THREE.Group();
     this.scene.add(this.course);
@@ -35,7 +41,8 @@ export class RouteScene {
     this.time = 0;
     this.assets = null;
     this.loadAssets();
-    this.bike = this.makeBike();
+    this.pedalAngle = 0;
+    this.bike = makeCyclist();
     this.scene.add(this.bike);
     this.resizeObserver = new ResizeObserver(() => this.resize());
     this.resizeObserver.observe(canvas);
@@ -88,6 +95,8 @@ export class RouteScene {
   setWorkout(workout) {
     this.workout = workout;
     this.time = 0;
+    this.pedalAngle = 0;
+    this.atmosphere.snap = true;
     this.disposeGroup(this.course);
     this.scene.remove(this.course);
     this.course = new THREE.Group();
@@ -105,6 +114,7 @@ export class RouteScene {
       this.points.push({ distance, x: this.centerX(distance), y: elevation });
     }
     this.createTerrain();
+    addLandmarks(this);
     if (this.assets) this.addScenery();
     this.render(0);
   }
@@ -128,7 +138,11 @@ export class RouteScene {
       this.point(z).y -
       0.12 +
       smoothstep(clamp((away - 12) / 140, 0, 1)) * ridge +
-      away * 0.015
+      away * 0.015 +
+      smoothstep(clamp((away - 3) / 26, 0, 1)) *
+        (offset < 0
+          ? 24 * Math.pow(Math.max(0, Math.sin(z / 190)), 3)
+          : -18 * Math.pow(Math.max(0, Math.sin(z / 230 + 1.4)), 2))
     );
   }
   terrainHeight(z, offset) {
@@ -315,78 +329,12 @@ export class RouteScene {
       });
     });
   }
-  makeBike() {
-    const bike = new THREE.Group();
-    const rubber = new THREE.MeshLambertMaterial({ color: 0x172925 });
-    const frame = new THREE.MeshLambertMaterial({ color: 0xe6ab62 });
-    for (const z of [-0.6, 0.6]) {
-      const wheel = new THREE.Mesh(
-        new THREE.TorusGeometry(0.34, 0.035, 5, 16),
-        rubber,
-      );
-      wheel.rotation.y = Math.PI / 2;
-      wheel.position.set(0, 0.38, z);
-      bike.add(wheel);
-    }
-    const bar = (a, b, material, radius = 0.04) => {
-      const axis = b.clone().sub(a);
-      const mesh = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius, radius, axis.length(), 5),
-        material,
-      );
-      mesh.position.copy(a).add(b).multiplyScalar(0.5);
-      mesh.quaternion.setFromUnitVectors(
-        new THREE.Vector3(0, 1, 0),
-        axis.normalize(),
-      );
-      bike.add(mesh);
-    };
-    const rear = new THREE.Vector3(0, 0.38, -0.6),
-      front = new THREE.Vector3(0, 0.38, 0.6),
-      seat = new THREE.Vector3(0, 0.95, -0.25),
-      head = new THREE.Vector3(0, 0.88, 0.4),
-      crank = new THREE.Vector3(0, 0.42, -0.05);
-    for (const [a, b] of [
-      [rear, seat],
-      [seat, head],
-      [head, front],
-      [seat, crank],
-      [crank, rear],
-      [crank, head],
-    ])
-      bar(a, b, frame);
-    const torso = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.17, 0.42, 3, 6),
-      new THREE.MeshLambertMaterial({ color: 0xee8d54 }),
-    );
-    torso.position.set(0, 1.26, -0.05);
-    torso.rotation.x = 0.5;
-    bike.add(torso);
-    const helmet = new THREE.Mesh(
-      new THREE.IcosahedronGeometry(0.16, 1),
-      rubber,
-    );
-    helmet.position.set(0, 1.68, 0.12);
-    bike.add(helmet);
-    for (const side of [-1, 1]) {
-      bar(
-        new THREE.Vector3(side * 0.12, 1.08, -0.2),
-        new THREE.Vector3(side * 0.12, 0.5, 0),
-        rubber,
-        0.07,
-      );
-      bar(
-        new THREE.Vector3(side * 0.15, 1.4, 0.05),
-        new THREE.Vector3(side * 0.18, 0.9, 0.48),
-        rubber,
-        0.045,
-      );
-    }
-    return bike;
-  }
-  render(seconds) {
+  render(seconds, cadence = 0) {
     if (!this.workout) return;
+    const animationDt = clamp(seconds - this.time, 0, 2);
+    this.pedalAngle = pedalPhase(this.pedalAngle, cadence, animationDt);
     this.time = seconds;
+    this.bike.userData.pose(this.pedalAngle, seconds * COURSE_SPEED);
     const z = seconds * COURSE_SPEED;
     const point = this.point(z);
     const follow = this.cameraMode === "follow";
@@ -405,6 +353,13 @@ export class RouteScene {
       Math.atan2(ahead.x - point.x, ahead.z - point.z),
       0,
     );
+    this.atmosphere.update(
+      seconds,
+      this.camera.position,
+      animationDt,
+      false,
+      this.bike.rotation.y,
+    );
     this.renderer.render(this.scene, this.camera);
   }
   resize() {
@@ -421,6 +376,10 @@ export class RouteScene {
       if (!node.isMesh) return;
       if (node.isInstancedMesh) {
         node.dispose();
+        if (node.userData.ownsResources) {
+          node.geometry.dispose();
+          for (const material of [].concat(node.material)) material.dispose();
+        }
         return;
       }
       if (disposeShared) {
