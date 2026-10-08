@@ -8,7 +8,7 @@
     "start": "node scripts/serve.mjs",
     "dev": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
-    "test": "node verification/workout.test.mjs && node verification/ble.test.mjs && node verification/ride-events.test.mjs",
+    "test": "node verification/workout.test.mjs && node verification/ble.test.mjs && node verification/ride-events.test.mjs && node verification/wake-lock.test.mjs",
     "test:browser": "node verification/browser.cjs",
     "scenery": "blender --background --python scripts/generate_scenery.py"
   },

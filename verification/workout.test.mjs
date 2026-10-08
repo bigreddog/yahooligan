@@ -125,3 +125,49 @@ test("physics is stable at rest and sampling does not duplicate export timestamp
   );
   assert.ok(Math.abs(session.elapsed - 2) < 1e-8);
 });
+
+test("wall clock catches up after suspension, excludes explicit pauses and never duplicates time", () => {
+  const session = new Session(generateWorkout({ minutes: 5 }));
+  const data = { power: 180, cadence: 85, hr: 135 };
+  session.start(1000);
+  session.sync(2000, data);
+  session.sync(62000, data);
+  assert.equal(session.elapsed, 61);
+  assert.equal(session.records.length, 1); // no invented samples across suspension
+  assert.equal(session.sample.progress, 61 / 300);
+  session.sync(62000, data);
+  assert.equal(session.elapsed, 61);
+  session.pause();
+  session.sync(90000, data);
+  session.start(120000);
+  session.sync(121000, data);
+  assert.equal(session.elapsed, 62);
+  assert.deepEqual(
+    session.records.map((r) => r.time),
+    [1, 62],
+  );
+  session.sync(600000, data);
+  assert.equal(session.elapsed, 300);
+  assert.equal(session.status, "finished");
+});
+
+test("missing telemetry advances the clock without recording power or inventing distance", () => {
+  const session = new Session(generateWorkout({ minutes: 5 }));
+  const data = { power: 180, cadence: 85, hr: 135 };
+  session.start(1000);
+  session.sync(2000, data);
+  const distance = session.distance;
+  session.sync(3000, data, { record: false });
+  assert.equal(session.elapsed, 2);
+  assert.equal(session.distance, distance);
+  assert.equal(session.records.length, 1);
+});
+
+test("demo suspension advances to the finish using simulated data", () => {
+  const session = new Session(generateWorkout({ minutes: 5 }));
+  session.start(1000);
+  session.sync(1000000, { power: 180, cadence: 85, hr: 135 }, { demo: true });
+  assert.equal(session.elapsed, 300);
+  assert.equal(session.status, "finished");
+  assert.equal(session.records.length, 300);
+});

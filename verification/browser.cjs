@@ -20,7 +20,29 @@ const openTools = async (page) => {
     args: ["--no-sandbox", "--enable-unsafe-swiftshader"],
   });
   const errors = [];
-  const attach = (page) => {
+  const attach = async (page) => {
+    await page.addInitScript(() => {
+      window.wallOffset = 0;
+      const realNow = Date.now.bind(Date);
+      Date.now = () => realNow() + window.wallOffset;
+      window.screenLocks = [];
+      Object.defineProperty(navigator, "wakeLock", {
+        configurable: true,
+        value: {
+          request: async (type) => {
+            if (type !== "screen") throw new Error("Wrong wake lock type");
+            const lock = new EventTarget();
+            lock.released = false;
+            lock.release = async () => {
+              lock.released = true;
+              lock.dispatchEvent(new Event("release"));
+            };
+            screenLocks.push(lock);
+            return lock;
+          },
+        },
+      });
+    });
     page.on("pageerror", (error) => errors.push(error.message));
     page.on("console", (message) => {
       if (
@@ -39,7 +61,7 @@ const openTools = async (page) => {
       viewport: { width: 1440, height: 900 },
       acceptDownloads: true,
     });
-    attach(page);
+    await attach(page);
     await page.goto(base);
     await page.waitForFunction(
       () =>
@@ -152,6 +174,35 @@ const openTools = async (page) => {
         document.querySelector("#session-status").textContent ===
         "DEMO · ON THE ROAD",
     );
+    await page.waitForFunction(() =>
+      screenLocks.some((lock) => !lock.released),
+    );
+    const beforeCall = await page.locator("#remaining").textContent();
+    await page.evaluate(() => {
+      Object.defineProperty(document, "hidden", {
+        configurable: true,
+        value: true,
+      });
+      document.dispatchEvent(new Event("visibilitychange"));
+      window.wallOffset += 61000;
+      document.dispatchEvent(new Event("resume"));
+    });
+    assert.equal(
+      await page.locator("#session-status").textContent(),
+      "DEMO · ON THE ROAD",
+    );
+    assert.notEqual(await page.locator("#remaining").textContent(), beforeCall);
+    assert.equal(
+      await page.evaluate(() => screenLocks.every((lock) => lock.released)),
+      true,
+    );
+    await page.evaluate(() => {
+      delete document.hidden;
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+    await page.waitForFunction(
+      () => screenLocks.length >= 2 && !screenLocks.at(-1).released,
+    );
     await page.waitForTimeout(1300);
     assert.ok(Number(await page.locator("#metric-power").textContent()) > 0);
     assert.equal(await page.locator("#btn-trainer").isDisabled(), true);
@@ -160,6 +211,10 @@ const openTools = async (page) => {
       () =>
         document.querySelector("#session-status").textContent ===
         "DEMO · PAUSED",
+    );
+    assert.equal(
+      await page.evaluate(() => screenLocks.every((lock) => lock.released)),
+      true,
     );
     const remaining = await page.locator("#remaining").textContent();
     await page.waitForTimeout(600);
@@ -171,7 +226,7 @@ const openTools = async (page) => {
         document.querySelector("#target-label").textContent === "ERG TARGET",
     );
     assert.equal(await page.locator("#watts-line").isVisible(), true);
-    assert.equal(await page.locator("#metric-target").textContent(), "200");
+    assert.ok(Number(await page.locator("#metric-target").textContent()) > 0);
     await page.click("#btn-camera");
     assert.equal(
       await page.locator("#btn-camera").textContent(),
@@ -218,7 +273,7 @@ const openTools = async (page) => {
       isMobile: true,
       hasTouch: true,
     });
-    attach(mobile);
+    await attach(mobile);
     await mobile.goto(base);
     await mobile.waitForFunction(
       () =>
@@ -365,7 +420,7 @@ const openTools = async (page) => {
     const hardware = await browser.newPage({
       viewport: { width: 1280, height: 800 },
     });
-    attach(hardware);
+    await attach(hardware);
     await hardware.addInitScript(() => {
       window.trainerWrites = [];
       window.trainerResult = 1;
@@ -453,6 +508,7 @@ const openTools = async (page) => {
       () =>
         document.querySelector("#profile-description")?.textContent.length > 0,
     );
+    await hardware.locator("#minutes").fill("5");
     await hardware.click("#btn-prepare");
     await hardware.click("#btn-trainer");
     await hardware.waitForFunction(
@@ -482,34 +538,80 @@ const openTools = async (page) => {
         document.querySelector("#session-status").textContent === "ON THE ROAD",
     );
     assert.equal(await hardware.evaluate(() => trainerWrites.at(-1)[0]), 5);
+    const beforeBackground = await hardware.locator("#remaining").textContent();
+    const beforeWrites = await hardware.evaluate(() => trainerWrites.length);
+    const oldTarget = await hardware.locator("#metric-target").textContent();
     await hardware.evaluate(() => {
       Object.defineProperty(document, "hidden", {
         configurable: true,
         value: true,
       });
       document.dispatchEvent(new Event("visibilitychange"));
+      wallOffset += 90000;
+      document.dispatchEvent(new Event("resume"));
     });
-    await hardware.waitForFunction(
-      () =>
-        document.querySelector("#session-status").textContent === "PAUSED" &&
-        !document.querySelector("#btn-start").disabled,
+    assert.equal(
+      await hardware.locator("#session-status").textContent(),
+      "ON THE ROAD",
     );
-    assert.deepEqual(
-      await hardware.evaluate(() => trainerWrites.at(-1)),
-      [8, 2],
+    assert.notEqual(
+      await hardware.locator("#remaining").textContent(),
+      beforeBackground,
+    );
+    assert.equal(
+      await hardware.evaluate(() =>
+        trainerWrites.slice(-2).some((bytes) => bytes[0] === 8),
+      ),
+      false,
     );
     await hardware.evaluate(() => {
       delete document.hidden;
       document.dispatchEvent(new Event("visibilitychange"));
     });
+    await hardware.waitForFunction(
+      (count) => trainerWrites.length > count,
+      beforeWrites,
+    );
+    await hardware.waitForFunction(
+      (old) => document.querySelector("#metric-target").textContent !== old,
+      oldTarget,
+    );
+    await hardware.waitForFunction(() => {
+      const bytes = trainerWrites.at(-1);
+      return (
+        bytes[0] === 5 &&
+        bytes[1] + 256 * bytes[2] ===
+          Number(document.querySelector("#metric-target").textContent)
+      );
+    });
+    await hardware.waitForFunction(
+      () => screenLocks.length >= 2 && !screenLocks.at(-1).released,
+    );
+    // A call-related Bluetooth loss keeps the clock running and permits reconnect.
+    await hardware.evaluate(() => {
+      Object.defineProperty(document, "hidden", {
+        configurable: true,
+        value: true,
+      });
+      document.dispatchEvent(new Event("visibilitychange"));
+      disconnectTrainer();
+      wallOffset += 15000;
+      delete document.hidden;
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
     assert.equal(
       await hardware.locator("#session-status").textContent(),
-      "PAUSED",
+      "ON THE ROAD",
     );
-    await hardware.click("#btn-start");
+    await hardware.click("#btn-trainer");
     await hardware.waitForFunction(
       () =>
-        document.querySelector("#session-status").textContent === "ON THE ROAD",
+        document.querySelector("#btn-trainer").textContent ===
+        "KICKR connected",
+    );
+    assert.equal(
+      await hardware.locator("#session-status").textContent(),
+      "ON THE ROAD",
     );
     await hardware.evaluate(() => disconnectTrainer());
     await hardware.waitForFunction(

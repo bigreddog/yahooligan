@@ -9,11 +9,19 @@ import { Session } from "./session.js";
 import { Trainer, connectHeartRate, powerCommand } from "./ble.js";
 import { RouteScene } from "./route-scene.js";
 import { downloadTCX } from "./tcx.js";
+import { ScreenWakeLock } from "./wake-lock.js";
 import { RidePresentation } from "./ride-presentation.js";
 
 const $ = (id) => document.getElementById(id);
 const form = $("workout-form");
 const presentation = new RidePresentation();
+const wakeLock = new ScreenWakeLock({
+  navigator,
+  document,
+  onStatus: (text) => ($("wake-status").textContent = text),
+});
+let backgroundInterruption = false;
+let completedSession = null;
 let cameraChosen = false;
 let seed = Math.floor(Math.random() * 100000);
 let workout, session, scene, lastSession, hrDevice;
@@ -37,14 +45,17 @@ const trainer = new Trainer({
   },
   onDisconnect: () => {
     if (demo) return;
-    session?.pause();
+    syncSession();
+    if (!backgroundInterruption && !document.hidden) session?.pause();
     presentation.open("tools");
     metrics.power = 0;
     metrics.cadence = 0;
     received.power = 0;
     received.cadence = 0;
     showMessage(
-      "Trainer disconnected. Workout paused. Reconnect KICKR, then resume.",
+      session?.status === "running"
+        ? "Trainer disconnected during the interruption. Workout time continues; reconnect KICKR to restore control."
+        : "Trainer disconnected. Workout paused. Reconnect KICKR, then resume.",
       true,
     );
     updateUI();
@@ -192,12 +203,35 @@ function prepare(isDemo) {
   return true;
 }
 
+function syncSession() {
+  if (session?.status === "running" && Date.now() - session.wallTime > 2000) {
+    // Some phone interruptions suspend callbacks without a visibility event.
+    backgroundInterruption = true;
+    powerWatchStart = performance.now();
+    lastControl = -1;
+  }
+  session?.sync(Date.now(), currentMetrics(), {
+    demo,
+    record: demo || performance.now() - received.power < 5000,
+  });
+}
+function currentMetrics() {
+  const now = performance.now();
+  if (demo) return metrics;
+  return Object.fromEntries(
+    Object.entries(metrics).map(([key, value]) => [
+      key,
+      now - received[key] < 5000 ? value : 0,
+    ]),
+  );
+}
 async function controlFailure(error) {
-  session?.pause();
+  syncSession();
+  if (!backgroundInterruption && !document.hidden) session?.pause();
   trainer.disconnect();
   presentation.open("tools");
   showMessage(
-    `${error.message} Workout paused. Reconnect the trainer before resuming.`,
+    `${error.message} ${session?.status === "running" ? "Workout time continues. Reconnect the trainer to restore control." : "Workout paused. Reconnect the trainer before resuming."}`,
     true,
   );
   updateUI();
@@ -233,13 +267,10 @@ async function startSession() {
       return;
     }
     if (!trainer.connected) return;
-    if (document.hidden) {
-      await pauseSession("Workout paused while the page is hidden.");
-      return;
-    }
   }
   $("message").hidden = true;
   session.start();
+  backgroundInterruption = document.hidden;
   presentation.close();
   powerWatchStart = performance.now();
   lastFrame = performance.now();
@@ -247,9 +278,10 @@ async function startSession() {
   updateUI();
 }
 async function pauseSession(reason) {
+  syncSession();
   session?.pause();
   updateUI();
-  if (!demo) {
+  if (!demo && trainer.connected) {
     try {
       await trainer.stop(true);
     } catch (error) {
@@ -261,15 +293,24 @@ async function pauseSession(reason) {
 }
 function interruptSession(reason) {
   // A sensor picker or a pending mode command must not delay freezing the clock.
+  syncSession();
   session?.pause();
   updateUI();
   if (busy) pauseSession(reason);
   else runAction(() => pauseSession(reason));
 }
+function completeIfNeeded() {
+  if (session?.status !== "finished" || completedSession === session) return;
+  completedSession = session;
+  if (busy) finishSession();
+  else runAction(finishSession);
+}
 async function finishSession() {
+  completedSession = session;
+  syncSession();
   session?.finish();
   updateUI();
-  if (!demo) {
+  if (!demo && trainer.connected) {
     try {
       await trainer.stop(false);
     } catch (error) {
@@ -315,6 +356,13 @@ $("btn-trainer").addEventListener("click", () =>
         session.mode = trainer.capabilities.SIM ? "SIM" : "ERG";
         $("ride-mode").value = session.mode;
       }
+      syncSession();
+      if (session.status === "running") {
+        await trainer.start(session.mode, session.sample);
+        backgroundInterruption = false;
+        powerWatchStart = performance.now();
+        lastControl = Math.floor(session.elapsed);
+      }
       const peak = Math.max(...workout.phases.map((phase) => phase.watts));
       showMessage(
         `Connected to ${name}.${peak > trainer.powerRange.max ? ` ERG targets will be limited to ${trainer.powerRange.max} W.` : ""}`,
@@ -345,6 +393,7 @@ $("ride-mode").addEventListener("change", () => {
   const nextMode = $("ride-mode").value;
   runAction(async () => {
     const running = session.status === "running";
+    syncSession();
     session.pause();
     if (!demo && trainer.connected) {
       try {
@@ -360,10 +409,6 @@ $("ride-mode").addEventListener("change", () => {
     }
     session.mode = nextMode;
     if (running && (demo || trainer.connected)) {
-      if (document.hidden) {
-        await pauseSession("Workout paused while the page is hidden.");
-        return;
-      }
       session.start();
       lastFrame = performance.now();
       powerWatchStart = lastFrame;
@@ -434,12 +479,31 @@ $("btn-fullscreen").addEventListener("click", async () => {
   }
 });
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden && session?.status === "running")
-    interruptSession(
-      "Workout paused while the page is hidden. Resume when ready.",
-    );
+  if (document.hidden) backgroundInterruption = true;
+  syncSession();
+  if (!document.hidden) {
+    powerWatchStart = performance.now();
+    lastControl = -1;
+  }
+  updateUI();
 });
-window.addEventListener("pagehide", () => {
+document.addEventListener("freeze", syncSession);
+document.addEventListener("resume", () => {
+  backgroundInterruption = true;
+  syncSession();
+  powerWatchStart = performance.now();
+  updateUI();
+});
+window.addEventListener("pageshow", () => {
+  syncSession();
+  updateUI();
+  wakeLock.acquire();
+});
+window.addEventListener("pagehide", (event) => {
+  backgroundInterruption = true;
+  syncSession();
+  wakeLock.release();
+  if (event.persisted) return;
   session?.pause();
   trainer.disconnect();
   hrDevice?.gatt.disconnect();
@@ -447,6 +511,7 @@ window.addEventListener("pagehide", () => {
 
 function updateUI() {
   if (!session) return;
+  wakeLock.setActive(session.status === "running");
   const sample = session.sample;
   const erg = session.mode === "ERG";
   const running = session.status === "running",
@@ -506,7 +571,7 @@ function updateUI() {
   $("btn-start").disabled = busy || finished || !renderAvailable;
   $("btn-finish").disabled = busy || finished || session.elapsed === 0;
   $("btn-edit").disabled = busy;
-  $("btn-trainer").disabled = busy || demo || trainer.connected || running;
+  $("btn-trainer").disabled = busy || demo || trainer.connected;
   $("btn-trainer").textContent = demo
     ? "Demo · no trainer"
     : trainer.connected
@@ -565,38 +630,41 @@ function frame(now) {
   const dt = (now - lastFrame) / 1000;
   lastFrame = now;
   if (session?.status === "running") {
-    if (dt > 2 || document.hidden) {
-      interruptSession(
-        "Workout paused after a browser interruption. Resume when ready.",
-      );
-    } else {
-      if (demo) {
-        metrics = {
-          power: Math.round(
-            session.sample.watts + Math.sin(session.elapsed / 5) * 6,
-          ),
-          cadence: Math.round(83 + Math.sin(session.elapsed / 8) * 4),
-          hr: Math.round(118 + 15 * session.sample.progress),
-        };
-      } else if (now - Math.max(received.power, powerWatchStart) > 10000) {
+    if (dt > 2) {
+      backgroundInterruption = true;
+      powerWatchStart = now;
+      lastControl = -1;
+    }
+    if (demo) {
+      metrics = {
+        power: Math.round(
+          session.sample.watts + Math.sin(session.elapsed / 5) * 6,
+        ),
+        cadence: Math.round(83 + Math.sin(session.elapsed / 8) * 4),
+        hr: Math.round(118 + 15 * session.sample.progress),
+      };
+    }
+    syncSession();
+    if (
+      session.status !== "finished" &&
+      !demo &&
+      !document.hidden &&
+      trainer.connected &&
+      !busy &&
+      !targetBusy
+    ) {
+      if (now - Math.max(received.power, powerWatchStart) > 10000) {
         interruptSession(
           "Power data stopped arriving. Workout paused; check the trainer connection.",
         );
-      }
-      session.advance(dt, metrics);
-      if (session.status === "finished") {
-        if (busy) finishSession();
-        else runAction(finishSession);
-      } else if (
-        !demo &&
-        !busy &&
-        !targetBusy &&
-        Math.floor(session.elapsed) !== lastControl
-      ) {
+      } else if (Math.floor(session.elapsed) !== lastControl) {
         lastControl = Math.floor(session.elapsed);
         targetBusy = true;
         trainer
           .setTarget(session.mode, session.sample)
+          .then(() => {
+            if (!document.hidden) backgroundInterruption = false;
+          })
           .catch(controlFailure)
           .finally(() => {
             targetBusy = false;
@@ -604,6 +672,7 @@ function frame(now) {
       }
     }
   }
+  completeIfNeeded();
   if (now - lastUi > 100) {
     updateUI();
     lastUi = now;
@@ -618,3 +687,13 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+// rAF stops in hidden tabs; this heartbeat is best effort. sync() also catches up
+// after the OS suspends both timers, without relying on missed timer callbacks.
+setInterval(() => {
+  if (document.hidden) {
+    syncSession();
+    updateUI();
+    completeIfNeeded();
+  }
+}, 1000);

@@ -33,7 +33,7 @@ Deploy the contents of `dist/` to any static HTTPS host. Files use relative URLs
 
 The road, current grade and progress marker follow **active workout time**, so the workout finishes in the duration you chose. The scenic road advances at a nominal 25.2 km/h. Measured power feeds a separate virtual-speed/distance simulation; the animated camera is not a measurement of wheel speed. In ERG, virtual speed uses flat-road physics. Regenerating scenery preserves all workout targets.
 
-Pauses freeze the course, clock and recording. Changing mode briefly pauses control, clears queued old targets and applies the new mode before resuming. The app pauses if hidden, disconnected, interrupted by a long browser stall, or missing power telemetry for 10 seconds. Resume explicitly after reconnecting. Finishing or pausing attempts a neutral load followed by an acknowledged FTMS stop/pause. If a control command fails, the app reports the failure and disconnects; it cannot guarantee a command was applied by disconnected hardware.
+Pauses freeze the course, clock and recording. Changing mode briefly pauses control, clears queued old targets and applies the new mode before resuming. Calls, hidden tabs and browser suspension do not pause the clock: it catches up from elapsed wall time when the browser resumes. Background trainer commands may be suspended by the phone; the latest scheduled target is sent on return. If Bluetooth disconnects during an interruption, the clock continues and Ride tools offers reconnect at the current target. A confirmed foreground connection/control fault or 10 seconds of missing foreground power telemetry still pauses the ride. Resume explicitly after a foreground fault. Finishing or pausing attempts a neutral load followed by an acknowledged FTMS stop/pause. If a control command fails, the app reports the failure and disconnects; it cannot guarantee a command was applied by disconnected hardware.
 
 ## Ride display
 
@@ -42,6 +42,12 @@ Power, cadence, heart rate and the current grade or ERG target stay visible in a
 The thin course profile shows your position and current phase; tap it to expand the chart. **Ride data** opens speed, distance, elapsed time, mode and the next phase. **Ride tools** opens trainer connections, SIM/ERG selection, finish, export and new-workout controls. Pause/resume stays within reach. Close panels with their close button, Escape or a tap on the road; opening a panel does not pause your workout.
 
 Brief panels announce each new minute, phase and substantial target change, then disappear after 4.5 seconds. Target alerts require a cumulative 1 percentage point grade change in SIM or 15 W in ERG, with at least 20 seconds between these alerts. Ready, pause and finish notices stay visible until you open a panel or resume. Phone landscape places the compact chart and pause/tools controls in opposite lower corners to keep the cyclist clear.
+
+## Screen and interruptions
+
+Running workouts and demos request a screen wake lock, release it on pause/finish, and reacquire it after returning to the app. Ride tools shows wake-lock status. Use HTTPS and a browser with Screen Wake Lock support; the browser or OS can refuse or revoke a lock, for example under battery restrictions.
+
+An incoming call does not count as a pause. Progress, the route and remaining time catch up after the interruption, including reaching the finish if the selected duration has elapsed. Browsers cannot guarantee live rendering or Bluetooth control while the OS suspends them. Real telemetry gaps are left out of TCX rather than filling them with repeated readings or invented distance; demo gaps use simulated data. Explicit pauses still exclude paused time. Navigating away ends the live connection; a restored back/forward-cache page catches up its existing session.
 
 ## KICKR Core
 

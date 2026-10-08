@@ -25,13 +25,15 @@ export class Session {
     this.records = [];
     this.nextRecord = 1;
     this.startedAt = null;
+    this.wallTime = null;
   }
   get sample() {
     return sampleWorkout(this.workout, this.elapsed);
   }
-  start() {
-    if (this.status === "finished") return;
-    if (!this.startedAt) this.startedAt = new Date();
+  start(now = Date.now()) {
+    if (this.status === "finished" || this.status === "running") return;
+    if (!this.startedAt) this.startedAt = new Date(now);
+    this.wallTime = now;
     this.status = "running";
   }
   pause() {
@@ -39,6 +41,18 @@ export class Session {
   }
   finish() {
     this.status = "finished";
+  }
+  sync(now, metrics, { demo = false, record = true } = {}) {
+    if (this.status !== "running" || !Number.isFinite(now)) return;
+    const seconds = Math.max(0, (now - this.wallTime) / 1000);
+    this.wallTime = Math.max(this.wallTime, now);
+    if (!record || (seconds > 2 && !demo)) {
+      // A suspended browser cannot measure power or distance during the gap.
+      this.elapsed = Math.min(this.workout.duration, this.elapsed + seconds);
+      this.nextRecord = Math.floor(this.elapsed) + 1;
+      this.velocity = 0;
+      if (this.elapsed >= this.workout.duration) this.finish();
+    } else this.advance(seconds, metrics);
   }
   advance(seconds, metrics) {
     if (this.status !== "running" || !Number.isFinite(seconds) || seconds <= 0)

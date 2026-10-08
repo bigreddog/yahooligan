@@ -12,7 +12,7 @@ Generate one schedule whose phases contain name, start/end active seconds, grade
 
 ## Timing and modes
 
-A single active-workout clock defines course position and completion. Scenic camera movement uses a nominal speed of 7 m/s; measured power drives separately labelled virtual speed and distance. Pausing freezes time, terrain position and recording. Stop exactly at the selected duration. Pause on hidden pages, WebGL context loss, long browser interruptions, peripheral disconnection or prolonged missing power data.
+A single active-workout clock defines course position and completion. Scenic camera movement uses a nominal speed of 7 m/s; measured power drives separately labelled virtual speed and distance. Pausing freezes time, terrain position and recording. Stop exactly at the selected duration. Use wall time to catch up after calls, hidden pages and browser suspension; explicit pauses exclude paused time. Skip real telemetry/physics recording across suspension or missing-data gaps, and use simulated data for demo catch-up. Pause on WebGL context loss, confirmed foreground trainer/control faults or prolonged foreground missing power. Call-related connection loss keeps the clock running and permits explicit reconnection at the current target.
 
 SIM applies the current grade via FTMS indoor-bike simulation parameters. ERG applies the current target watts, bounded to advertised limits. In ERG the grade is scenic only and virtual speed uses flat-road physics. Permit mode changes by pausing, cancelling queued targets, neutralizing old load, applying the new mode and resuming if the ride had been running.
 
@@ -25,6 +25,8 @@ Display measured power/cadence/optional HR, virtual speed/distance, current grad
 Animate articulated cyclist legs, cranks and wheels. Integrate measured cadence against active-time increments; stop pedalling at zero or stale cadence and freeze animation on pause. In landscape on phones, add virtual speed, distance and elapsed time to the top metrics without obstructing the centered route.
 
 Generate roadside cliffs, boulders, grassy hollows and goats on outcrops, with deterministic placement and instancing. Provide drifting clouds and selectable daylight, sunset, moonlight/stars, rain, hail and distant lightning. Journey mode changes moods every 150 active seconds with smooth sky/lighting transitions. Keep the road visible in dark/weather modes; weather never affects trainer resistance. Respect reduced-motion preferences for precipitation and lightning and bound particle counts independent of course length.
+
+Request a screen wake lock during running sessions and demos. Release it on pause/finish and reacquire on visibility restoration; handle unsupported APIs, denial, OS revocation and pending-request races without interrupting the workout. Show status in Ride tools. Never claim that browser wake locks guarantee background rendering or Bluetooth control while the OS suspends the browser.
 
 ## Bluetooth
 
