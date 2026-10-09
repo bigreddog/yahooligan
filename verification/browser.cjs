@@ -496,7 +496,7 @@ const openTools = async (page) => {
         const bytes = new Uint8Array(8),
           view = new DataView(bytes.buffer);
         view.setUint16(0, 0x44, true);
-        view.setUint16(2, 2500, true);
+        view.setUint16(2, 1900, true);
         view.setUint16(4, 170, true);
         view.setInt16(6, 220, true);
         data.value = view;
@@ -523,6 +523,17 @@ const openTools = async (page) => {
     );
     await hardware.waitForFunction(
       () => document.querySelector("#metric-power").textContent === "220",
+    );
+    await hardware.waitForFunction(
+      () => document.querySelector("#metric-speed").textContent === "19.0",
+    );
+    assert.equal(
+      await hardware.locator("#landscape-speed").textContent(),
+      "19.0",
+    );
+    assert.equal(
+      await hardware.locator("#speed-label").textContent(),
+      "TRAINER SPEED",
     );
     assert.deepEqual(
       await hardware.evaluate(() =>

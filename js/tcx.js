@@ -11,7 +11,7 @@ export function generateTCX(session) {
         <DistanceMeters>${point.distance.toFixed(2)}</DistanceMeters>
         ${point.hr > 0 ? `<HeartRateBpm><Value>${Math.round(point.hr)}</Value></HeartRateBpm>` : ""}
         <Cadence>${Math.round(point.cadence)}</Cadence>
-        <Extensions><ns3:TPX><ns3:Speed>${point.speed.toFixed(3)}</ns3:Speed><ns3:Watts>${Math.round(point.power)}</ns3:Watts></ns3:TPX></Extensions>
+        <Extensions><ns3:TPX>${Number.isFinite(point.speed) ? `<ns3:Speed>${point.speed.toFixed(3)}</ns3:Speed>` : ""}<ns3:Watts>${Math.round(point.power)}</ns3:Watts></ns3:TPX></Extensions>
       </Trackpoint>`,
     )
     .join("");

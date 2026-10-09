@@ -31,13 +31,13 @@ Deploy the contents of `dist/` to any static HTTPS host. Files use relative URLs
 - SIM: resistance follows grade using FTMS indoor-bike simulation parameters. Watts are measured rather than enforced.
 - ERG: resistance holds the scheduled watt target. The same terrain is visual context; it does not control resistance.
 
-The road, current grade and progress marker follow **active workout time**, so the workout finishes in the duration you chose. The scenic road advances at a nominal 25.2 km/h. Measured power feeds a separate virtual-speed/distance simulation; the animated camera is not a measurement of wheel speed. In ERG, virtual speed uses flat-road physics. Regenerating scenery preserves all workout targets.
+The road, current grade and progress marker follow **active workout time**, so the workout finishes in the duration you chose. The scenic road advances at a nominal 25.2 km/h. Live rides display FTMS speed reported by the trainer and integrate that speed for distance, rather than estimating speed from watts or grade. Missing/stale speed shows “—” and contributes no estimated distance. Demos use a power-based virtual-speed/distance simulation; the animated camera is not a measurement of wheel speed. In demo ERG, virtual speed uses flat-road physics. Regenerating scenery preserves all workout targets.
 
 Pauses freeze the course, clock and recording. Changing mode briefly pauses control, clears queued old targets and applies the new mode before resuming. Calls, hidden tabs and browser suspension do not pause the clock: it catches up from elapsed wall time when the browser resumes. Background trainer commands may be suspended by the phone; the latest scheduled target is sent on return. If Bluetooth disconnects during an interruption, the clock continues and Ride tools offers reconnect at the current target. A confirmed foreground connection/control fault or 10 seconds of missing foreground power telemetry still pauses the ride. Resume explicitly after a foreground fault. Finishing or pausing attempts a neutral load followed by an acknowledged FTMS stop/pause. If a control command fails, the app reports the failure and disconnects; it cannot guarantee a command was applied by disconnected hardware.
 
 ## Ride display
 
-Power, cadence, heart rate and the current grade or ERG target stay visible in a compact strip. In phone landscape, the strip also shows virtual speed, distance and active time. Remaining time sits just below, alongside **Ride data**, camera and fullscreen controls. Branding becomes a faint watermark on the route.
+Power, cadence, heart rate and the current grade or ERG target stay visible in a compact strip. In phone landscape, the strip also shows speed, distance and active time. Remaining time sits just below, alongside **Ride data**, camera and fullscreen controls. Branding becomes a faint watermark on the route.
 
 The thin course profile shows your position and current phase; tap it to expand the chart. **Ride data** opens speed, distance, elapsed time, mode and the next phase. **Ride tools** opens trainer connections, SIM/ERG selection, finish, export and new-workout controls. Pause/resume stays within reach. Close panels with their close button, Escape or a tap on the road; opening a panel does not pause your workout.
 
@@ -57,7 +57,7 @@ SIM uses opcode `0x11` (Set Indoor Bike Simulation Parameters); ERG uses `0x05` 
 
 ## Recording
 
-Download TCX during or after a ride. It contains active time, measured power, cadence, optional heart rate, virtual speed/distance and simulated altitude. Export timestamps omit paused time. No real GPS coordinates are invented. A previous ride remains downloadable while the next ride has no records. The Strava link opens its manual upload page; there is no embedded OAuth or automatic upload.
+Download TCX during or after a ride. It contains active time, measured power, cadence, optional heart rate, trainer-reported speed/integrated distance for live rides (virtual values for demos), and simulated altitude. Missing speed is omitted from exported trackpoints. Export timestamps omit paused time. No real GPS coordinates are invented. A previous ride remains downloadable while the next ride has no records. The Strava link opens its manual upload page; there is no embedded OAuth or automatic upload.
 
 ## Scenery and dependencies
 

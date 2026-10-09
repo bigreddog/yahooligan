@@ -227,7 +227,13 @@ export class Trainer {
       offset += length;
       return true;
     };
-    if (!(flags & 1) && !read(2)) return;
+    if (
+      !(flags & 1) &&
+      !read(2, (at) => {
+        metrics.speed = value.getUint16(at, true) / 360; // 0.01 km/h -> m/s.
+      })
+    )
+      return;
     if (flags & 2 && !read(2)) return;
     if (
       flags & 4 &&

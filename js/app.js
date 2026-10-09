@@ -35,8 +35,8 @@ let messageTimer,
   lastUi = 0,
   lastControl = -1,
   powerWatchStart = 0;
-let metrics = { power: 0, cadence: 0, hr: 0 };
-const received = { power: 0, cadence: 0, hr: 0 };
+let metrics = { power: 0, cadence: 0, hr: 0, speed: null };
+const received = { power: 0, cadence: 0, hr: 0, speed: 0 };
 const trainer = new Trainer({
   onMetrics: (data) => {
     if (demo) return;
@@ -52,6 +52,8 @@ const trainer = new Trainer({
     metrics.cadence = 0;
     received.power = 0;
     received.cadence = 0;
+    metrics.speed = null;
+    received.speed = 0;
     showMessage(
       session?.status === "running"
         ? "Trainer disconnected during the interruption. Workout time continues; reconnect KICKR to restore control."
@@ -175,7 +177,7 @@ function prepare(isDemo) {
   clearTimeout(previewTimer);
   if (session?.records.length) lastSession = session;
   workout = readWorkout();
-  session = new Session(workout, selectedMode());
+  session = new Session(workout, selectedMode(), { measuredSpeed: !isDemo });
   demo = isDemo;
   document.body.classList.toggle("is-demo", demo);
   if (demo) {
@@ -183,10 +185,11 @@ function prepare(isDemo) {
     hrDevice?.gatt.disconnect();
     hrDevice = null;
   }
-  metrics = { power: 0, cadence: 0, hr: 0 };
+  metrics = { power: 0, cadence: 0, hr: 0, speed: null };
   received.power = 0;
   received.cadence = 0;
   received.hr = 0;
+  received.speed = 0;
   lastControl = -1;
   $("setup-panel").hidden = true;
   $("hud").hidden = false;
@@ -221,7 +224,7 @@ function currentMetrics() {
   return Object.fromEntries(
     Object.entries(metrics).map(([key, value]) => [
       key,
-      now - received[key] < 5000 ? value : 0,
+      now - received[key] < 5000 ? value : key === "speed" ? null : 0,
     ]),
   );
 }
@@ -519,7 +522,7 @@ function updateUI() {
   const now = performance.now();
   if (!demo)
     for (const key of Object.keys(metrics))
-      if (now - received[key] > 5000) metrics[key] = 0;
+      if (now - received[key] > 5000) metrics[key] = key === "speed" ? null : 0;
   $("metric-power").textContent =
     demo || (received.power && now - received.power < 5000)
       ? Math.round(metrics.power)
@@ -532,7 +535,18 @@ function updateUI() {
     demo || (received.hr && now - received.hr < 5000)
       ? Math.round(metrics.hr)
       : "—";
-  $("metric-speed").textContent = (session.velocity * 3.6).toFixed(1);
+  const speed = demo
+    ? session.velocity
+    : received.speed && now - received.speed < 5000
+      ? metrics.speed
+      : null;
+  $("metric-speed").textContent = Number.isFinite(speed)
+    ? (speed * 3.6).toFixed(1)
+    : "—";
+  for (const id of ["speed-label", "landscape-speed-label"])
+    $(id).textContent = demo ? "VIRTUAL SPEED" : "TRAINER SPEED";
+  for (const id of ["distance-label", "landscape-distance-label"])
+    $(id).textContent = demo ? "VIRTUAL DISTANCE" : "TRAINER DISTANCE";
   $("metric-distance").textContent = (session.distance / 1000).toFixed(2);
   $("landscape-speed").textContent = $("metric-speed").textContent;
   $("landscape-distance").textContent = $("metric-distance").textContent;
@@ -553,7 +567,7 @@ function updateUI() {
     `${demo ? "DEMO · " : ""}${{ ready: "READY TO RIDE", running: "ON THE ROAD", paused: "PAUSED", finished: "RIDE COMPLETE" }[session.status]}`;
   $("current-phase").textContent = finished ? "Finish line" : sample.phase;
   $("next-phase").textContent = finished
-    ? `${formatTime(session.elapsed)} active · ${(session.distance / 1000).toFixed(2)} virtual km`
+    ? `${formatTime(session.elapsed)} active · ${(session.distance / 1000).toFixed(2)} ${demo ? "virtual" : "trainer"} km`
     : `${sample.next} in ${formatTime(sample.untilNext)}`;
   $("data-next").textContent = $("next-phase").textContent;
   $("ride-status").textContent =

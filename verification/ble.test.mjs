@@ -140,7 +140,7 @@ test("parses variable Indoor Bike Data and ignores truncated packets", () => {
   view.setInt16(6, 30, true);
   view.setInt16(8, 210, true);
   trainer.parseIndoorBike(view);
-  assert.deepEqual(received, [{ cadence: 85, power: 210 }]);
+  assert.deepEqual(received, [{ speed: 2500 / 360, cadence: 85, power: 210 }]);
   trainer.parseIndoorBike(new DataView(bytes.buffer, 0, 9));
   assert.equal(received.length, 1);
 });
@@ -228,4 +228,20 @@ test("discovers capabilities and power range, requests control and starts correc
     else delete globalThis.navigator;
     delete globalThis.isSecureContext;
   }
+});
+
+test("trainer speed uses hundredths of km/h, handles zero, and excludes absent speed fields", () => {
+  const received = [];
+  const trainer = new Trainer({ onMetrics: (data) => received.push(data) });
+  const view = new DataView(new ArrayBuffer(4));
+  view.setUint16(2, 1900, true);
+  trainer.parseIndoorBike(view);
+  assert.equal(received[0].speed * 3.6, 19);
+  view.setUint16(2, 0, true);
+  trainer.parseIndoorBike(view);
+  assert.equal(received[1].speed, 0);
+  view.setUint16(0, 0x41, true);
+  view.setInt16(2, 200, true);
+  trainer.parseIndoorBike(view);
+  assert.deepEqual(received[2], { power: 200 });
 });

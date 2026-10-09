@@ -171,3 +171,25 @@ test("demo suspension advances to the finish using simulated data", () => {
   assert.equal(session.status, "finished");
   assert.equal(session.records.length, 300);
 });
+
+test("live speed and distance use trainer telemetry, independently of power, grade or mode", () => {
+  for (const mode of ["SIM", "ERG"]) {
+    const session = new Session(
+      generateWorkout({ minutes: 5, startGrade: 10 }),
+      mode,
+      { measuredSpeed: true },
+    );
+    session.start();
+    session.advance(60, { power: 350, cadence: 90, hr: 140, speed: 19 / 3.6 });
+    assert.ok(Math.abs(session.distance - (19 / 3.6) * 60) < 1e-6);
+    assert.equal(session.velocity * 3.6, 19);
+    assert.equal(session.records.at(-1).speed * 3.6, 19);
+    const distance = session.distance;
+    session.advance(1, { power: 350, cadence: 90, speed: null });
+    assert.equal(session.distance, distance);
+    assert.equal(session.records.at(-1).speed, null);
+    assert.ok(!generateTCX(session).includes("NaN"));
+    session.advance(1, { power: 0, cadence: 0, speed: 0 });
+    assert.equal(session.records.at(-1).speed, 0);
+  }
+});

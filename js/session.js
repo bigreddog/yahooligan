@@ -14,9 +14,10 @@ export function stepVelocity(velocity, power, grade, dt) {
 }
 
 export class Session {
-  constructor(workout, mode = "SIM") {
+  constructor(workout, mode = "SIM", { measuredSpeed = false } = {}) {
     this.workout = workout;
     this.mode = mode;
+    this.measuredSpeed = measuredSpeed;
     this.status = "ready";
     this.elapsed = 0;
     this.distance = 0;
@@ -65,12 +66,16 @@ export class Session {
         this.nextRecord - this.elapsed,
       );
       const sample = this.sample;
-      this.velocity = stepVelocity(
-        this.velocity,
-        metrics.power,
-        this.mode === "SIM" ? sample.grade : 0,
-        step,
-      );
+      this.velocity = this.measuredSpeed
+        ? Number.isFinite(metrics.speed)
+          ? Math.max(0, metrics.speed)
+          : 0
+        : stepVelocity(
+            this.velocity,
+            metrics.power,
+            this.mode === "SIM" ? sample.grade : 0,
+            step,
+          );
       const distance = this.velocity * step;
       this.distance += distance;
       this.altitude += (distance * sample.grade) / 100;
@@ -81,8 +86,11 @@ export class Session {
           time: this.elapsed,
           distance: this.distance,
           altitude: this.altitude,
-          speed: this.velocity,
           ...metrics,
+          speed:
+            this.measuredSpeed && !Number.isFinite(metrics.speed)
+              ? null
+              : this.velocity,
         });
         this.nextRecord++;
       }
