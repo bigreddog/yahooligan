@@ -1,0 +1,19 @@
+{
+  "name": "yahooligan",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Procedural 3D workouts for Bluetooth smart trainers",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "test": "node verification/workout.test.mjs && node verification/ble.test.mjs && node verification/ride-events.test.mjs && node verification/wake-lock.test.mjs",
+    "test:browser": "node verification/browser.cjs",
+    "test:tour": "node verification/tour.cjs",
+    "scenery": "blender --background --python scripts/generate_scenery.py"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}
