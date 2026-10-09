@@ -22,6 +22,7 @@ const openTools = async (page) => {
   const errors = [];
   const attach = async (page) => {
     await page.addInitScript(() => {
+      localStorage.setItem("yahooligan.tour.seen", "seen");
       window.wallOffset = 0;
       const realNow = Date.now.bind(Date);
       Date.now = () => realNow() + window.wallOffset;
@@ -676,6 +677,7 @@ const openTools = async (page) => {
 
     const noGl = await browser.newPage();
     await noGl.addInitScript(() => {
+      localStorage.setItem("yahooligan.tour.seen", "seen");
       const original = HTMLCanvasElement.prototype.getContext;
       HTMLCanvasElement.prototype.getContext = function (type, ...args) {
         return type.startsWith("webgl")

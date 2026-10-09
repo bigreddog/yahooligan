@@ -22,6 +22,10 @@ node scripts/serve.mjs --dist
 
 Deploy the contents of `dist/` to any static HTTPS host. Files use relative URLs so hosting under a subdirectory also works. No API keys are needed.
 
+## Guided tour
+
+A short tour appears once on your first visit in each browser. Use **Take a tour** on the front screen to replay it. Next/Back (or the arrow keys) move between highlights; Skip or Escape closes it. The ride-screen portion is a static preview: it never starts a workout or connects to your trainer, and preserves your chosen settings. Dismissing the tour also marks it as shown. If browser storage is blocked, the tour remains available manually without repeatedly opening automatically.
+
 ## Workouts and modes
 
 - Profiles: recovery, steady ride, rolling hills, sustained climb, hill repeats and intervals.
@@ -84,6 +88,7 @@ npx playwright install chromium
 npm start
 # In another terminal:
 npm run test:browser
+npm run test:tour
 ```
 
 To use system Chromium, set `CHROMIUM_PATH=/usr/bin/chromium`. `TEST_BASE_URL` can select another running server. Browser screenshots and a sample export are written to the ignored `verification/results/` directory. Tests cover duration, transitions, physics, export, FTMS packets/acknowledgements/cancellation/timeouts, capability discovery, 3D slope alignment, cadence-driven pedalling, scenery landmarks and sky/weather modes, portrait/landscape/small-phone layouts, panel controls, workout alerts and session controls. They cannot certify physical trainer behavior.

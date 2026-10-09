@@ -34,6 +34,10 @@ Require a secure context and Web Bluetooth. Read FTMS capabilities and supported
 
 Use FTMS Indoor Bike Data for power/cadence, with optional Cycling Power Service fallback. Parse variable fields and truncated packets defensively. Discover a separate Heart Rate Service on user request. Reconnect through a new user gesture, rediscover services/capabilities and reacquire control before explicitly resuming.
 
+## Guided onboarding
+
+Show a focused tutorial once per browser, recording that it was shown even if skipped. Offer Take a tour on the front screen. Highlight profile, duration/grade, baseline watts, SIM/ERG, preparing/connecting, demo, ride metrics, course progress, camera/data/fullscreen, ride tools and start/pause controls. The ride portion is a static preview and must not start a session, record data, request a wake lock or connect/disconnect Bluetooth. Preserve setup choices and camera on exit. Provide Next, Back, Skip, Escape, arrow-key navigation and native modal focus behavior. Keep the card and highlight usable in portrait/landscape; when storage is blocked offer manual replay without automatic repetition.
+
 ## Mobile ride presentation
 
 Prioritize a clear road and visible cyclist. Default to follow camera on phones unless the rider has explicitly chosen another view. Keep only power, cadence, heart rate and target in the top strip. Place remaining time, camera and fullscreen below it, and turn the logo into a low-opacity route watermark during a ride.

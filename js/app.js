@@ -9,6 +9,7 @@ import { Session } from "./session.js";
 import { Trainer, connectHeartRate, powerCommand } from "./ble.js";
 import { RouteScene } from "./route-scene.js";
 import { downloadTCX } from "./tcx.js";
+import { WorkoutTour } from "./tour.js";
 import { ScreenWakeLock } from "./wake-lock.js";
 import { RidePresentation } from "./ride-presentation.js";
 
@@ -23,6 +24,8 @@ const wakeLock = new ScreenWakeLock({
 let backgroundInterruption = false;
 let completedSession = null;
 let cameraChosen = false;
+let tour;
+let tourCamera;
 let seed = Math.floor(Math.random() * 100000);
 let workout, session, scene, lastSession, hrDevice;
 let demo = false,
@@ -513,7 +516,7 @@ window.addEventListener("pagehide", (event) => {
 });
 
 function updateUI() {
-  if (!session) return;
+  if (!session || tour?.previewActive) return;
   wakeLock.setActive(session.status === "running");
   const sample = session.sample;
   const erg = session.mode === "ERG";
@@ -639,6 +642,33 @@ try {
   );
 }
 preview();
+tour = new WorkoutTour({
+  preview: (active, panel) => {
+    const wasPreview = document.body.classList.contains("tour-preview");
+    if (active && !wasPreview) {
+      tourCamera = scene?.cameraMode;
+      document.body.classList.add("riding", "tour-preview");
+      $("setup-panel").hidden = true;
+      $("hud").hidden = false;
+      presentation.enter({ demo: true });
+      if (scene) scene.cameraMode = "follow";
+      updateCameraButton();
+      $("ride-status").textContent = "TOUR PREVIEW";
+    } else if (!active && wasPreview) {
+      document.body.classList.remove("riding", "tour-preview");
+      presentation.exit();
+      $("setup-panel").hidden = false;
+      $("hud").hidden = true;
+      if (scene) scene.cameraMode = tourCamera;
+      updateCameraButton();
+      updateUI();
+    }
+    if (active) {
+      presentation.open(panel);
+      presentation.hideNotice();
+    }
+  },
+});
 
 function frame(now) {
   const dt = (now - lastFrame) / 1000;

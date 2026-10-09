@@ -55,6 +55,9 @@
         <p class="intro">
           Build a workout. Find your rhythm.<br />Let the road unfold.
         </p>
+        <button id="btn-tour" class="text-button tour-launch" type="button">
+          Take a tour
+        </button>
         <form id="workout-form">
           <label for="profile">WORKOUT PROFILE</label
           ><select id="profile" name="profile">
@@ -387,6 +390,29 @@
       aria-live="polite"
       hidden
     ></div>
+    <dialog id="tour" aria-labelledby="tour-title" aria-describedby="tour-body">
+      <div id="tour-spotlight" aria-hidden="true"></div>
+      <section id="tour-card" class="glass">
+        <div class="tour-heading">
+          <span id="tour-count" class="eyebrow" role="status"></span
+          ><button
+            id="tour-skip"
+            class="text-button"
+            type="button"
+            aria-label="Skip the tour"
+          >
+            Skip ×
+          </button>
+        </div>
+        <h2 id="tour-title"></h2>
+        <p id="tour-body" aria-live="polite"></p>
+        <div class="tour-navigation">
+          <button id="tour-back" class="icon-button" type="button">
+            ← Back</button
+          ><button id="tour-next" class="primary" type="button">Next →</button>
+        </div>
+      </section>
+    </dialog>
     <noscript
       ><p class="message">
         Enable JavaScript to generate and ride a workout.
